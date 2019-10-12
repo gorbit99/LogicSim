@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 		SDL_GetMouseState(&x, &y);
 
 		SDL_Surface *surf = SDL_CreateRGBSurfaceWithFormat(0, 640, 480, 32, SDL_PIXELFORMAT_ABGR32);
-		gfx_draw_bezier_cubic(surf, (Point){100, 100}, (Point){600, 400}, (Point){x, y}, (Point){300, 400}, 5, 0x0000ffff);
+		gfx_draw_bezier_cubic(surf, (Point){200, 100}, (Point){600, 400}, (Point){x, y}, (Point){300, 400}, 5, 0x0000ffff);
 		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
 		SDL_FreeSurface(surf);
 		SDL_RenderCopy(renderer, tex, NULL, NULL);
