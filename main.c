@@ -1,12 +1,19 @@
 #include <stdio.h>
 #define SDL_MAIN_HANDLED
+
+#include "debugmalloc.h"
+
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <stdbool.h>
 #include "Graphics.h"
 
 int main(int argc, char **argv) {
 
+	//debugmalloc_log_file("log.txt");
+
 	SDL_Init(SDL_INIT_EVERYTHING);
+	TTF_Init();
 	SDL_Window *window = SDL_CreateWindow("Test window",
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
@@ -16,7 +23,7 @@ int main(int argc, char **argv) {
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-
+	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 25);
 
 	bool quit = false;
 	SDL_Event e;
@@ -37,6 +44,7 @@ int main(int argc, char **argv) {
 
 		SDL_Surface *surf = SDL_CreateRGBSurfaceWithFormat(0, 640, 480, 32, SDL_PIXELFORMAT_ABGR32);
 		gfx_draw_bezier_cubic(surf, (Point){200, 100}, (Point){600, 400}, (Point){x, y}, (Point){300, 400}, 5, 0x0000ffff);
+		gfx_draw_text(surf, font, 100, 100, "Hello World!", 0xff00ffff);
 		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
 		SDL_FreeSurface(surf);
 		SDL_RenderCopy(renderer, tex, NULL, NULL);
@@ -46,7 +54,10 @@ int main(int argc, char **argv) {
 	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	TTF_Quit();
 	SDL_Quit();
+
+	malloc(sizeof(int) * 20);
 
 	return 0;
 }

@@ -1,6 +1,7 @@
 #include "Graphics.h"
 
 #define set_pixel(dest, x, y, c) (((uint32_t *)(dest)->pixels)[(y) * dest->w + (x)] = (c))
+#define int_to_color(color) ((SDL_Color){(color) >> 24u, ((color) >> 16u) & 0xffu, ((color) >> 8u) & 0xffu, (color) & 0xffu})
 
 //Source: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 void __gfx_draw_line_low(SDL_Surface *dest, float x0, float y0, float x1, float y1, Color color) {
@@ -338,4 +339,11 @@ void gfx_draw_bezier_cubic(SDL_Surface *dest, Point V1, Point V2, Point C1, Poin
 		prevQ1 = Q1;
 		prevQ2 = Q2;
 	}
+}
+
+void gfx_draw_text(SDL_Surface *dest, TTF_Font *font, int x, int y, const char *str, Color color) {
+	SDL_Surface *text = TTF_RenderText_Blended(font, str, int_to_color(color));
+	SDL_Rect r = {x, y, 0, 0};
+	SDL_BlitSurface(text, NULL, dest, &r);
+	SDL_FreeSurface(text);
 }
