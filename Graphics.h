@@ -24,6 +24,8 @@ void gfx_draw_line(SDL_Surface *dest, Point V1, Point V2, Color color);
 void gfx_draw_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, Color color);
 void gfx_fill_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, Color color);
 
+void gfx_draw_thick_line(SDL_Surface *dest, Point V1, Point V2, float thickness, Color color);
+
 void gfx_draw_circle(SDL_Surface *dest, Point C, float r, Color color);
 void gfx_fill_circle(SDL_Surface *dest, Point C, float r, Color color);
 

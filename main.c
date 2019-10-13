@@ -7,6 +7,7 @@
 #include <SDL_ttf.h>
 #include <stdbool.h>
 #include "Graphics.h"
+#include "Component.h"
 
 int main(int argc, char **argv) {
 
@@ -23,7 +24,10 @@ int main(int argc, char **argv) {
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 25);
+	SDL_Texture *testT;
+	SDL_Surface *test = component_load_graphic("res/AND.cmp");
+	testT = SDL_CreateTextureFromSurface(renderer, test);
+	SDL_FreeSurface(test);
 
 	bool quit = false;
 	SDL_Event e;
@@ -33,6 +37,14 @@ int main(int argc, char **argv) {
 				case SDL_QUIT:
 					quit = true;
 					break;
+				case SDL_KEYDOWN: {
+					if (e.key.keysym.sym == SDLK_SPACE) {
+						SDL_DestroyTexture(testT);
+						SDL_Surface *test = component_load_graphic("res/AND.cmp");
+						testT = SDL_CreateTextureFromSurface(renderer, test);
+						SDL_FreeSurface(test);
+					}
+				}
 			}
 		}
 
@@ -41,14 +53,8 @@ int main(int argc, char **argv) {
 
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-
-		SDL_Surface *surf = SDL_CreateRGBSurfaceWithFormat(0, 640, 480, 32, SDL_PIXELFORMAT_ABGR32);
-		gfx_draw_bezier_cubic(surf, (Point){200, 100}, (Point){600, 400}, (Point){x, y}, (Point){300, 400}, 5, 0x0000ffff);
-		gfx_draw_text(surf, font, 100, 100, "Hello World!", 0xff00ffff);
-		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-		SDL_FreeSurface(surf);
-		SDL_RenderCopy(renderer, tex, NULL, NULL);
-		SDL_DestroyTexture(tex);
+		SDL_Rect r = {0, 0, 1000, 1000};
+		SDL_RenderCopy(renderer, testT, NULL, &r);
 
 		SDL_RenderPresent(renderer);
 	}

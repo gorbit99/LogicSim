@@ -1,6 +1,6 @@
 #include "Graphics.h"
 
-#define set_pixel(dest, x, y, c) (((uint32_t *)(dest)->pixels)[(y) * dest->w + (x)] = (c))
+#define set_pixel(dest, x, y, c) (((uint32_t *)(dest)->pixels)[(y) * (dest)->w + (x)] = (c))
 #define int_to_color(color) ((SDL_Color){(color) >> 24u, ((color) >> 16u) & 0xffu, ((color) >> 8u) & 0xffu, (color) & 0xffu})
 
 //Source: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -201,6 +201,24 @@ void gfx_fill_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, Color co
 		__fill_flatsided_triangle(dest, V1, V2, V4, color);
 		__fill_flatsided_triangle(dest, V3, V2, V4, color);
 	}
+}
+
+void gfx_draw_thick_line(SDL_Surface *dest, Point V1, Point V2, float thickness, Color color) {
+	float l = 1 / sqrtf((V2.x - V1.x) * (V2.x - V1.x) + (V2.y - V1.y) * (V2.y - V1.y));
+	thickness = thickness / 2;
+	float dx = (V2.x - V1.x) * l * thickness;
+	float dy = (V2.y - V1.y) * l * thickness;
+
+	gfx_fill_triangle(dest,
+					  (Point){V1.x + dx, V1.y - dy},
+					  (Point){V1.x - dx, V1.y + dy},
+					  (Point){V2.x + dx, V2.y - dy},
+					  color);
+	gfx_fill_triangle(dest,
+					  (Point){V2.x + dx, V2.y - dy},
+					  (Point){V2.x - dx, V2.y + dy},
+					  (Point){V1.x - dx, V1.y + dy},
+					  color);
 }
 
 void __draw_circle_helper(SDL_Surface *dest, int cx, int cy, int x, int y, Color color) {
