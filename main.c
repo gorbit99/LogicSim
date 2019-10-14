@@ -23,9 +23,9 @@ int main(int argc, char **argv) {
 			SDL_WINDOW_SHOWN);
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
+	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 50);
 	SDL_Texture *testT;
-	SDL_Surface *test = component_load_graphic("res/AND.cmp");
+	SDL_Surface *test = component_load_graphic("res/XOR.cmp", 200, 5, font);
 	testT = SDL_CreateTextureFromSurface(renderer, test);
 	SDL_FreeSurface(test);
 
@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 				case SDL_KEYDOWN: {
 					if (e.key.keysym.sym == SDLK_SPACE) {
 						SDL_DestroyTexture(testT);
-						SDL_Surface *test = component_load_graphic("res/AND.cmp");
+						SDL_Surface *test = component_load_graphic("res/BUF.cmp", 200, 5, font);
 						testT = SDL_CreateTextureFromSurface(renderer, test);
 						SDL_FreeSurface(test);
 					}
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-		SDL_Rect r = {0, 0, 1000, 1000};
+		SDL_Rect r = {0, 0, 200, 200};
 		SDL_RenderCopy(renderer, testT, NULL, &r);
 
 		SDL_RenderPresent(renderer);

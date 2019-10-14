@@ -7,7 +7,7 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_TTF REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_DIRS})
+include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME} main.c Graphics.c Graphics.h debugmalloc.h debugmalloc-impl.h Component.c Component.h Utility.c Utility.h)
 

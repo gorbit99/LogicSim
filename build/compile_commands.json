@@ -1,0 +1,22 @@
+[
+{
+  "directory": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\I686-8~1.0-P\\mingw32\\bin\\gcc.exe  @CMakeFiles/Homework.dir/includes_C.rsp -g -DDEBUG   -std=gnu99 -o CMakeFiles\\Homework.dir\\main.c.obj   -c C:\\Users\\gorbi\\Documents\\Projects\\School\\LogicSim\\LogicSim\\main.c",
+  "file": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/main.c"
+},
+{
+  "directory": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\I686-8~1.0-P\\mingw32\\bin\\gcc.exe  @CMakeFiles/Homework.dir/includes_C.rsp -g -DDEBUG   -std=gnu99 -o CMakeFiles\\Homework.dir\\Graphics.c.obj   -c C:\\Users\\gorbi\\Documents\\Projects\\School\\LogicSim\\LogicSim\\Graphics.c",
+  "file": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/Graphics.c"
+},
+{
+  "directory": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\I686-8~1.0-P\\mingw32\\bin\\gcc.exe  @CMakeFiles/Homework.dir/includes_C.rsp -g -DDEBUG   -std=gnu99 -o CMakeFiles\\Homework.dir\\Component.c.obj   -c C:\\Users\\gorbi\\Documents\\Projects\\School\\LogicSim\\LogicSim\\Component.c",
+  "file": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/Component.c"
+},
+{
+  "directory": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\I686-8~1.0-P\\mingw32\\bin\\gcc.exe  @CMakeFiles/Homework.dir/includes_C.rsp -g -DDEBUG   -std=gnu99 -o CMakeFiles\\Homework.dir\\Utility.c.obj   -c C:\\Users\\gorbi\\Documents\\Projects\\School\\LogicSim\\LogicSim\\Utility.c",
+  "file": "C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/Utility.c"
+}
+]

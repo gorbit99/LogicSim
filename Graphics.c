@@ -204,6 +204,23 @@ void gfx_fill_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, Color co
 }
 
 void gfx_draw_thick_line(SDL_Surface *dest, Point V1, Point V2, float thickness, Color color) {
+
+	if (V1.y == V2.y) {
+		for (int x = (int)V1.x; x <= (int)V2.x; x++) {
+			for (int y = (int)(V1.y - thickness/2); y <= (int)(V1.y + thickness / 2); y++)
+				set_pixel(dest, x, y, color);
+		}
+		return;
+	}
+
+	if (V1.x == V2.x) {
+		for (int x = (int)(V1.x - thickness / 2); x <= (int)(V1.x + thickness / 2); x++) {
+			for (int y = (int)V1.y; y <= (int)V2.y; y++)
+				set_pixel(dest, x, y, color);
+		}
+		return;
+	}
+
 	float l = 1 / sqrtf((V2.x - V1.x) * (V2.x - V1.x) + (V2.y - V1.y) * (V2.y - V1.y));
 	thickness = thickness / 2;
 	float dx = (V2.x - V1.x) * l * thickness;
@@ -293,7 +310,7 @@ void __gfx_calc_bezier_point(float Ax, float Bx, float Cx, float Ay, float By, f
 }
 
 void gfx_draw_bezier(SDL_Surface *dest, Point V1, Point V2, Point C, float thickness, Color color) {
-	static const float stepSize = 0.005f;
+	static const float stepSize = 0.01f;
 	float Ax = V1.x - 2 * C.x + V2.x;
 	float Ay = V1.y - 2 * C.y + V2.y;
 	float Bx = C.x - V1.x;
@@ -307,7 +324,7 @@ void gfx_draw_bezier(SDL_Surface *dest, Point V1, Point V2, Point C, float thick
 	//A Clion nyavalyog, ha for loopban float a conditional változó, így while lett
 	float t = 0;
 	while (t <= 1) {
-		t += stepSize;
+		printf("%f\n", t);
 		Point Q1, Q2;
 		__gfx_calc_bezier_point(Ax, Bx, Cx, Ay, By, Cy, thickness / 2, t, &Q1, &Q2);
 
@@ -364,4 +381,21 @@ void gfx_draw_text(SDL_Surface *dest, TTF_Font *font, int x, int y, const char *
 	SDL_Rect r = {x, y, 0, 0};
 	SDL_BlitSurface(text, NULL, dest, &r);
 	SDL_FreeSurface(text);
+}
+
+void gfx_fill_ring(SDL_Surface *dest, Point C, float r, float thickness, Color color) {
+	float ri = r - thickness / 2;
+	float ro = r + thickness / 2;
+
+	for (int dy = (int)floorf(-ro); dy <= (int)ceilf(ro); dy++) {
+		if (dy < -ri || dy > ri) {
+			float dx = sqrtf(ro * ro - dy * dy);
+			gfx_draw_line(dest, (Point){C.x - dx, C.y + dy}, (Point){C.x + dx, C.y + dy}, color);
+		} else {
+			float dxo = sqrtf(ro * ro - dy * dy);
+			float dxi = sqrtf(ri * ri - dy * dy);
+			gfx_draw_line(dest, (Point){C.x - dxo, C.y + dy}, (Point){C.x - dxi, C.y + dy}, color);
+			gfx_draw_line(dest, (Point){C.x + dxi, C.y + dy}, (Point){C.x + dxo, C.y + dy}, color);
+		}
+	}
 }

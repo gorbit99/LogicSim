@@ -7,6 +7,6 @@
 #include "Utility.h"
 #include "Graphics.h"
 
-SDL_Surface *component_load_graphic(const char *path);
+SDL_Surface *component_load_graphic(const char *path, float size, float thickness, TTF_Font *font);
 
 #endif //HOMEWORK_COMPONENT_H
