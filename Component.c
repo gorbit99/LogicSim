@@ -34,8 +34,9 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 			r *= size;
 			if (fill == 'f')
 				gfx_fill_circle(component, C, r, 0xffffffff);
-			else if (fill == 'e')
-				gfx_draw_circle(component, C, r, 0xffffffff);
+			else if (fill == 'e') {
+				gfx_fill_ring(component, C, r, thickness, 0xffffffff);
+			}
 		}
 		else if (strcmp(identifier, "QB") == 0) {
 			Point V1, V2, C;

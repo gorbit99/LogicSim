@@ -34,4 +34,6 @@ void gfx_draw_bezier_cubic(SDL_Surface *dest, Point V1, Point V2, Point C1, Poin
 
 void gfx_draw_text(SDL_Surface *dest, TTF_Font *font, int x, int y, const char *str, Color color);
 
+void gfx_fill_ring(SDL_Surface *dest, Point C, float r, float thickness, Color color);
+
 #endif //HOMEWORK_GRAPHICS_H

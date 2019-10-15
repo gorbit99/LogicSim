@@ -8,24 +8,20 @@
 #include <stdbool.h>
 #include "Graphics.h"
 #include "Component.h"
+#include "Window.h"
 
 int main(int argc, char **argv) {
 
-	//debugmalloc_log_file("log.txt");
+	SDL_Window *window;
+	SDL_Renderer *renderer;
 
-	SDL_Init(SDL_INIT_EVERYTHING);
+	window_init(&window, &renderer, "Logic Simulator", 640, 480, SDL_WINDOW_SHOWN, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+
 	TTF_Init();
-	SDL_Window *window = SDL_CreateWindow("Test window",
-			SDL_WINDOWPOS_UNDEFINED,
-			SDL_WINDOWPOS_UNDEFINED,
-			640,
-			480,
-			SDL_WINDOW_SHOWN);
 
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 50);
 	SDL_Texture *testT;
-	SDL_Surface *test = component_load_graphic("res/XOR.cmp", 200, 5, font);
+	SDL_Surface *test = component_load_graphic("res/XNOR.cmp", 200, 5, font);
 	testT = SDL_CreateTextureFromSurface(renderer, test);
 	SDL_FreeSurface(test);
 
@@ -40,7 +36,7 @@ int main(int argc, char **argv) {
 				case SDL_KEYDOWN: {
 					if (e.key.keysym.sym == SDLK_SPACE) {
 						SDL_DestroyTexture(testT);
-						SDL_Surface *test = component_load_graphic("res/BUF.cmp", 200, 5, font);
+						test = component_load_graphic("res/BUF.cmp", 200, 5, font);
 						testT = SDL_CreateTextureFromSurface(renderer, test);
 						SDL_FreeSurface(test);
 					}
@@ -53,7 +49,10 @@ int main(int argc, char **argv) {
 
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-		SDL_Rect r = {0, 0, 200, 200};
+		int w, h;
+		SDL_QueryTexture(testT, NULL, NULL, &w, &h);
+		SDL_Rect r = {x, y, w, h};
+		SDL_RenderDrawLine(renderer, 0, 0, 639, 479);
 		SDL_RenderCopy(renderer, testT, NULL, &r);
 
 		SDL_RenderPresent(renderer);

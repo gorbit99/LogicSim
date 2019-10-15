@@ -1,3 +1,0 @@
-C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/build/CMakeFiles/Homework.dir
-C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/build/CMakeFiles/edit_cache.dir
-C:/Users/gorbi/Documents/Projects/School/LogicSim/LogicSim/build/CMakeFiles/rebuild_cache.dir

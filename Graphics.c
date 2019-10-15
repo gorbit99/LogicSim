@@ -1,6 +1,6 @@
 #include "Graphics.h"
 
-#define set_pixel(dest, x, y, c) (((uint32_t *)(dest)->pixels)[(y) * (dest)->w + (x)] = (c))
+#define set_pixel(dest, x, y, c) (((x)>=0&&(x)<(dest)->w&&(y)>=0&&(y)<(dest)->h)?((uint32_t *)(dest)->pixels)[(y) * (dest)->w + (x)] = (c):0)
 #define int_to_color(color) ((SDL_Color){(color) >> 24u, ((color) >> 16u) & 0xffu, ((color) >> 8u) & 0xffu, (color) & 0xffu})
 
 //Source: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -387,15 +387,18 @@ void gfx_fill_ring(SDL_Surface *dest, Point C, float r, float thickness, Color c
 	float ri = r - thickness / 2;
 	float ro = r + thickness / 2;
 
-	for (int dy = (int)floorf(-ro); dy <= (int)ceilf(ro); dy++) {
-		if (dy < -ri || dy > ri) {
-			float dx = sqrtf(ro * ro - dy * dy);
-			gfx_draw_line(dest, (Point){C.x - dx, C.y + dy}, (Point){C.x + dx, C.y + dy}, color);
+for (int dy = 0; dy <= (int)floorf(ro); dy++) {
+		if ((float)dy > ri) {
+			float dx = sqrtf(ro * ro - (float)(dy * dy));
+			gfx_draw_line(dest, (Point){C.x - dx, C.y + (float)dy}, (Point){C.x + dx, C.y + (float)dy}, color);
+			gfx_draw_line(dest, (Point){C.x - dx, C.y - (float)dy}, (Point){C.x + dx, C.y - (float)dy}, color);
 		} else {
-			float dxo = sqrtf(ro * ro - dy * dy);
-			float dxi = sqrtf(ri * ri - dy * dy);
-			gfx_draw_line(dest, (Point){C.x - dxo, C.y + dy}, (Point){C.x - dxi, C.y + dy}, color);
-			gfx_draw_line(dest, (Point){C.x + dxi, C.y + dy}, (Point){C.x + dxo, C.y + dy}, color);
+			float dxo = sqrtf(ro * ro - (float)(dy * dy));
+			float dxi = sqrtf(ri * ri - (float)(dy * dy));
+			gfx_draw_line(dest, (Point){C.x - dxo, C.y + (float)dy}, (Point){C.x - dxi, C.y + (float)dy}, color);
+			gfx_draw_line(dest, (Point){C.x + dxi, C.y + (float)dy}, (Point){C.x + dxo, C.y + (float)dy}, color);
+			gfx_draw_line(dest, (Point){C.x - dxo, C.y - (float)dy}, (Point){C.x - dxi, C.y - (float)dy}, color);
+			gfx_draw_line(dest, (Point){C.x + dxi, C.y - (float)dy}, (Point){C.x + dxo, C.y - (float)dy}, color);
 		}
 	}
 }
