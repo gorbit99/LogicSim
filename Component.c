@@ -9,7 +9,7 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 	float wf, hf;
 	fscanf(f, "%f %f", &wf, &hf);
 
-	int w = (int)ceil(wf * size), h = (int)ceil(hf * size);
+	int w = (int)ceilf(wf * size), h = (int)ceilf(hf * size);
 
 	SDL_Surface *component = get_rgba_surface(w, h);
 
@@ -64,6 +64,8 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 		}
 	}
 
+	fclose(f);
+
 	return component;
 }
 
@@ -79,6 +81,11 @@ ComponentData component_create_data(float x, float y, SDL_Texture *texture, size
 	};
 	SDL_QueryTexture(texture, NULL, NULL, &dat.w, &dat.h);
 	return dat;
+}
+
+void component_update_texture(ComponentData *dat, SDL_Texture *texture) {
+	SDL_QueryTexture(texture, NULL, NULL, &(dat->w), &(dat->h));
+	dat->texture = texture;
 }
 
 void component_free_data(ComponentData *dat) {

@@ -16,10 +16,13 @@ bool window_init(SDL_Window **window, SDL_Renderer **renderer, const char *title
 
 	SDL_LogSetOutputFunction(__log_output_function, NULL);
 
-	log_error("Test %s", "Hello");
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		log_error("Couldn't initialize SDL:\nError: %s\n", SDL_GetError());
+		return false;
+	}
+
+	if (TTF_Init() != 0) {
+		log_error("Couldn't initialize SDL_TTF:\nError: %s\n", SDL_GetError());
 		return false;
 	}
 
@@ -40,4 +43,11 @@ bool window_init(SDL_Window **window, SDL_Renderer **renderer, const char *title
 	}
 
 	return true;
+}
+
+void window_cleanup(SDL_Window *window, SDL_Renderer *renderer) {
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	TTF_Quit();
+	SDL_Quit();
 }
