@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "debugmalloc.h"
+
 void __log_output_function(void *unused, int category, SDL_LogPriority priority, const char *message) {
 	FILE *file = fopen("log.txt", "a");
 	time_t t = time(NULL);

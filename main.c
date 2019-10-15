@@ -12,6 +12,8 @@
 
 int main(int argc, char **argv) {
 
+	debugmalloc_log_file("debugmalloclog.txt");
+
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 
@@ -61,8 +63,6 @@ int main(int argc, char **argv) {
 	SDL_DestroyWindow(window);
 	TTF_Quit();
 	SDL_Quit();
-
-	malloc(sizeof(int) * 20);
 
 	return 0;
 }

@@ -1,5 +1,7 @@
 #include "Component.h"
 
+#include "debugmalloc.h"
+
 SDL_Surface *component_load_graphic(const char *path, float size, float thickness, TTF_Font *font) {
 
 	FILE *f = fopen(path, "r");
@@ -63,4 +65,32 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 	}
 
 	return component;
+}
+
+ComponentData component_create_data(float x, float y, SDL_Texture *texture, size_t outCount) {
+	ComponentData dat = {
+		x,
+		y,
+		0,
+		0,
+		texture,
+		outCount,
+		(bool *)calloc(outCount, sizeof(bool))
+	};
+	SDL_QueryTexture(texture, NULL, NULL, &dat.w, &dat.h);
+	return dat;
+}
+
+void component_free_data(ComponentData *dat) {
+	free(dat->out);
+}
+
+void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos) {
+	SDL_Rect r = {
+		(int)(dat->x - camPos.x),
+		(int)(dat->y - camPos.y),
+		dat->w,
+		dat->h
+	};
+	SDL_RenderCopy(renderer, dat->texture, NULL, &r);
 }
