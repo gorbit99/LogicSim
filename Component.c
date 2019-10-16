@@ -101,3 +101,42 @@ void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos) 
 	};
 	SDL_RenderCopy(renderer, dat->texture, NULL, &r);
 }
+
+SDL_Surface *component_create_wire(Point V1, Point V2, float ang1, float ang2, float size, float thickness) {
+	float dx1 = cosf(ang1) * size / 5;
+	float dy1 = sinf(ang1) * size / 5;
+	float dx2 = cosf(ang2) * size / 5;
+	float dy2 = sinf(ang2) * size / 5;
+
+	Point C1 = {V1.x + dx1, V1.y + dy1};
+	Point C2 = {V2.x + dx2, V2.y + dy2};
+	float minX = V1.x;
+	if (V2.x < minX) minX = V2.x;
+	if (C1.x < minX) minX = C1.x;
+	if (C2.x < minX) minX = C2.x;
+	float maxX = V1.x;
+	if (V2.x > maxX) maxX = V2.x;
+	if (C1.x > maxX) maxX = C1.x;
+	if (C2.x > maxX) maxX = C2.x;
+	float minY = V1.y;
+	if (V2.y < minY) minY = V2.y;
+	if (C1.y < minY) minY = C1.y;
+	if (C2.y < minY) minY = C2.y;
+	float maxY = V1.y;
+	if (V2.y > maxY) maxY = V2.y;
+	if (C1.y > maxY) maxY = C1.y;
+	if (C2.y > maxY) maxY = C2.y;
+
+	SDL_Surface *wire = get_rgba_surface((int)(3 * thickness + maxX - minX), (int)(3 * thickness + maxY - minY));
+	V1.x += 1.5f * thickness - minX;
+	V1.y += 1.5f * thickness - minY;
+	V2.x += 1.5f * thickness - minX;
+	V2.y += 1.5f * thickness - minY;
+	C1.x += 1.5f * thickness - minX;
+	C1.y += 1.5f * thickness - minY;
+	C2.x += 1.5f * thickness - minX;
+	C2.y += 1.5f * thickness - minY;
+
+	gfx_draw_bezier_cubic(wire, V1, V2, C1, C2, thickness, 0xffffffff);
+	return wire;
+}

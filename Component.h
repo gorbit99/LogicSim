@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "Utility.h"
 #include "Graphics.h"
@@ -24,5 +25,7 @@ void component_update_texture(ComponentData *dat, SDL_Texture *texture);
 void component_free_data(ComponentData *dat);
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos);
+
+SDL_Surface *component_create_wire(Point V1, Point V2, float ang1, float ang2, float size, float thickness);
 
 #endif //HOMEWORK_COMPONENT_H

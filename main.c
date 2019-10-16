@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 25);
 	SDL_Texture *testT;
-	SDL_Surface *test = component_load_graphic("res/XNOR.cmp", 100, 3, font);
+	SDL_Surface *test = component_load_graphic("res/AND.cmp", 100, 3, font);
 	testT = SDL_CreateTextureFromSurface(renderer, test);
 	SDL_FreeSurface(test);
 
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 			SDL_DestroyTexture(testT);
 			TTF_CloseFont(font);
 			font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", (int)(25 * zoom));
-			SDL_Surface *surf = component_load_graphic("res/XNOR.cmp", 100 * zoom, 3 * zoom, font);
+			SDL_Surface *surf = component_load_graphic("res/AND.cmp", 100 * zoom, 3 * zoom, font);
 			testT = SDL_CreateTextureFromSurface(renderer, surf);
 			SDL_FreeSurface(surf);
 			component_update_texture(&data,testT);
