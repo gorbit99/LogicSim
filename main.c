@@ -20,12 +20,11 @@ int main(int argc, char **argv) {
 
 	window_init(&window, &renderer, "Logic Simulator", 640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
-	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 125);
+	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 80);
 
-	ComponentData data = component_create(50, 50, "AND", 300, 15, font, renderer);
-	ComponentData data2 = component_create(400, 600, "AND", 300, 15, font, renderer);
+	ComponentData data = component_create(50, 50, "XNOR", 300, 15, font, renderer);
+	ComponentData data2 = component_create(400, 600, "XNOR", 300, 15, font, renderer);
 	ComponentData wire = component_create_wire_between(&data, &data2, 2, 0, 500, 15, renderer);
-
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Point cameraPos = {0, 0};
