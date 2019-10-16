@@ -137,8 +137,7 @@ void __fill_flatsided_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, 
 
 	for (int i = 0; (float)i <= dx1; i++) {
 		gfx_draw_line(dest, VT1, VT2, color);
-
-		while (e1 >= 0) {
+		while (e1 > 0) {
 			if (c1)
 				VT1.x += signx1;
 			else
@@ -360,15 +359,14 @@ void __gfx_calc_bezier_point_cubic(Point P0, Point P1, Point P2, Point P3,
 void gfx_draw_bezier_cubic(SDL_Surface *dest, Point V1, Point V2, Point C1, Point C2, float thickness, Color color) {
 	static const float stepSize = 0.005f;
 
-	Point prevQ1, prevQ2;
-	__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, 0, &prevQ1, &prevQ2);
-
 	//A Clion nyavalyog, ha for loopban float a conditional változó, így while lett
-	float t = 0;
+	float t = stepSize;
 	while (t <= 1) {
 		t += stepSize;
+		Point prevQ1, prevQ2;
+		__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, t - stepSize * 2, &prevQ1, &prevQ2);
 		Point Q1, Q2;
-		__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, t, &Q1, &Q2);
+		__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, t + stepSize * 2, &Q1, &Q2);
 
 		gfx_fill_triangle(dest, Q1, Q2, prevQ1, color);
 		gfx_fill_triangle(dest, Q2, prevQ1, prevQ2, color);

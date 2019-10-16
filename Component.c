@@ -9,7 +9,7 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 	float wf, hf;
 	fscanf(f, "%f %f", &wf, &hf);
 
-	int w = (int)ceilf(wf * size), h = (int)ceilf(hf * size);
+	int w = (int) ceilf(wf * size), h = (int) ceilf(hf * size);
 
 	SDL_Surface *component = get_rgba_surface(w, h);
 
@@ -25,8 +25,7 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 			V2.x *= size;
 			V2.y *= size;
 			gfx_draw_thick_line(component, V1, V2, thickness, 0xffffffff);
-		}
-		else if (strcmp(identifier, "C") == 0) {
+		} else if (strcmp(identifier, "C") == 0) {
 			Point C;
 			float r;
 			char fill;
@@ -39,8 +38,7 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 			else if (fill == 'e') {
 				gfx_fill_ring(component, C, r, thickness, 0xffffffff);
 			}
-		}
-		else if (strcmp(identifier, "QB") == 0) {
+		} else if (strcmp(identifier, "QB") == 0) {
 			Point V1, V2, C;
 			fscanf(f, "%f,%f %f,%f %f,%f", &V1.x, &V1.y, &V2.x, &V2.y, &C.x, &C.y);
 			V1.x *= size;
@@ -50,14 +48,25 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 			C.x *= size;
 			C.y *= size;
 			gfx_draw_bezier(component, V1, V2, C, thickness, 0xffffffff);
-		}
-		else if (strcmp(identifier, "TXT") == 0) {
+		} else if (strcmp(identifier, "QBC") == 0) {
+			Point V1, V2, C1, C2;
+			fscanf(f, "%f,%f %f,%f %f,%f %f,%f", &V1.x, &V1.y, &V2.x, &V2.y, &C1.x, &C1.y, &C2.x, &C2.y);
+			V1.x *= size;
+			V1.y *= size;
+			V2.x *= size;
+			V2.y *= size;
+			C1.x *= size;
+			C1.y *= size;
+			C2.x *= size;
+			C2.y *= size;
+			gfx_draw_bezier_cubic(component, V1, V2, C1, C2, thickness, 0xffffffff);
+		} else if (strcmp(identifier, "TXT") == 0) {
 			float xf, yf;
 			char txt[17];
 			fscanf(f, "%f,%f %s", &xf, &yf, txt);
-			int x = (int)(xf * size), y = (int)(yf * size);
+			int x = (int) (xf * size), y = (int) (yf * size);
 			if (font != NULL) {
-				SDL_Surface *text = TTF_RenderText_Blended(font, txt, (SDL_Color){255, 255, 255, 255});
+				SDL_Surface *text = TTF_RenderText_Blended(font, txt, (SDL_Color) {255, 255, 255, 255});
 				SDL_Rect blitRect = {x - text->w / 2, y - text->h / 2, text->w, text->h};
 				SDL_BlitSurface(text, NULL, component, &blitRect);
 			}
@@ -69,18 +78,24 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 	return component;
 }
 
-ComponentData component_create_data(float x, float y, SDL_Texture *texture, size_t outCount) {
-	ComponentData dat = {
-		x,
-		y,
-		0,
-		0,
-		texture,
-		outCount,
-		(bool *)calloc(outCount, sizeof(bool))
-	};
-	SDL_QueryTexture(texture, NULL, NULL, &dat.w, &dat.h);
-	return dat;
+ComponentData component_create(float x, float y, char *name, float size, float thickness,
+							   TTF_Font *font, SDL_Renderer *renderer) {
+	ComponentData data;
+	data.x = x;
+	data.y = y;
+	char path[256];
+	sprintf(path, "res/%s.cmp", name);
+	SDL_Surface *surf = component_load_graphic(path, size, thickness, font);
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
+	data.texture = texture;
+	data.w = surf->w;
+	data.h = surf->h;
+	SDL_FreeSurface(surf);
+
+	sprintf(path, "res/%s.dat", name);
+	data.pinData = component_load_pin_data(path, size);
+
+	return data;
 }
 
 void component_update_texture(ComponentData *dat, SDL_Texture *texture) {
@@ -89,20 +104,20 @@ void component_update_texture(ComponentData *dat, SDL_Texture *texture) {
 }
 
 void component_free_data(ComponentData *dat) {
-	free(dat->out);
+
 }
 
-void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos) {
-	SDL_Rect r = {
-		(int)(dat->x - camPos.x),
-		(int)(dat->y - camPos.y),
-		dat->w,
-		dat->h
+void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom) {
+	SDL_FRect r = {
+			(dat->x - camPos.x),
+			(dat->y - camPos.y),
+			(float) dat->w,
+			(float) dat->h
 	};
-	SDL_RenderCopy(renderer, dat->texture, NULL, &r);
+	SDL_RenderCopyF(renderer, dat->texture, NULL, &r);
 }
 
-SDL_Surface *component_create_wire(Point V1, Point V2, float ang1, float ang2, float size, float thickness) {
+SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness) {
 	float dx1 = cosf(ang1) * size / 5;
 	float dy1 = sinf(ang1) * size / 5;
 	float dx2 = cosf(ang2) * size / 5;
@@ -127,7 +142,7 @@ SDL_Surface *component_create_wire(Point V1, Point V2, float ang1, float ang2, f
 	if (C1.y > maxY) maxY = C1.y;
 	if (C2.y > maxY) maxY = C2.y;
 
-	SDL_Surface *wire = get_rgba_surface((int)(3 * thickness + maxX - minX), (int)(3 * thickness + maxY - minY));
+	SDL_Surface *wire = get_rgba_surface((int) (3 * thickness + maxX - minX), (int) (3 * thickness + maxY - minY));
 	V1.x += 1.5f * thickness - minX;
 	V1.y += 1.5f * thickness - minY;
 	V2.x += 1.5f * thickness - minX;
@@ -139,4 +154,25 @@ SDL_Surface *component_create_wire(Point V1, Point V2, float ang1, float ang2, f
 
 	gfx_draw_bezier_cubic(wire, V1, V2, C1, C2, thickness, 0xffffffff);
 	return wire;
+}
+
+PinData component_load_pin_data(const char *path, float size) {
+	PinData data = {};
+	FILE *f = fopen(path, "r");
+	if (f == NULL) {
+		log_error("Couldn't open file: %s!", path);
+		return data;
+	}
+	fscanf(f, "%d", &data.pinCount);
+	data.pins = malloc(sizeof(Pin) * data.pinCount);
+
+	for (int i = 0; i < data.pinCount; i++) {
+		char type[10];
+		fscanf(f, "%s %s %f,%f %f", type, data.pins[i].name, &data.pins[i].pos.x,
+			   &data.pins[i].pos.y, &data.pins[i].angle);
+		data.pins[i].pos.x *= size;
+		data.pins[i].pos.y *= size;
+		if (strcmp(type, "in") == 0) data.pins[i].type = PIN_IN;
+		if (strcmp(type, "out") == 0) data.pins[i].type = PIN_OUT;
+	}
 }
