@@ -343,8 +343,8 @@ void __gfx_calc_bezier_point_cubic(Point P0, Point P1, Point P2, Point P3,
 			(1 - t) * (1 - t) * (1 - t) * P0.x + 3 * (1 - t) * (1 - t) * t * P1.x + 3 * (1 - t) * t * t * P2.x + t * t * t * P3.x,
 			(1 - t) * (1 - t) * (1 - t) * P0.y + 3 * (1 - t) * (1 - t) * t * P1.y + 3 * (1 - t) * t * t * P2.y + t * t * t * P3.y
 	};
-	float dx = 3 * (1 - t) * (1 - t) * (P1.x - P0.x) + 6 * (1 - t) * (1 - t) * t * (P2.x - P1.x) + 3 * t * t * (P3.x - P2.x);
-	float dy = 3 * (1 - t) * (1 - t) * (P1.y - P0.y) + 6 * (1 - t) * (1 - t) * t * (P2.y - P1.y) + 3 * t * t * (P3.y - P2.y);
+	float dx = 3 * (1 - t) * (1 - t) * (P1.x - P0.x) + 6 * (1 - t) * t * (P2.x - P1.x) + 3 * t * t * (P3.x - P2.x);
+	float dy = 3 * (1 - t) * (1 - t) * (P1.y - P0.y) + 6 * (1 - t) * t * (P2.y - P1.y) + 3 * t * t * (P3.y - P2.y);
 	float l = 1 / sqrtf(dx * dx + dy * dy);
 	dx *= l;
 	dy *= l;

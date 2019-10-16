@@ -104,7 +104,7 @@ void component_update_texture(ComponentData *dat, SDL_Texture *texture) {
 }
 
 void component_free_data(ComponentData *dat) {
-
+	free(dat->pinData.pins);
 }
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom) {
@@ -118,10 +118,10 @@ void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, 
 }
 
 SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness) {
-	float dx1 = cosf(ang1) * size / 5;
-	float dy1 = sinf(ang1) * size / 5;
-	float dx2 = cosf(ang2) * size / 5;
-	float dy2 = sinf(ang2) * size / 5;
+	float dx1 = cosf(ang1) * size / 2;
+	float dy1 = sinf(ang1) * size / 2;
+	float dx2 = cosf(ang2) * size / 2;
+	float dy2 = sinf(ang2) * size / 2;
 
 	Point C1 = {V1.x + dx1, V1.y + dy1};
 	Point C2 = {V2.x + dx2, V2.y + dy2};
@@ -175,4 +175,39 @@ PinData component_load_pin_data(const char *path, float size) {
 		if (strcmp(type, "in") == 0) data.pins[i].type = PIN_IN;
 		if (strcmp(type, "out") == 0) data.pins[i].type = PIN_OUT;
 	}
+	fclose(f);
+	return data;
+}
+
+ComponentData component_create_wire_between(ComponentData *comp1, ComponentData *comp2, int pin1, int pin2,
+		float size, float thickness, SDL_Renderer *renderer) {
+	ComponentData data;
+
+	SDL_Surface *surf = component_create_wire_texture(
+		(Point){comp1->x + comp1->pinData.pins[pin1].pos.x, comp1->y + comp1->pinData.pins[pin1].pos.y}, 
+		(Point){comp2->x + comp2->pinData.pins[pin2].pos.x, comp2->y + comp2->pinData.pins[pin2].pos.y},
+		comp1->pinData.pins[pin1].angle, 
+		comp2->pinData.pins[pin2].angle, 
+		size, 
+		thickness);
+
+	data.texture = SDL_CreateTextureFromSurface(renderer, surf);
+	data.w = surf->w;
+	data.h = surf->h;
+	SDL_FreeSurface(surf);
+	data.x = (comp1->x + comp1->pinData.pins[pin1].pos.x + comp2->x + comp2->pinData.pins[pin2].pos.x) / 2 - data.w / 2;
+	data.y = (comp1->y + comp1->pinData.pins[pin1].pos.y + comp2->y + comp2->pinData.pins[pin2].pos.y) / 2 - data.h / 2;
+	data.pinData.pinCount = 2;
+	data.pinData.pins = (Pin *)malloc(2 * sizeof(Pin));
+	data.pinData.pins[0].name[0] = '\0';
+	data.pinData.pins[0].angle = 0;	
+	data.pinData.pins[0].type = comp2->pinData.pins[pin2].type;	
+	data.pinData.pins[0].pos = comp1->pinData.pins[pin1].pos;	
+
+	data.pinData.pins[1].name[0] = '\0';
+	data.pinData.pins[1].angle = 0;	
+	data.pinData.pins[1].type = comp1->pinData.pins[pin1].type;	
+	data.pinData.pins[1].pos = comp2->pinData.pins[pin2].pos;
+
+	return data;
 }

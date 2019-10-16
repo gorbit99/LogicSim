@@ -24,6 +24,8 @@ int main(int argc, char **argv) {
 
 	ComponentData data = component_create(50, 50, "AND", 300, 15, font, renderer);
 	ComponentData data2 = component_create(400, 600, "AND", 300, 15, font, renderer);
+	ComponentData wire = component_create_wire_between(&data, &data2, 2, 0, 500, 15, renderer);
+
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Point cameraPos = {0, 0};
@@ -56,6 +58,7 @@ int main(int argc, char **argv) {
 
 		component_render(&data, renderer, cameraPos, zoom);
 		component_render(&data2, renderer, cameraPos, zoom);
+		component_render(&wire, renderer, cameraPos, zoom);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld) {
 			cameraPos.x -= (float) input_get_mouse_delta_x() / zoom;
@@ -75,8 +78,6 @@ int main(int argc, char **argv) {
 			SDL_CaptureMouse(false);
 		}
 
-		SDL_RenderDrawPoint(rend)
-
 		zoom *= powf(0.9f, -(float)input_get_mouse_wheel_y());
 		if (zoom < 0.05) zoom = 0.05f;
 		if (zoom > 1) zoom = 1;
@@ -85,6 +86,9 @@ int main(int argc, char **argv) {
 		SDL_RenderPresent(renderer);
 	}
 
+	component_free_data(&data);
+	component_free_data(&data2);
+	component_free_data(&wire);
 	window_cleanup(window, renderer);
 
 	return 0;
