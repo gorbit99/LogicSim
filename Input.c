@@ -1,13 +1,13 @@
 #include "Input.h"
 #include "debugmalloc.h"
 
-ButtonState buttons[SDL_NUM_SCANCODES];
-ButtonState mouseButtons[5];
-uint8_t mouseClicks[5];
+static ButtonState buttons[SDL_NUM_SCANCODES];
+static ButtonState mouseButtons[5];
+static uint8_t mouseClicks[5];
 
-int mouseDeltaX = 0, mouseDeltaY = 0;
-int mouseX = 0, mouseY = 0;
-int mouseWheelX = 0, mouseWheelY = 0;
+static int mouseDeltaX = 0, mouseDeltaY = 0;
+static int mouseX = 0, mouseY = 0;
+static int mouseWheelX = 0, mouseWheelY = 0;
 
 void input_reset_events() {
 	for (int i = 0; i < SDL_NUM_SCANCODES; i++) {

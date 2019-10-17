@@ -10,6 +10,7 @@
 #include "Component.h"
 #include "Window.h"
 #include "Input.h"
+#include "Parser.h"
 
 int main(int argc, char **argv) {
 
@@ -29,9 +30,6 @@ int main(int argc, char **argv) {
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Point cameraPos = {0, 0};
 	float zoom = 1;
-
-	int test;
-	SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &test);
 
 	bool quit = false;
 	SDL_Event e;
