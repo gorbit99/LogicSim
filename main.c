@@ -27,6 +27,9 @@ int main(int argc, char **argv) {
 	ComponentData data2 = component_create(400, 600, "XNOR", 300, 15, font, renderer);
 	ComponentData wire = component_create_wire_between(&data, &data2, 2, 0, 500, 15, renderer);
 
+	FunctionData function = parser_load_function("res/AND.fun");
+	parser_free_function(&function);
+
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Point cameraPos = {0, 0};
 	float zoom = 1;

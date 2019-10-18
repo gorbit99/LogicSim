@@ -14,7 +14,8 @@ typedef enum OperationType {
     OP_NOT,
     OP_PIN,
     OP_CONST,
-    OP_MODULE
+    OP_MODULE,
+    OP_LPAREN
 } OperationType;
 
 struct Module;
@@ -32,11 +33,11 @@ typedef struct Operation {
 
 typedef struct Assign {
     int *outPins;
-    Operation op;
+    Operation *op;
 } Assign;
 
 typedef struct FunctionData {
-    int inC, outC;
+    int inC, outC, assignC;
     Assign *assigns;
 } FunctionData;
 
@@ -44,10 +45,16 @@ typedef struct Module {
     FunctionData function;
 } Module;
 
-char *parser_load_function(char *path);
+FunctionData parser_load_function(char *path);
 
 void parser_handle_operation(Operation *op, bool *in, bool *out);
 
-Operation parser_string_to_op(char *str);
+Operation *parser_string_to_op(char *str);
+
+void parser_free_operation(Operation *operation);
+
+void parser_free_assign(Assign *assign);
+
+void parser_free_function(FunctionData *functionData);
 
 #endif //HOMEWORK_PARSER_H

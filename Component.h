@@ -7,6 +7,7 @@
 
 #include "Utility.h"
 #include "Graphics.h"
+#include "Parser.h"
 
 typedef enum PinType {
 	PIN_IN,
@@ -30,6 +31,7 @@ typedef struct ComponentData {
 	int w, h;
 	SDL_Texture *texture;
 	PinData pinData;
+	FunctionData funData;
 } ComponentData;
 
 SDL_Surface *component_load_graphic(const char *path, float size, float thickness, TTF_Font *font);

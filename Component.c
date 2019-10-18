@@ -95,6 +95,9 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	sprintf(path, "res/%s.dat", name);
 	data.pinData = component_load_pin_data(path, size);
 
+	sprintf(path, "resr%%s.fun", name);
+	data.funData = parser_load_function(path);
+
 	return data;
 }
 
@@ -105,6 +108,7 @@ void component_update_texture(ComponentData *dat, SDL_Texture *texture) {
 
 void component_free_data(ComponentData *dat) {
 	free(dat->pinData.pins);
+	parser_free_function(&dat->funData);
 }
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom) {
