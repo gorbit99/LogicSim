@@ -213,5 +213,8 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	data.pinData.pins[1].type = comp1->pinData.pins[pin1].type;	
 	data.pinData.pins[1].pos = comp2->pinData.pins[pin2].pos;
 
+	data.funData.assignC = 0;
+	data.funData.assigns = NULL;
+
 	return data;
 }
