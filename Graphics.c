@@ -100,107 +100,111 @@ void gfx_draw_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, Color co
 }
 
 //Source: http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html#algo2
-void __fill_flatsided_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, Color color) {
-	Point VT1 = V1;
-	Point VT2 = V1;
 
-	bool c1 = false, c2 = false;
-
-	float dx1 = fabsf(V2.x - V1.x);
-	float dy1 = fabsf(V2.y - V1.y);
-
-	float dx2 = fabsf(V3.x - V1.x);
-	float dy2 = fabsf(V3.y - V1.y);
-
-	float signx1 = (float)((V2.x - V1.x > 0) - (V2.x - V1.x < 0));
-	float signx2 = (float)((V3.x - V1.x > 0) - (V3.x - V1.x < 0));
-
-	float signy1 = (float)((V2.y - V1.y > 0) - (V2.y - V1.y < 0));
-	float signy2 = (float)((V3.y - V1.y > 0) - (V3.y - V1.y < 0));
-
-	if (dy1 > dx1) {
-		float temp = dx1;
-		dx1 = dy1;
-		dy1 = temp;
-		c1 = true;
+void __fill_triangle_flatbottom(SDL_Surface *dest, Point V1, Point V2, Point V3, Color color) {
+	if (V2.x > V3.x) {
+		Point tmp = V2;
+		V2 = V3;
+		V3 = tmp;
 	}
 
-	if (dy2 > dx2) {
-		float temp = dx2;
-		dx2 = dy2;
-		dy2 = temp;
-		c2 = true;
+	Point d1 = {V2.x - V1.x, V2.y - V1.y};
+	Point d2 = {V3.x - V1.x, V3.y - V1.y};
+
+	float derr1 = fabsf(d1.y / d1.x);
+	float derr2 = fabsf(d2.y / d2.x);
+
+	float err1 = 0;
+	float err2 = 0;
+
+	int x1 = (int)V1.x;
+	int x2 = (int)V1.x;
+	int y = (int)V1.y;
+
+	set_pixel(dest, x1, y, color);
+	while (y != (int)V2.y) {
+		y++;
+		for (int x = x1; x <= x2; x++)
+			set_pixel(dest, x, y, color);
+		while (d1.x != 0 && err1 < 0.5f) {
+			err1 += derr1;
+			x1 += V1.x > V2.x ? -1 : 1;
+			set_pixel(dest, x1, y, color);
+		}
+		err1 -= 1;
+		while (d2.x != 0 && err2 < 0.5f) {
+			err2 += derr2;
+			x2 += V1.x > V3.x ? -1 : 1;
+			set_pixel(dest, x2, y, color);
+		}
+		err2 -= 1;
+	}
+}
+
+void __fill_triangle_flattop(SDL_Surface *dest,Point V1, Point V2, Point V3, Color color) {
+	if (V1.x > V2.x) {
+		Point tmp = V1;
+		V1 = V2;
+		V2 = tmp;
 	}
 
-	float e1 = 2 * dy1 - dx1;
-	float e2 = 2 * dy2 - dx2;
+	Point d1 = {V3.x - V1.x, V3.y - V1.y};
+	Point d2 = {V3.x - V2.x, V3.y - V2.y};
 
-	for (int i = 0; (float)i <= dx1; i++) {
-		gfx_draw_line(dest, VT1, VT2, color);
-		while (e1 > 0) {
-			if (c1)
-				VT1.x += signx1;
-			else
-				VT1.y += signy1;
-			e1 -= 2 * dx1;
+	float derr1 = fabsf(d1.y / d1.x);
+	float derr2 = fabsf(d2.y / d2.x);
+
+	float err1 = 0;
+	float err2 = 0;
+
+	int x1 = (int)V3.x;
+	int x2 = (int)V3.x;
+	int y = (int)V3.y;
+
+	set_pixel(dest, x1, y, color);
+	while (y != (int)V1.y) {
+		while (d2.x != 0 && err2 < 0.5f) {
+			err2 += derr2;
+			x2 -= V2.x > V3.x ? -1 : 1;
+			set_pixel(dest, x2, y, color);
 		}
-
-		if (c1)
-			VT1.y += signy1;
-		else
-			VT1.x += signx1;
-
-		e1 += 2 * dy1;
-
-		while (VT2.y != VT1.y) {
-			while (e2 >= 0) {
-				if (c2)
-					VT2.x += signx2;
-				else
-					VT2.y += signy2;
-				e2 -= 2 * dx2;
-			}
-
-			if (c2)
-				VT2.y += signy2;
-			else
-				VT2.x += signx2;
-			e2 += 2 * dy2;
+		err2 -= 1;y--;
+		for (int x = x1; x <= x2; x++)
+			set_pixel(dest, x, y, color);
+		while (d1.x != 0 && err1 < 0.5f) {
+			err1 += derr1;
+			x1 -= V1.x > V3.x ? -1 : 1;
+			set_pixel(dest, x1, y, color);
 		}
+		err1 -= 1;
 	}
 }
 
 void gfx_fill_triangle(SDL_Surface *dest, Point V1, Point V2, Point V3, Color color) {
-
 	if (V1.y > V2.y) {
-		Point temp = V1;
+		Point tmp = V1;
 		V1 = V2;
-		V2 = temp;
+		V2 = tmp;
 	}
 	if (V2.y > V3.y) {
-		Point temp = V2;
+		Point tmp = V2;
 		V2 = V3;
-		V3 = temp;
+		V3 = tmp;
 	}
 	if (V1.y > V2.y) {
-		Point temp = V1;
+		Point tmp = V1;
 		V1 = V2;
-		V2 = temp;
+		V2 = tmp;
 	}
 
-	if (V2.y == V3.y) {
-		__fill_flatsided_triangle(dest, V1, V2, V3, color);
-	}
-	else if (V1.y == V2.y) {
-		__fill_flatsided_triangle(dest, V3, V1, V2, color);
-	}
+	if (V2.y == V3.y)
+		__fill_triangle_flatbottom(dest, V1, V2, V3, color);
+	else if (V1.y == V2.y)
+		__fill_triangle_flattop(dest, V1, V2, V3, color);
 	else {
-		Point V4 = {
-				V1.x + ((V2.y - V1.y) / (V3.y - V1.y)) * (V3.x - V1.x),
-				V2.y
-		};
-		__fill_flatsided_triangle(dest, V1, V2, V4, color);
-		__fill_flatsided_triangle(dest, V3, V2, V4, color);
+		Point V4 = {(V3.x - V1.x) * (1 - (V3.y - V2.y) / (V3.y - V1.y)) + V1.x, V2.y};
+		__fill_triangle_flatbottom(dest, V1, (Point){ceilf(V2.x), V2.y}, (Point){ceilf(V4.x), V4.y}, color);
+		__fill_triangle_flattop(dest, (Point){ceilf(V2.x), V2.y}, (Point){ceilf(V4.x), V4.y}, V3, color);
 	}
 }
 
@@ -311,7 +315,7 @@ void __gfx_calc_bezier_point(float Ax, float Bx, float Cx, float Ay, float By, f
 }
 
 void gfx_draw_bezier(SDL_Surface *dest, Point V1, Point V2, Point C, float thickness, Color color) {
-	static const float stepSize = 0.01f;
+	static const float stepSize = 0.005f;
 	float Ax = V1.x - 2 * C.x + V2.x;
 	float Ay = V1.y - 2 * C.y + V2.y;
 	float Bx = C.x - V1.x;
@@ -319,15 +323,16 @@ void gfx_draw_bezier(SDL_Surface *dest, Point V1, Point V2, Point C, float thick
 	float Cx = V1.x;
 	float Cy = V1.y;
 
-	Point prevQ1, prevQ2;
-	__gfx_calc_bezier_point(Ax, Bx, Cx, Ay, By, Cy, thickness / 2, 0, &prevQ1, &prevQ2);
+
 
 	//A Clion nyavalyog, ha for loopban float a conditional változó, így while lett
-	float t = 0;
-	while (t <= 1) {
-		printf("%f\n", t);
+	float t = stepSize;
+	while (t <= 1 - stepSize) {
+		Point prevQ1, prevQ2;
+		__gfx_calc_bezier_point(Ax, Bx, Cx, Ay, By, Cy, thickness / 2, t - stepSize, &prevQ1, &prevQ2);
+
 		Point Q1, Q2;
-		__gfx_calc_bezier_point(Ax, Bx, Cx, Ay, By, Cy, thickness / 2, t, &Q1, &Q2);
+		__gfx_calc_bezier_point(Ax, Bx, Cx, Ay, By, Cy, thickness / 2, t + stepSize * 2, &Q1, &Q2);
 
 		gfx_fill_triangle(dest, Q1, Q2, prevQ1, color);
 		gfx_fill_triangle(dest, Q2, prevQ1, prevQ2, color);
@@ -364,13 +369,12 @@ void gfx_draw_bezier_cubic(SDL_Surface *dest, Point V1, Point V2, Point C1, Poin
 	while (t <= 1) {
 		t += stepSize;
 		Point prevQ1, prevQ2;
-		__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, t - stepSize * 2, &prevQ1, &prevQ2);
+		__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, t - stepSize, &prevQ1, &prevQ2);
 		Point Q1, Q2;
-		__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, t + stepSize * 2, &Q1, &Q2);
+		__gfx_calc_bezier_point_cubic(V1, C1, C2, V2, thickness / 2, t + stepSize, &Q1, &Q2);
 
 		gfx_fill_triangle(dest, Q1, Q2, prevQ1, color);
 		gfx_fill_triangle(dest, Q2, prevQ1, prevQ2, color);
-		t += stepSize;
 		prevQ1 = Q1;
 		prevQ2 = Q2;
 	}
