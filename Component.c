@@ -95,7 +95,7 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	sprintf(path, "res/%s.dat", name);
 	data.pinData = component_load_pin_data(path, size);
 
-	sprintf(path, "resr%%s.fun", name);
+	sprintf(path, "res/%s.fun", name);
 	data.funData = parser_load_function(path);
 
 	return data;
