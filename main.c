@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "Input.h"
 #include "Parser.h"
+#include "Node.h"
 
 int main(int argc, char **argv) {
 
@@ -23,12 +24,17 @@ int main(int argc, char **argv) {
 
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 80);
 
-	ComponentData data = component_create(50, 50, "XNOR", 300, 15, font, renderer);
-	ComponentData data2 = component_create(400, 600, "XNOR", 300, 15, font, renderer);
-	ComponentData wire = component_create_wire_between(&data, &data2, 2, 0, 500, 15, renderer);
+	Node testNode, testNode2;
+	node_create(&testNode, "XOR", (Point){100, 100}, font, renderer);
+	node_create(&testNode2, "NOT", (Point){100, 100}, font, renderer);
 
-	FunctionData function = parser_load_function("res/AND.fun");
-	parser_free_function(&function);
+	node_set_connection(&testNode, 0, &testNode2, 0);
+
+	testNode.inValues[0] = true;
+	testNode.inValues[1] = true;
+
+	node_update(&testNode);
+	node_update(&testNode2);
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Point cameraPos = {0, 0};
@@ -56,14 +62,12 @@ int main(int argc, char **argv) {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		component_render(&data, renderer, cameraPos, zoom);
-		component_render(&data2, renderer, cameraPos, zoom);
-		component_render(&wire, renderer, cameraPos, zoom);
-
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld) {
 			cameraPos.x -= (float) input_get_mouse_delta_x() / zoom;
 			cameraPos.y -= (float) input_get_mouse_delta_y() / zoom;
 		}
+
+		component_render(&testNode.component, renderer, cameraPos, zoom);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isPressed) {
 			SDL_FreeCursor(cursor);
@@ -85,10 +89,6 @@ int main(int argc, char **argv) {
 
 		SDL_RenderPresent(renderer);
 	}
-
-	component_free_data(&data);
-	component_free_data(&data2);
-	component_free_data(&wire);
 	window_cleanup(window, renderer);
 
 	return 0;
