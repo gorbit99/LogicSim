@@ -47,6 +47,8 @@ void component_free_data(ComponentData *dat);
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom);
 
+void component_handle(ComponentData *dat);
+
 SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness);
 
 ComponentData component_create_wire_between(ComponentData *comp1, ComponentData *comp2, int pin1, int pin2,

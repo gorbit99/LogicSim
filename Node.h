@@ -3,9 +3,29 @@
 
 #include "Component.h"
 
+struct Node;
+
+typedef struct Connection {
+    int pinB;
+    struct Node *other;
+} Connection;
+
 typedef struct Node {
     ComponentData component;
-    struct Node *next;
+    Connection *connections;
+    bool *inValues;
+    bool *outValues;
+    bool dirty;
 } Node;
+
+void node_create(Node *node, char *compName, Point pos, TTF_Font *font, SDL_Renderer *renderer);
+
+void node_set_connection(Node *node, int pinA, Node *other, int pinB);
+
+void node_set_inval(Node *node, int pinIn, bool value);
+
+void node_update(Node *node);
+
+void node_free(Node *node);
 
 #endif //HOMEWORK_NODE_H
