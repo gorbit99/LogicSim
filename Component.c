@@ -98,6 +98,8 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	sprintf(path, "res/%s.fun", name);
 	data.funData = parser_load_function(path);
 
+	data.type = CT_MODULE;
+
 	return data;
 }
 
@@ -111,13 +113,14 @@ void component_free_data(ComponentData *dat) {
 	parser_free_function(&dat->funData);
 }
 
-void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom) {
+void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom, Color color) {
 	SDL_FRect r = {
 			(dat->x - camPos.x),
 			(dat->y - camPos.y),
 			(float) dat->w,
 			(float) dat->h
 	};
+	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000) >> 24, (color & 0x00ff0000) >> 16, (color & 0x0000ff00) >> 8);
 	SDL_RenderCopyF(renderer, dat->texture, NULL, &r);
 }
 
@@ -202,19 +205,18 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	data.x = (comp1->x + comp1->pinData.pins[pin1].pos.x + comp2->x + comp2->pinData.pins[pin2].pos.x) / 2 - data.w / 2;
 	data.y = (comp1->y + comp1->pinData.pins[pin1].pos.y + comp2->y + comp2->pinData.pins[pin2].pos.y) / 2 - data.h / 2;
 	data.pinData.pinCount = 2;
-	data.pinData.pins = (Pin *)malloc(2 * sizeof(Pin));
-	data.pinData.pins[0].name[0] = '\0';
-	data.pinData.pins[0].angle = 0;	
-	data.pinData.pins[0].type = comp2->pinData.pins[pin2].type;	
-	data.pinData.pins[0].pos = comp1->pinData.pins[pin1].pos;	
-
-	data.pinData.pins[1].name[0] = '\0';
-	data.pinData.pins[1].angle = 0;	
-	data.pinData.pins[1].type = comp1->pinData.pins[pin1].type;	
-	data.pinData.pins[1].pos = comp2->pinData.pins[pin2].pos;
+	data.pinData.pins = NULL;
 
 	data.funData.assignC = 0;
 	data.funData.assigns = NULL;
 
+	data.type = CT_WIRE;
+
+	return data;
+}
+
+ComponentData component_create_LED(float x, float y, float size, float thickness, SDL_Renderer *renderer) {
+	ComponentData data = component_create(x, y, "LED", size, thickness, NULL, renderer);
+	data.type = CT_LED;
 	return data;
 }

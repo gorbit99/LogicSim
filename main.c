@@ -10,11 +10,9 @@
 #include "Component.h"
 #include "Window.h"
 #include "Input.h"
-#include "Parser.h"
-#include "Node.h"
+#include "NodeVector.h"
 
 int main(int argc, char **argv) {
-
 	debugmalloc_log_file("debugmalloclog.txt");
 
 	SDL_Window *window;
@@ -24,17 +22,14 @@ int main(int argc, char **argv) {
 
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 80);
 
-	Node testNode, testNode2;
-	node_create(&testNode, "XOR", (Point){100, 100}, font, renderer);
-	node_create(&testNode2, "NOT", (Point){100, 100}, font, renderer);
+	NodeVector vec = nodev_create(0);
 
-	node_set_connection(&testNode, 0, &testNode2, 0);
 
-	testNode.inValues[0] = true;
-	testNode.inValues[1] = true;
+	vec.nodes[0].inValues[0] = false;
+	vec.nodes[0].inValues[1] = true;
 
-	node_update(&testNode);
-	node_update(&testNode2);
+	for (size_t i = 0; i < vec.count; i++)
+		node_update(&vec.nodes[i]);
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Point cameraPos = {0, 0};
@@ -67,7 +62,8 @@ int main(int argc, char **argv) {
 			cameraPos.y -= (float) input_get_mouse_delta_y() / zoom;
 		}
 
-		component_render(&testNode.component, renderer, cameraPos, zoom);
+		for (size_t i = 0; i < vec.count; i++)
+			node_render(&vec.nodes[i], cameraPos, zoom);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isPressed) {
 			SDL_FreeCursor(cursor);
@@ -81,6 +77,12 @@ int main(int argc, char **argv) {
 			SDL_SetCursor(cursor);
 			SDL_CaptureMouse(false);
 		}
+		if (input_get_key(SDL_SCANCODE_SPACE).isPressed) {
+			node_set_inval(&vec.nodes[0], 0, rand() % 2);
+			node_set_inval(&vec.nodes[0], 1, rand() % 2);
+			node_set_inval(&vec.nodes[2], 0, rand() % 2);
+			node_set_inval(&vec.nodes[2], 1, rand() % 2);
+		}
 
 		zoom *= powf(0.9f, -(float)input_get_mouse_wheel_y());
 		if (zoom < 0.05) zoom = 0.05f;
@@ -90,6 +92,8 @@ int main(int argc, char **argv) {
 		SDL_RenderPresent(renderer);
 	}
 	window_cleanup(window, renderer);
+
+	nodev_free(&vec);
 
 	return 0;
 }

@@ -8,13 +8,13 @@
  * calls to debugmalloc. Usage is the same, malloc(size)
  * gives the address of a new memory block, free(ptr)
  * deallocates etc.
- * 
+ *
  * If you use this file, make sure that you include this
  * in *ALL* translation units (*.c) of your source. The
  * builtin free() function cannot deallocate a memory block
  * that was allocated via debugmalloc, yet the name of
  * the functions are the same!
- * 
+ *
  * If there is a conflict with the macro names used here,
  * you can include debugmalloc-nomacro.h instead. */
 
