@@ -115,21 +115,23 @@ int input_get_mouse_wheel_y() {
 
 Point input_get_mouse_pos() {
 	return (Point) {
-		input_get_mouse_x(),
-		input_get_mouse_y()
+		(float)input_get_mouse_x(),
+		(float)input_get_mouse_y()
 	};
 }
 
-Vec input_get_mouse_delta() {
+Vec __unused
+
+input_get_mouse_delta() {
 	return (Vec) {
-		input_get_mouse_delta_x(),
-		input_get_mouse_delta_y()
+		(float)input_get_mouse_delta_x(),
+		(float)input_get_mouse_delta_y()
 	};
 }
 
 Vec input_get_mouse_wheel() {
 	return (Vec) {
-		input_get_mouse_wheel_x(),
-		input_get_mouse_wheel_y()
+		(float)input_get_mouse_wheel_x(),
+		(float)input_get_mouse_wheel_y()
 	};
 }

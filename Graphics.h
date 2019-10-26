@@ -10,8 +10,6 @@
 #include <SDL_ttf.h>
 #include <assert.h>
 
-#define EPSILON 0.01f
-
 typedef struct Point {
 	float x, y;
 } Point;

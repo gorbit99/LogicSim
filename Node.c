@@ -86,26 +86,26 @@ void node_free(Node *node) {
     free(node->outValues);
 }
 
-void node_render(Node *node, Point camPos, float zoom) {
+void node_render(Node *node, Point camPos) {
 	for (int i = 0; i < node->component.funData.outC; i++) {
 		if (node->connections[i].other) {
 			if (node->outValues[i])
-				component_render(&node->connections[i].wire, node->renderer, camPos, zoom, 0xff7700ff);
+				component_render(&node->connections[i].wire, node->renderer, camPos, 0xff7700ff);
 			else
-				component_render(&node->connections[i].wire, node->renderer, camPos, zoom, 0x0000aaff);
+				component_render(&node->connections[i].wire, node->renderer, camPos, 0x0000aaff);
 		}
 	}
 	if (node->component.type == CT_MODULE)
-		component_render(&node->component, node->renderer, camPos, zoom, 0xffffffff);
+		component_render(&node->component, node->renderer, camPos, 0xffffffff);
 	else if (node->component.type == CT_LED) {
 		if (node->inValues[0])
-			component_render(&node->component, node->renderer, camPos, zoom, 0xffff00ff);
+			component_render(&node->component, node->renderer, camPos, 0xffff00ff);
 		else
-			component_render(&node->component, node->renderer, camPos, zoom, 0x555555ff);
+			component_render(&node->component, node->renderer, camPos, 0x555555ff);
 	} else if (node->component.type == CT_SWITCH) {
 		if (node->outValues[0])
-			component_render(&node->component, node->renderer, camPos, zoom, 0xff7700ff);
+			component_render(&node->component, node->renderer, camPos, 0xff7700ff);
 		else
-			component_render(&node->component, node->renderer, camPos, zoom, 0x0000aaff);
+			component_render(&node->component, node->renderer, camPos, 0x0000aaff);
 	}
 }

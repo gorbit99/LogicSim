@@ -49,13 +49,9 @@ PinData component_load_pin_data(const char *path, float size);
 ComponentData component_create(float x, float y, char *name, float size, float thickness,
 		TTF_Font *font, SDL_Renderer *renderer);
 
-void component_update_texture(ComponentData *dat, SDL_Texture *texture);
-
 void component_free_data(ComponentData *dat);
 
-void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom, Color color);
-
-void component_handle(ComponentData *dat);
+void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color);
 
 SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness, Point *pin1Pos);
 

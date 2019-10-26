@@ -30,7 +30,7 @@ void node_set_inval(Node *node, int pinIn, bool value);
 
 void node_update(Node *node);
 
-void node_render(Node *node, Point camPos, float zoom);
+void node_render(Node *node, Point camPos);
 
 void node_free(Node *node);
 

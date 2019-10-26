@@ -112,24 +112,19 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	return data;
 }
 
-void component_update_texture(ComponentData *dat, SDL_Texture *texture) {
-	SDL_QueryTexture(texture, NULL, NULL, &(dat->w), &(dat->h));
-	dat->texture = texture;
-}
-
 void component_free_data(ComponentData *dat) {
 	free(dat->pinData.pins);
 	parser_free_function(&dat->funData);
 }
 
-void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom, Color color) {
+void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color) {
 	SDL_FRect r = {
 			(dat->x - camPos.x),
 			(dat->y - camPos.y),
 			(float) dat->w,
 			(float) dat->h
 	};
-	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000) >> 24, (color & 0x00ff0000) >> 16, (color & 0x0000ff00) >> 8);
+	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000u) >> 24u, (color & 0x00ff0000u) >> 16u, (color & 0x0000ff00u) >> 8u);
 	SDL_RenderCopyF(renderer, dat->texture, NULL, &r);
 }
 

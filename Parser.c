@@ -182,6 +182,8 @@ Operation *parser_string_to_op(char *str) {
                 opStack[sp - 1] = op;
                 break;
             }
+			default:
+				break;
         }
     }
     return opStack[0];

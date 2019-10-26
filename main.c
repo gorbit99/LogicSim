@@ -95,10 +95,10 @@ int main(int argc, char **argv) {
 		SDL_SetRenderDrawColor(renderer,255,0, 0, 255);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld)
-			camera_move(&camera, (Vec){input_get_mouse_delta_x(), input_get_mouse_delta_y()});
+			camera_move(&camera, (Vec){(float)input_get_mouse_delta_x(), (float)input_get_mouse_delta_y()});
 
 		for (size_t i = 0; i < vec.count; i++)
-			node_render(&vec.nodes[i], camera.position, camera.zoom);
+			node_render(&vec.nodes[i], camera.position);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isPressed) {
 			SDL_FreeCursor(cursor);
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		camera_zoom(&camera, input_get_mouse_wheel_y(), input_get_mouse_pos());
+		camera_zoom(&camera, (float)input_get_mouse_wheel_y(), input_get_mouse_pos());
 		SDL_RenderSetScale(renderer, camera.zoom, camera.zoom);
 
 		SDL_RenderPresent(renderer);

@@ -24,14 +24,14 @@ void nodev_push_back(NodeVector *vector, Node node) {
 }
 
 void nodev_erase(NodeVector *vector, int index) {
-	for (int i = index + 1; i < vector->count; i++) {
+	for (size_t i = index + 1; i < vector->count; i++) {
 		vector->nodes[i - 1] = vector->nodes[i];
 	}
 	vector->count--;
 }
 
 void nodev_free(NodeVector *vector) {
-	for (int i = 0; i < vector->count; i++)
+	for (size_t i = 0; i < vector->count; i++)
 		node_free(&vector->nodes[i]);
 	free(vector->nodes);
 }
