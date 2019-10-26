@@ -25,45 +25,17 @@ int main(int argc, char **argv) {
 
 	NodeVector vec = nodev_create(0);
 
-	nodev_push_back(&vec, node_create_switch((Point){0, 200}, renderer)); //A
-	nodev_push_back(&vec, node_create_switch((Point){0, 700}, renderer)); //B
-	nodev_push_back(&vec, node_create_switch((Point){0, 1200}, renderer)); //Ci
-	nodev_push_back(&vec, node_create("SPLITTER", (Point){300, 200}, font, renderer));
-	nodev_push_back(&vec, node_create("SPLITTER", (Point){400, 700}, font, renderer));
-	nodev_push_back(&vec, node_create("SPLITTER", (Point){500, 1200}, font, renderer));
-	nodev_push_back(&vec, node_create("XOR", (Point){800, 350}, font, renderer));
-	nodev_push_back(&vec, node_create("XOR", (Point){1500, 500}, font, renderer));
-	nodev_push_back(&vec, node_create("SPLITTER", (Point){1300, 450}, font, renderer));
-	nodev_push_back(&vec, node_create("AND", (Point){1500, 900}, font, renderer));
-	nodev_push_back(&vec, node_create("AND", (Point){1500, 1300}, font, renderer));
-	nodev_push_back(&vec, node_create("OR", (Point){2000, 1100}, font, renderer));
-	nodev_push_back(&vec, node_create_LED((Point){2500, 550}, renderer)); //S
-	nodev_push_back(&vec, node_create_LED((Point){2500, 1150}, renderer)); //Co
+	nodev_push_back(&vec, node_create_switch((Point){0, 0}, renderer));
+	nodev_push_back(&vec, node_create_switch((Point){0, 300}, renderer));
+	nodev_push_back(&vec, node_create_switch((Point){0, 600}, renderer));
+
+	nodev_push_back(&vec, node_create("SPLITTER3", (Point){500, 300}, font, renderer));
 
 	node_set_connection(&vec.nodes[0], 0, &vec.nodes[3], 0);
-	node_set_connection(&vec.nodes[1], 0, &vec.nodes[4], 0);
-	node_set_connection(&vec.nodes[2], 0, &vec.nodes[5], 0);
-	node_set_connection(&vec.nodes[3], 0, &vec.nodes[6], 0);
-	node_set_connection(&vec.nodes[4], 0, &vec.nodes[6], 1);
-	node_set_connection(&vec.nodes[6], 0, &vec.nodes[8], 0);
-	node_set_connection(&vec.nodes[8], 0, &vec.nodes[7], 0);
-	node_set_connection(&vec.nodes[5], 0, &vec.nodes[7], 1);
-	node_set_connection(&vec.nodes[7], 0, &vec.nodes[12], 0);
-	node_set_connection(&vec.nodes[8], 1, &vec.nodes[9], 0);
-	node_set_connection(&vec.nodes[5], 1, &vec.nodes[9], 1);
-	node_set_connection(&vec.nodes[3], 1, &vec.nodes[10], 0);
-	node_set_connection(&vec.nodes[4], 1, &vec.nodes[10], 1);
-	node_set_connection(&vec.nodes[9], 0, &vec.nodes[11], 0);
-	node_set_connection(&vec.nodes[10], 0, &vec.nodes[11], 1);
-	node_set_connection(&vec.nodes[11], 0, &vec.nodes[13], 0);
+	node_set_connection(&vec.nodes[1], 0, &vec.nodes[3], 1);
+	node_set_connection(&vec.nodes[2], 0, &vec.nodes[3], 2);
 
-	vec.nodes[0].outValues[0] = 0;
-	vec.nodes[1].outValues[0] = 1;
-	vec.nodes[2].outValues[0] = 0;
-
-	node_update(&vec.nodes[0]);
-	node_update(&vec.nodes[1]);
-	node_update(&vec.nodes[2]);
+	nodev_update(&vec);
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Camera camera;
@@ -117,7 +89,7 @@ int main(int argc, char **argv) {
 			if (input_get_key(SDL_SCANCODE_1 + i).isPressed) {
 				vec.nodes[i].outValues[0] = !vec.nodes[i].outValues[0];
 				vec.nodes[i].dirty = true;
-				node_update(&vec.nodes[i]);
+				nodev_update(&vec);
 			}
 		}
 

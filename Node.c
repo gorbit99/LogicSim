@@ -9,9 +9,11 @@ Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *render
         node.connections[i].other = NULL;
         node.connections[i].pinB = -1;
     }
-    node.inValues = (bool *)malloc(sizeof(bool) * node.component.funData.inC);
-    node.outValues = (bool *)malloc(sizeof(bool) * node.component.funData.outC);
-    node.dirty = true;
+    node.inValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
+	node.prevInValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
+    node.outValues = (bool *)calloc(node.component.funData.outC, sizeof(bool));
+    node.dirty = false;
+    node.prevDirty = false;
     node.renderer = renderer;
     return node;
 }
@@ -24,9 +26,11 @@ Node node_create_LED(Point pos, SDL_Renderer *renderer) {
 		node.connections[i].other = NULL;
 		node.connections[i].pinB = -1;
 	}
-	node.inValues = (bool *)malloc(sizeof(bool) * node.component.funData.inC);
-	node.outValues = (bool *)malloc(sizeof(bool) * node.component.funData.outC);
-	node.dirty = true;
+	node.inValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
+	node.prevInValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
+	node.outValues = (bool *)calloc(node.component.funData.outC, sizeof(bool));
+	node.dirty = false;
+	node.prevDirty = false;
 	node.renderer = renderer;
 	return node;
 }
@@ -39,9 +43,11 @@ Node node_create_switch(Point pos, SDL_Renderer *renderer) {
 		node.connections[i].other = NULL;
 		node.connections[i].pinB = -1;
 	}
-	node.inValues = (bool *)malloc(sizeof(bool) * node.component.funData.inC);
-	node.outValues = (bool *)malloc(sizeof(bool) * node.component.funData.outC);
+	node.inValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
+	node.prevInValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
+	node.outValues = (bool *)calloc(node.component.funData.outC, sizeof(bool));
 	node.dirty = true;
+	node.prevDirty = false;
 	node.renderer = renderer;
 	return node;
 }
@@ -62,16 +68,12 @@ void node_set_inval(Node *node, int pinIn, bool value) {
     if (node->inValues[pinIn] != value) {
         node->inValues[pinIn] = value;
         node->dirty = true;
-        node_update(node);
     }
 }
 
 void node_update(Node *node) {
-    if (!node->dirty)
-        return;
-    node->dirty = false;
     for (int i = 0; i < node->component.funData.assignC; i++) {
-    	parser_handle_operation(node->component.funData.assigns[i].op, node->inValues, node->outValues + i);
+    	parser_handle_operation(node->component.funData.assigns[i].op, node->prevInValues, node->outValues + i);
 	}
     for (int i = 0; i < node->component.funData.outC; i++) {
     	if (node->connections[i].other != NULL)
@@ -83,6 +85,7 @@ void node_free(Node *node) {
 	component_free_data(&node->component);
     free(node->connections);
     free(node->inValues);
+    free(node->prevInValues);
     free(node->outValues);
 }
 

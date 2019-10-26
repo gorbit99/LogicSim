@@ -35,3 +35,30 @@ void nodev_free(NodeVector *vector) {
 		node_free(&vector->nodes[i]);
 	free(vector->nodes);
 }
+
+void nodev_update(NodeVector *vector) {
+	for (size_t i = 0; i < vector->count; i++) {
+		for (int j = 0; j < vector->nodes[i].component.funData.inC; j++)
+			vector->nodes[i].prevInValues[j] = vector->nodes[i].inValues[j];
+		vector->nodes[i].prevDirty = vector->nodes[i].dirty;
+	}
+
+	bool updated;
+	do {
+		updated = false;
+		for (int k = 0; k < 2; k++) {
+			for (size_t i = 0; i < vector->count; i++) {
+				if (vector->nodes[i].prevDirty) {
+					node_update(&vector->nodes[i]);
+					updated = true;
+				}
+			}
+		}
+		for (size_t i = 0; i < vector->count; i++) {
+			for (int j = 0; j < vector->nodes[i].component.funData.inC; j++)
+				vector->nodes[i].prevInValues[j] = vector->nodes[i].inValues[j];
+			vector->nodes[i].prevDirty = vector->nodes[i].dirty;
+			vector->nodes[i].dirty = false;
+		}
+	} while (updated);
+}

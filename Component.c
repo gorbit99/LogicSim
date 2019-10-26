@@ -119,11 +119,12 @@ void component_free_data(ComponentData *dat) {
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color) {
 	SDL_FRect r = {
-			(dat->x - camPos.x),
-			(dat->y - camPos.y),
+			(dat->x - camPos.x - (float)dat->w / 2),
+			(dat->y - camPos.y - (float)dat->h / 2),
 			(float) dat->w,
 			(float) dat->h
 	};
+
 	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000u) >> 24u, (color & 0x00ff0000u) >> 16u, (color & 0x0000ff00u) >> 8u);
 	SDL_RenderCopyF(renderer, dat->texture, NULL, &r);
 }
@@ -199,8 +200,8 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	Point pin1Pos;
 
 	SDL_Surface *surf = component_create_wire_texture(
-		(Point){comp1->x + comp1->pinData.pins[pin1].pos.x, comp1->y + comp1->pinData.pins[pin1].pos.y}, 
-		(Point){comp2->x + comp2->pinData.pins[pin2].pos.x, comp2->y + comp2->pinData.pins[pin2].pos.y},
+		(Point){comp1->x + comp1->pinData.pins[pin1].pos.x - (float)comp1->w / 2, comp1->y + comp1->pinData.pins[pin1].pos.y - (float)comp1->h / 2},
+		(Point){comp2->x + comp2->pinData.pins[pin2].pos.x - (float)comp2->w / 2, comp2->y + comp2->pinData.pins[pin2].pos.y - (float)comp2->h / 2},
 		comp1->pinData.pins[pin1].angle, 
 		comp2->pinData.pins[pin2].angle, 
 		size, 
@@ -211,8 +212,8 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	data.w = surf->w;
 	data.h = surf->h;
 	SDL_FreeSurface(surf);
-	data.x = comp1->x + comp1->pinData.pins[pin1].pos.x - pin1Pos.x;
-	data.y = comp1->y + comp1->pinData.pins[pin1].pos.y - pin1Pos.y;
+	data.x = comp1->x + comp1->pinData.pins[pin1].pos.x - pin1Pos.x + (float)data.w / 2 - (float)comp1->w / 2;
+	data.y = comp1->y + comp1->pinData.pins[pin1].pos.y - pin1Pos.y + (float)data.h / 2 - (float)comp1->h / 2;
 	data.pinData.pinCount = 2;
 	data.pinData.pins = NULL;
 

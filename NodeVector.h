@@ -18,4 +18,6 @@ void nodev_erase(NodeVector *vector, int index);
 
 void nodev_free(NodeVector *vector);
 
+void nodev_update(NodeVector *vector);
+
 #endif //HOMEWORK_NODEVECTOR_H

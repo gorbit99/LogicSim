@@ -15,9 +15,12 @@ typedef struct Node {
     ComponentData component;
     Connection *connections;
     bool *inValues;
+    bool *prevInValues;
     bool *outValues;
     bool dirty;
+    bool prevDirty;
     SDL_Renderer *renderer;
+    int updateCount;
 } Node;
 
 Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *renderer);
