@@ -120,9 +120,7 @@ Point input_get_mouse_pos() {
 	};
 }
 
-Vec __unused
-
-input_get_mouse_delta() {
+Vec input_get_mouse_delta() {
 	return (Vec) {
 		(float)input_get_mouse_delta_x(),
 		(float)input_get_mouse_delta_y()
