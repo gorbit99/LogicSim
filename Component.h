@@ -57,11 +57,13 @@ void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, 
 
 void component_handle(ComponentData *dat);
 
-SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness);
+SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness, Point *pin1Pos);
 
 ComponentData component_create_wire_between(ComponentData *comp1, ComponentData *comp2, int pin1, int pin2,
 		float size, float thickness, SDL_Renderer *renderer);
 
 ComponentData component_create_LED(float x, float y, float size, float thickness, SDL_Renderer *renderer);
+
+ComponentData component_create_switch(float x, float y, float size, float thickness, SDL_Renderer *renderer);
 
 #endif //HOMEWORK_COMPONENT_H

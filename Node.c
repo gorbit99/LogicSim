@@ -31,6 +31,21 @@ Node node_create_LED(Point pos, SDL_Renderer *renderer) {
 	return node;
 }
 
+Node node_create_switch(Point pos, SDL_Renderer *renderer) {
+	Node node;
+	node.component = component_create_switch(pos.x, pos.y, 300, 15, renderer);
+	node.connections = (Connection *)malloc(sizeof(Connection) * node.component.funData.outC);
+	for (int i = 0; i < node.component.funData.outC; i++) {
+		node.connections[i].other = NULL;
+		node.connections[i].pinB = -1;
+	}
+	node.inValues = (bool *)malloc(sizeof(bool) * node.component.funData.inC);
+	node.outValues = (bool *)malloc(sizeof(bool) * node.component.funData.outC);
+	node.dirty = true;
+	node.renderer = renderer;
+	return node;
+}
+
 void node_set_connection(Node *node, int pinA, Node *other, int pinB) {
     node->connections[pinA].pinB = pinB;
     node->connections[pinA].other = other;
@@ -56,7 +71,7 @@ void node_update(Node *node) {
         return;
     node->dirty = false;
     for (int i = 0; i < node->component.funData.assignC; i++) {
-    	parser_handle_operation(node->component.funData.assigns[i].op, node->inValues, node->outValues);
+    	parser_handle_operation(node->component.funData.assigns[i].op, node->inValues, node->outValues + i);
 	}
     for (int i = 0; i < node->component.funData.outC; i++) {
     	if (node->connections[i].other != NULL)
@@ -87,5 +102,10 @@ void node_render(Node *node, Point camPos, float zoom) {
 			component_render(&node->component, node->renderer, camPos, zoom, 0xffff00ff);
 		else
 			component_render(&node->component, node->renderer, camPos, zoom, 0x555555ff);
+	} else if (node->component.type == CT_SWITCH) {
+		if (node->outValues[0])
+			component_render(&node->component, node->renderer, camPos, zoom, 0xff7700ff);
+		else
+			component_render(&node->component, node->renderer, camPos, zoom, 0x0000aaff);
 	}
 }

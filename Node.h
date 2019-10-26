@@ -22,6 +22,7 @@ typedef struct Node {
 
 Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *renderer);
 Node node_create_LED(Point pos, SDL_Renderer *renderer);
+Node node_create_switch(Point pos, SDL_Renderer *renderer);
 
 void node_set_connection(Node *node, int pinA, Node *other, int pinB);
 

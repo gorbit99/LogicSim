@@ -10,7 +10,8 @@ find_package(SDL2_TTF REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME} main.c Graphics.c Graphics.h debugmalloc.h debugmalloc-impl.h Component.c Component.h 
-                                Utility.c Utility.h Window.c Window.h Input.c Input.h Node.c Node.h Parser.c Parser.h NodeVector.c NodeVector.h)
+                                Utility.c Utility.h Window.c Window.h Input.c Input.h Node.c Node.h Parser.c Parser.h 
+                                NodeVector.c NodeVector.h Camera.c Camera.h)
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES})
 

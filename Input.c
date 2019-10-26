@@ -112,3 +112,24 @@ int input_get_mouse_wheel_x() {
 int input_get_mouse_wheel_y() {
 	return mouseWheelY;
 }
+
+Point input_get_mouse_pos() {
+	return (Point) {
+		input_get_mouse_x(),
+		input_get_mouse_y()
+	};
+}
+
+Vec input_get_mouse_delta() {
+	return (Vec) {
+		input_get_mouse_delta_x(),
+		input_get_mouse_delta_y()
+	};
+}
+
+Vec input_get_mouse_wheel() {
+	return (Vec) {
+		input_get_mouse_wheel_x(),
+		input_get_mouse_wheel_y()
+	};
+}
