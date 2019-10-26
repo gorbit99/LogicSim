@@ -5,25 +5,19 @@ static const float minZoom = 0.1f;
 static const float maxZoom = 1;
 
 void camera_zoom(Camera *camera, float zoomLevels, Point zoomPos) {
-    float multiplier = powf(0.9f, -zoomLevels);
+	float multiplier = powf(0.9f, -zoomLevels);
 
-    SDL_DisplayMode DM;
-    SDL_GetCurrentDisplayMode(0, &DM);
+	if (camera->zoom * multiplier < minZoom)
+		multiplier = minZoom / camera->zoom;
+	else if (camera->zoom * multiplier > maxZoom)
+		multiplier = maxZoom / camera->zoom;
+	camera->zoom *= multiplier;
 
-    camera->zoom *= multiplier;
-    if (camera->zoom < minZoom) {
-        camera->zoom = minZoom;
-    }
-    else if (camera->zoom > maxZoom) {
-        camera->zoom = maxZoom;
-    }
-    else {
-        camera->position.x -= (zoomPos.x - zoomPos.x * multiplier) / camera->zoom;
-        camera->position.y -= (zoomPos.y - zoomPos.y * multiplier) / camera->zoom;
-    }
+	camera->position.x -= (zoomPos.x - zoomPos.x * multiplier) / camera->zoom;
+	camera->position.y -= (zoomPos.y - zoomPos.y * multiplier) / camera->zoom;
 }
 
 void camera_move(Camera *camera, Vec movement) {
-    camera->position.x -= movement.x / camera->zoom;
-    camera->position.y -= movement.y / camera->zoom;
+	camera->position.x -= movement.x / camera->zoom;
+	camera->position.y -= movement.y / camera->zoom;
 }

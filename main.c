@@ -67,6 +67,8 @@ int main(int argc, char **argv) {
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Camera camera;
+	camera.position = (Point){0, 0};
+	camera.zoom = 0.5f;
 
 	bool quit = false;
 	SDL_Event e;
@@ -89,6 +91,8 @@ int main(int argc, char **argv) {
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
+
+		SDL_SetRenderDrawColor(renderer,255,0, 0, 255);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld)
 			camera_move(&camera, (Vec){input_get_mouse_delta_x(), input_get_mouse_delta_y()});
