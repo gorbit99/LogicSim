@@ -2,6 +2,7 @@
 #define HOMEWORK_NODE_H
 
 #include "Component.h"
+#include "Input.h"
 
 struct Node;
 
@@ -36,5 +37,7 @@ void node_update(Node *node);
 void node_render(Node *node, Point camPos);
 
 void node_free(Node *node);
+
+bool node_is_over(Node *node, Point p);
 
 #endif //HOMEWORK_NODE_H
