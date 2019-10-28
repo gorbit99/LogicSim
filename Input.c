@@ -65,14 +65,14 @@ void input_handle_event(SDL_Event *e) {
 			}
 			break;
     	case SDL_MOUSEMOTION:
-    		mouseDeltaX = e->motion.xrel;
-    		mouseDeltaY = e->motion.yrel;
+    		mouseDeltaX += e->motion.xrel;
+    		mouseDeltaY += e->motion.yrel;
     		mouseX = e->motion.x;
     		mouseY = e->motion.y;
     		break;
     	case SDL_MOUSEWHEEL:
-    		mouseWheelX = e->wheel.x;
-    		mouseWheelY = e->wheel.y;
+    		mouseWheelX += e->wheel.x;
+    		mouseWheelY += e->wheel.y;
     		if (e->wheel.direction == SDL_MOUSEWHEEL_FLIPPED) {
     			mouseWheelX *= -1;
     			mouseWheelY *= -1;
@@ -132,4 +132,9 @@ Vec input_get_mouse_wheel() {
 		(float)input_get_mouse_wheel_x(),
 		(float)input_get_mouse_wheel_y()
 	};
+}
+
+bool input_mouse_over(SDL_Rect r) {
+	SDL_Point p = {input_get_mouse_x(), input_get_mouse_y()};
+	return SDL_PointInRect(&p, &r) == SDL_TRUE;
 }

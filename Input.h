@@ -25,4 +25,6 @@ int input_get_mouse_wheel_x();
 int input_get_mouse_wheel_y();
 Vec input_get_mouse_wheel();
 
+bool input_mouse_over(SDL_Rect r);
+
 #endif //HOMEWORK_INPUT_H

@@ -11,4 +11,6 @@ typedef struct Camera {
 void camera_zoom(Camera *camera, float zoomLevels, Point zoomPos);
 void camera_move(Camera *camera, Vec movement);
 
+Point camera_screen_to_view(Camera *camera, Point p);
+
 #endif //HOMEWORK_CAMERA_H
