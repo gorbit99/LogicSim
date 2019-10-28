@@ -84,7 +84,8 @@ void node_update(Node *node) {
 void node_free(Node *node) {
 	component_free_data(&node->component);
     free(node->connections);
-    free(node->inValues);
+    if (node->component.funData.inC > 0)
+    	free(node->inValues);
     free(node->prevInValues);
     free(node->outValues);
 }

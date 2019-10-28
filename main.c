@@ -12,6 +12,7 @@
 #include "Input.h"
 #include "NodeVector.h"
 #include "Camera.h"
+#include "GUIGraphics.h"
 
 int main(int argc, char **argv) {
 	debugmalloc_log_file("debugmalloclog.txt");
@@ -25,22 +26,14 @@ int main(int argc, char **argv) {
 
 	NodeVector vec = nodev_create(0);
 
-	nodev_push_back(&vec, node_create_switch((Point){0, 0}, renderer));
-	nodev_push_back(&vec, node_create_switch((Point){0, 300}, renderer));
-	nodev_push_back(&vec, node_create_switch((Point){0, 600}, renderer));
-
-	nodev_push_back(&vec, node_create("SPLITTER3", (Point){500, 300}, font, renderer));
-
-	node_set_connection(&vec.nodes[0], 0, &vec.nodes[3], 0);
-	node_set_connection(&vec.nodes[1], 0, &vec.nodes[3], 1);
-	node_set_connection(&vec.nodes[2], 0, &vec.nodes[3], 2);
+	NSliceTexture texture = guigfx_create_nslice("res/GUI/Test.png", ST_REPEAT, 64, 64, 128, 128, renderer);
 
 	nodev_update(&vec);
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Camera camera;
 	camera.position = (Point){0, 0};
-	camera.zoom = 0.5f;
+	camera.zoom = 1;
 
 	bool quit = false;
 	SDL_Event e;
@@ -63,6 +56,8 @@ int main(int argc, char **argv) {
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
+
+		guigfx_render_9slice(&texture, (SDL_Rect){50, 50, 400, 400}, renderer);
 
 		SDL_SetRenderDrawColor(renderer,255,0, 0, 255);
 
