@@ -26,8 +26,6 @@ int main(int argc, char **argv) {
 
 	NodeVector vec = nodev_create(0);
 
-	nodev_push_back(&vec, node_create_switch((Point){0, 0}, renderer));
-
 	nodev_update(&vec);
 
 	NSliceTexture texture = guigfx_create_nslice("res/GUI/Test.png", ST_REPEAT, 64, 64, 128, 128, renderer);
@@ -59,12 +57,9 @@ int main(int argc, char **argv) {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		//guigfx_render_9slice(&texture, (SDL_Rect){0, 0, input_get_mouse_x(), input_get_mouse_y()}, renderer);
+		guigfx_render_9slice(&texture, (SDL_Rect){0, 0, input_get_mouse_x(), input_get_mouse_y()}, renderer);
 
 		Point p = camera_screen_to_view(&camera, input_get_mouse_pos());
-		SDL_Point sp = {p.x, p.y};
-
-		SDL_SetRenderDrawColor(renderer,255,0, 0, 255);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld)
 			camera_move(&camera, (Vec){(float)input_get_mouse_delta_x(), (float)input_get_mouse_delta_y()});
@@ -84,12 +79,6 @@ int main(int argc, char **argv) {
 			SDL_SetCursor(cursor);
 			SDL_CaptureMouse(false);
 		}
-
-		if (node_is_over(&vec.nodes[0], p))
-			vec.nodes[0].outValues[0] = !vec.nodes[0].outValues[0];
-
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-		SDL_RenderDrawPoint(renderer, p.x, p.y);
 
 		camera_zoom(&camera, (float)input_get_mouse_wheel_y(), input_get_mouse_pos());
 		SDL_RenderSetScale(renderer, camera.zoom, camera.zoom);
