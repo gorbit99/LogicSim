@@ -20,11 +20,7 @@ Node *nodev_at(NodeVector *vector, int index);
 
 void nodev_connect(NodeVector *vector, int idA, int pinA, int idB, int pinB);
 
-void nodev_recalc_levels(NodeVector *vector);
-
-void nodev_switch(NodeVector *vector, int id);
-
-void nodev_update_all(NodeVector *vector);
+void nodev_update(NodeVector *vector);
 
 void nodev_free(NodeVector *vector);
 

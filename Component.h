@@ -62,6 +62,6 @@ ComponentData component_create_LED(float x, float y, float size, float thickness
 
 ComponentData component_create_switch(float x, float y, float size, float thickness, SDL_Renderer *renderer);
 
-void component_run(ComponentData *dat, bool *inValues, bool *outValues);
+void component_run(ComponentData *component, bool *in, bool *out);
 
 #endif //HOMEWORK_COMPONENT_H

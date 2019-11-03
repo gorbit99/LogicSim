@@ -49,6 +49,10 @@ FunctionData parser_load_function(char *path);
 
 void parser_handle_operation(Operation *op, bool *in, bool *out);
 
+void parser_run_assign(Assign *assign, bool *in, bool *out);
+
+void parser_run_function(FunctionData *function, bool *in, bool *out);
+
 Operation *parser_string_to_op(char *str);
 
 void parser_free_operation(Operation *operation);

@@ -1,6 +1,6 @@
-assigns 2
+assigns 3
 in 1
-out 2
+out 3
 %0 = $0
 %1 = $0
 %2 = $0

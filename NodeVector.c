@@ -38,39 +38,11 @@ void nodev_connect(NodeVector *vector, int idA, int pinA, int idB, int pinB) {
 	node_set_connection(nodev_at(vector, idA), pinA, nodev_at(vector, idB), pinB);
 }
 
-void nodev_recalc_levels(NodeVector *vector) {
-	for (size_t i = 0; i < vector->count; i++)
-		nodev_at(vector, i)->level = 0;
-	for (size_t i = 0; i < vector->count; i++)
-		if (nodev_at(vector, i)->component.type == CT_SWITCH)
-			node_update_level(nodev_at(vector, i), 1);
-}
-
-void nodev_switch(NodeVector *vector, int id) {
-	if (nodev_at(vector, id)->component.type != CT_SWITCH)
-		return;
-	EventQueue queue = evqueue_create();
-
-	nodev_at(vector, id)->outValues[0] ^= 1;
-	evqueue_push(&queue, (Event){nodev_at(vector, id)->connections[0].other});
-	node_set_inval(nodev_at(vector, id)->connections[0].other, 
-				nodev_at(vector, id)->connections[0].pinB, 
-				nodev_at(vector, id)->outValues[0]);
-
-	while(queue.count != 0) {
-		Event e = evqueue_pop(&queue);
-		if (node_handle(e.node)) {
-			for (int i = 0; i < e.node->component.funData.outC; i++)
-				evqueue_push(&queue, (Event){e.node->connections[i].other});
-		}
+void nodev_update(NodeVector *vector) {
+	for (int i = 0; i < vector->count; i++) {
+		node_run(nodev_at(vector, i));
+		node_update_values(nodev_at(vector, i));
 	}
-
-	evqueue_free(&queue);
-}
-
-void nodev_update_all(NodeVector *vector) {
-	for (size_t i = 0; i < vector->count; i++)
-		node_handle(nodev_at(vector, i));
 }
 
 void nodev_free(NodeVector *vector) {
