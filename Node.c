@@ -1,54 +1,35 @@
 #include "Node.h"
 #include "debugmalloc.h"
 
+static void __setup_node(Node *node, SDL_Renderer *renderer) {
+	node->connections = (Connection *)malloc(sizeof(Connection) * node->component.funData.outC);
+    for (int i = 0; i < node->component.funData.outC; i++) {
+        node->connections[i].other = NULL;
+        node->connections[i].pinB = -1;
+    }
+    node->inValues = (bool *)calloc(node->component.funData.inC, sizeof(bool));
+    node->outValues = (bool *)calloc(node->component.funData.outC, sizeof(bool));
+    node->renderer = renderer;
+}
+
 Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *renderer) {
     Node node;
 	node.component = component_create(pos.x, pos.y, compName, 300, 15, font, renderer);
-    node.connections = (Connection *)malloc(sizeof(Connection) * node.component.funData.outC);
-    for (int i = 0; i < node.component.funData.outC; i++) {
-        node.connections[i].other = NULL;
-        node.connections[i].pinB = -1;
-    }
-    node.inValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
-	node.prevInValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
-    node.outValues = (bool *)calloc(node.component.funData.outC, sizeof(bool));
-    node.dirty = false;
-    node.prevDirty = false;
-    node.renderer = renderer;
+    __setup_node(&node, renderer);
     return node;
 }
 
 Node node_create_LED(Point pos, SDL_Renderer *renderer) {
 	Node node;
 	node.component = component_create_LED(pos.x, pos.y, 300, 15, renderer);
-	node.connections = (Connection *)malloc(sizeof(Connection) * node.component.funData.outC);
-	for (int i = 0; i < node.component.funData.outC; i++) {
-		node.connections[i].other = NULL;
-		node.connections[i].pinB = -1;
-	}
-	node.inValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
-	node.prevInValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
-	node.outValues = (bool *)calloc(node.component.funData.outC, sizeof(bool));
-	node.dirty = false;
-	node.prevDirty = false;
-	node.renderer = renderer;
+	__setup_node(&node, renderer);
 	return node;
 }
 
 Node node_create_switch(Point pos, SDL_Renderer *renderer) {
 	Node node;
 	node.component = component_create_switch(pos.x, pos.y, 300, 15, renderer);
-	node.connections = (Connection *)malloc(sizeof(Connection) * node.component.funData.outC);
-	for (int i = 0; i < node.component.funData.outC; i++) {
-		node.connections[i].other = NULL;
-		node.connections[i].pinB = -1;
-	}
-	node.inValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
-	node.prevInValues = (bool *)calloc(node.component.funData.inC, sizeof(bool));
-	node.outValues = (bool *)calloc(node.component.funData.outC, sizeof(bool));
-	node.dirty = true;
-	node.prevDirty = false;
-	node.renderer = renderer;
+	__setup_node(&node, renderer);
 	return node;
 }
 
@@ -67,18 +48,34 @@ void node_set_connection(Node *node, int pinA, Node *other, int pinB) {
 void node_set_inval(Node *node, int pinIn, bool value) {
     if (node->inValues[pinIn] != value) {
         node->inValues[pinIn] = value;
-        node->dirty = true;
     }
 }
 
-void node_update(Node *node) {
-    for (int i = 0; i < node->component.funData.assignC; i++) {
-    	parser_handle_operation(node->component.funData.assigns[i].op, node->prevInValues, node->outValues + i);
+void node_update_level(Node *node, unsigned int newLevel) {
+	if (node->level < newLevel) {
+		node->level = newLevel;
+		for (int i = 0; i < node->component.funData.outC; i++) {
+			if (node->connections[i].other)
+				node_update_level(node->connections[i].other, newLevel + 1);
+		}
 	}
-    for (int i = 0; i < node->component.funData.outC; i++) {
-    	if (node->connections[i].other != NULL)
-    		node_set_inval(node->connections[i].other, node->connections[i].pinB, node->outValues[i]);
-    }
+}
+
+bool node_handle(Node *node) {
+	bool *newOut = (bool *)malloc(sizeof(bool) * node->component.funData.outC);
+	for (int i = 0; i < node->component.funData.outC; i++)
+		newOut[i] = node->outValues[i];
+	component_run(&node->component, node->inValues, newOut);
+	bool changed = false;
+	for (int i = 0; i < node->component.funData.outC; i++) {
+		if (node->outValues[i] != newOut[i]) {
+			node_set_inval(node->connections[i].other, node->connections[i].pinB, newOut[i]);
+			changed = true;
+			node->outValues[i] = newOut[i];
+		}
+	}
+	free(newOut);
+	return changed;
 }
 
 void node_free(Node *node) {
@@ -86,7 +83,6 @@ void node_free(Node *node) {
     free(node->connections);
     if (node->component.funData.inC > 0)
     	free(node->inValues);
-    free(node->prevInValues);
     free(node->outValues);
 }
 

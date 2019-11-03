@@ -236,3 +236,8 @@ ComponentData component_create_switch(float x, float y, float size, float thickn
 	data.type = CT_SWITCH;
 	return data;
 }
+
+void component_run(ComponentData *dat, bool *in, bool *out) {
+	for (int i = 0; i < dat->funData.assignC; i++)
+		parser_handle_operation(dat->funData.assigns[i].op, in, out + i);
+}
