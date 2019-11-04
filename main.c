@@ -30,33 +30,37 @@ int main(int argc, char **argv) {
 	nodev_push_back(&vec, node_create_switch((Point){0, 800}, renderer)); //2
 	nodev_push_back(&vec, node_create("NAND3", (Point){500, 100}, font, renderer)); //3
 	nodev_push_back(&vec, node_create("NAND3", (Point){500, 700}, font, renderer)); //4
-	nodev_push_back(&vec, node_create("NAND", (Point){1000, 200}, font, renderer)); //5
-	nodev_push_back(&vec, node_create("NAND", (Point){1000, 600}, font, renderer)); //6
-	nodev_push_back(&vec, node_create("SPLITTER", (Point){200, 400}, font, renderer)); //7
-	nodev_push_back(&vec, node_create("SPLITTER3", (Point){1500, 200}, font, renderer)); //8
-	nodev_push_back(&vec, node_create("SPLITTER3", (Point){1500, 600}, font, renderer)); //9
-	nodev_push_back(&vec, node_create_LED((Point){2000, 200}, renderer)); //10
-	nodev_push_back(&vec, node_create_LED((Point){2000, 600}, renderer)); //11
+	nodev_push_back(&vec, node_create("NAND", (Point){1100, 0}, font, renderer)); //5
+	nodev_push_back(&vec, node_create("NAND", (Point){1100, 800}, font, renderer)); //6
+	nodev_push_back(&vec, node_create("NAND", (Point){1700, 100}, font, renderer)); //7
+	nodev_push_back(&vec, node_create("NAND", (Point){1700, 700}, font, renderer)); //8
+	nodev_push_back(&vec, node_create("NAND", (Point){2300, 0}, font, renderer)); //9
+	nodev_push_back(&vec, node_create("NAND", (Point){2300, 800}, font, renderer)); //10
+	nodev_push_back(&vec, node_create("NOT", (Point){1000, 1400}, font, renderer)); //11
+	nodev_push_back(&vec, node_create_LED((Point){2900, 100}, renderer)); //12
+	nodev_push_back(&vec, node_create_LED((Point){2900, 700}, renderer)); //13
 
-	nodev_connect(&vec, 1, 0, 7, 0);
-	nodev_connect(&vec, 5, 0, 8, 0);
-	nodev_connect(&vec, 6, 0, 9, 0);
-
-	nodev_connect(&vec, 8, 0, 3, 0);
-	nodev_connect(&vec, 0, 0, 3, 1);
-	nodev_connect(&vec, 7, 0, 3, 2);
-
-	nodev_connect(&vec, 7, 1, 4, 0);
-	nodev_connect(&vec, 2, 0, 4, 1);
-	nodev_connect(&vec, 9, 2, 4, 2);
-
+	nodev_connect(&vec, 0, 0, 3, 0);
+	nodev_connect(&vec, 2, 0, 4, 2);
+	nodev_connect(&vec, 1, 0, 3, 1);
+	nodev_connect(&vec, 1, 0, 4, 1);
+	nodev_connect(&vec, 1, 0, 11, 0);
 	nodev_connect(&vec, 3, 0, 5, 0);
-	nodev_connect(&vec, 9, 0, 5, 1);
 	nodev_connect(&vec, 4, 0, 6, 1);
-	nodev_connect(&vec, 8, 2, 6, 0);
-
-	nodev_connect(&vec, 8, 1, 10, 0);
-	nodev_connect(&vec, 9, 1, 11, 0);
+	nodev_connect(&vec, 6, 0, 5, 1);
+	nodev_connect(&vec, 5, 0, 6, 0);
+	nodev_connect(&vec, 5, 0, 7, 0);
+	nodev_connect(&vec, 6, 0, 8, 1);
+	nodev_connect(&vec, 11, 0, 7, 1);
+	nodev_connect(&vec, 11, 0, 8, 0);
+	nodev_connect(&vec, 7, 0, 9, 0);
+	nodev_connect(&vec, 10, 0, 9, 1);
+	nodev_connect(&vec, 8, 0, 10, 1);
+	nodev_connect(&vec, 9, 0, 10, 0);
+	nodev_connect(&vec, 9, 0, 4, 0);
+	nodev_connect(&vec, 10, 0, 3, 2);
+	nodev_connect(&vec, 9, 0, 12, 0);
+	nodev_connect(&vec, 10, 0, 13, 0);
 
 	SDL_Cursor *cursor = SDL_GetCursor();
 	Camera camera;
@@ -96,13 +100,14 @@ int main(int argc, char **argv) {
 					if (node_is_over(nodev_at(&vec, i), mouseWS)) {
 						//nodev_switch(&vec, i);
 						nodev_at(&vec, i)->outValues[0] ^= 1;
-						node_set_inval(nodev_at(&vec, i)->connections[0].other,
-							nodev_at(&vec, i)->connections[0].pinB,
-							nodev_at(&vec, i)->outValues[0]);
+						for (size_t w = 0; w < nodev_at(&vec, i)->wires[0].conCount; w++)
+							node_set_inval(nodev_at(&vec, i)->wires[0].connections[w].dest,
+								nodev_at(&vec, i)->wires[0].connections[w].pin,
+								nodev_at(&vec, i)->outValues[0]);
 					}
 			}
 		}
-		if (input_get_key(SDL_SCANCODE_SPACE).isPressed)
+		//if (input_get_key(SDL_SCANCODE_SPACE).isPressed)
 		nodev_update(&vec);
 
 		for (size_t i = 0; i < vec.count; i++)

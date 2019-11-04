@@ -9,6 +9,9 @@
 #include "Graphics.h"
 #include "Parser.h"
 
+extern const float COMPSIZE;
+extern const float COMPTHICKNESS;
+
 typedef enum PinType {
 	PIN_IN,
 	PIN_OUT

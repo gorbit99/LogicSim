@@ -12,7 +12,7 @@ find_package(SDL2_image REQUIRED)
 add_executable(${PROJECT_NAME} main.c Graphics.c Graphics.h debugmalloc.h debugmalloc-impl.h Component.c Component.h
                                 Utility.c Utility.h Window.c Window.h Input.c Input.h Node.c Node.h Parser.c Parser.h
                                 NodeVector.c NodeVector.h Camera.c Camera.h GUIGraphics.c GUIGraphics.h NodeEvent.c
-                                NodeEvent.h)
+                                NodeEvent.h Wire.c Wire.h)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES C_STANDARD 99)
 

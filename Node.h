@@ -3,18 +3,14 @@
 
 #include "Component.h"
 #include "Input.h"
+#include "Wire.h"
 
 struct Node;
-
-typedef struct Connection {
-    int pinB;
-    struct Node *other;
-    ComponentData wire;
-} Connection;
+typedef struct Wire Wire;
 
 typedef struct Node {
     ComponentData component;
-    Connection *connections;
+    Wire *wires;
     bool *inValues;
     bool *nextInValues;
     bool *outValues;
@@ -25,7 +21,7 @@ Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *render
 Node node_create_LED(Point pos, SDL_Renderer *renderer);
 Node node_create_switch(Point pos, SDL_Renderer *renderer);
 
-void node_set_connection(Node *node, int pinA, Node *other, int pinB);
+void node_add_connection(Node *node, int pinA, Node *other, int pinB);
 
 void node_set_inval(Node *node, int pinIn, bool value);
 

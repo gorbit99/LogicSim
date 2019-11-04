@@ -2,10 +2,9 @@
 #include "debugmalloc.h"
 
 static void __setup_node(Node *node, SDL_Renderer *renderer) {
-	node->connections = (Connection *)malloc(sizeof(Connection) * node->component.funData.outC);
+	node->wires = (Wire *)malloc(sizeof(Wire) * node->component.funData.outC);
     for (int i = 0; i < node->component.funData.outC; i++) {
-        node->connections[i].other = NULL;
-        node->connections[i].pinB = -1;
+        node->wires[i] = wire_create(node, i);
     }
     node->inValues = (bool *)calloc(node->component.funData.inC, sizeof(bool));
     node->nextInValues = (bool *)calloc(node->component.funData.inC, sizeof(bool));
@@ -34,16 +33,8 @@ Node node_create_switch(Point pos, SDL_Renderer *renderer) {
 	return node;
 }
 
-void node_set_connection(Node *node, int pinA, Node *other, int pinB) {
-    node->connections[pinA].pinB = pinB;
-    node->connections[pinA].other = other;
-    node->connections[pinA].wire = component_create_wire_between(&node->component,
-    		&other->component,
-    		pinA + node->component.funData.inC,
-    		pinB,
-    		300,
-    		15,
-    		node->renderer);
+void node_add_connection(Node *node, int pinA, Node *other, int pinB) {
+    wire_add(&node->wires[pinA], other, pinB);
 }
 
 void node_set_inval(Node *node, int pinIn, bool value) {
@@ -60,24 +51,28 @@ void node_update_values(Node *node) {
 void node_run(Node *node) {
 	component_run(&node->component, node->inValues, node->outValues);
 	for (int i = 0; i < node->component.funData.outC; i++)
-		node_set_inval(node->connections[i].other, node->connections[i].pinB, node->outValues[i]);
+		wire_send_value(&node->wires[i], node->outValues[i]);
 }
 
 void node_free(Node *node) {
 	component_free_data(&node->component);
-    free(node->connections);
-    if (node->component.funData.inC > 0)
+    for (int i = 0; i < node->component.funData.outC; i++)
+		wire_free(&node->wires[i]);
+	free(node->wires);
+    if (node->component.funData.inC > 0) {
     	free(node->inValues);
+    	free(node->nextInValues);
+	}
     free(node->outValues);
 }
 
 void node_render(Node *node, Point camPos) {
 	for (int i = 0; i < node->component.funData.outC; i++) {
-		if (node->connections[i].other) {
+		for (size_t w = 0; w < node->wires[i].conCount; w++) {
 			if (node->outValues[i])
-				component_render(&node->connections[i].wire, node->renderer, camPos, 0xff7700ff);
+				component_render(&node->wires[i].connections[w].wireComp, node->renderer, camPos, 0xff7700ff);
 			else
-				component_render(&node->connections[i].wire, node->renderer, camPos, 0x0000aaff);
+				component_render(&node->wires[i].connections[w].wireComp, node->renderer, camPos, 0x0000aaff);
 		}
 	}
 	if (node->component.type == CT_MODULE)

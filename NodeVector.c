@@ -18,8 +18,13 @@ void nodev_push_back(NodeVector *vector, Node node) {
 			return;
 		}
 		vector->nodes = newmem;
+		for (int i = 0; i < vector->count; i++)
+			for (int j = 0; j < vector->nodes[i].component.funData.outC; j++)
+				vector->nodes[i].wires[j].origin = &vector->nodes[i];
 	}
-	memcpy(&(vector->nodes[vector->count]), &node, sizeof(node));
+	vector->nodes[vector->count] = node;
+	for (int i = 0; i < vector->nodes[vector->count].component.funData.outC; i++)
+		vector->nodes[vector->count].wires[i].origin = &vector->nodes[vector->count];
 	vector->count++;
 }
 
@@ -35,7 +40,7 @@ Node *nodev_at(NodeVector *vector, int index) {
 }
 
 void nodev_connect(NodeVector *vector, int idA, int pinA, int idB, int pinB) {
-	node_set_connection(nodev_at(vector, idA), pinA, nodev_at(vector, idB), pinB);
+	node_add_connection(nodev_at(vector, idA), pinA, nodev_at(vector, idB), pinB);
 }
 
 void nodev_update(NodeVector *vector) {

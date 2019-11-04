@@ -2,6 +2,9 @@
 
 #include "debugmalloc.h"
 
+const float COMPSIZE = 300;
+const float COMPTHICKNESS = 15;
+
 SDL_Surface *component_load_graphic(const char *path, float size, float thickness, TTF_Font *font) {
 
 	FILE *f = fopen(path, "r");
