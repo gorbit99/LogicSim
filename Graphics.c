@@ -241,6 +241,16 @@ void gfx_draw_thick_line(SDL_Surface *dest, Point V1, Point V2, float thickness,
 					  (Point){V2.x - dx, V2.y + dy},
 					  (Point){V1.x - dx, V1.y + dy},
 					  color);
+	gfx_fill_triangle(dest,
+					  (Point){V1.x + dx, V1.y - dy},
+					  (Point){V1.x - dx, V1.y + dy},
+					  (Point){V2.x - dx, V2.y + dy},
+					  color);
+	gfx_fill_triangle(dest,
+					  (Point){V2.x + dx, V2.y - dy},
+					  (Point){V2.x - dx, V2.y + dy},
+					  (Point){V1.x + dx, V1.y - dy},
+					  color);
 }
 
 void __draw_circle_helper(SDL_Surface *dest, int cx, int cy, int x, int y, Color color) {

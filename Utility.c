@@ -7,19 +7,6 @@ SDL_Surface *get_rgba_surface(int w, int h) {
 	return surface;
 }
 
-size_t read_until_delim(const char *str, char *result, size_t *startIndex, char delim) {
-	size_t pos = 0;
-	while(str[*startIndex + pos] != delim && str[*startIndex + pos] != '\0') {
-		result[pos] = str[*startIndex + pos];
-		pos++;
-	}
-	result[pos] = '\0';
-
-	if (str[*startIndex + pos] == '\0') *startIndex = pos;
-	else *startIndex += pos + 1;
-	return 0;
-}
-
 char *file_from_path(char *path) {
 	size_t last = 0;
 	for (int i = 0; path[i] != '\0';  i++) {

@@ -1,0 +1,85 @@
+\hypertarget{_window_8h}{}\doxysection{Window.\+h File Reference}
+\label{_window_8h}\index{Window.h@{Window.h}}
+
+
+Functions handling S\+DL 2.  
+
+
+{\ttfamily \#include $<$S\+D\+L.\+h$>$}\newline
+{\ttfamily \#include $<$S\+D\+L\+\_\+ttf.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Utility.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{_window_8h_aa226b0556c9911e5e6ef36592559b0d6}{window\+\_\+init}} (S\+D\+L\+\_\+\+Window $\ast$$\ast$window, S\+D\+L\+\_\+\+Renderer $\ast$$\ast$renderer, const char $\ast$title, int w, int h, int window\+Flags, int renderer\+Flags)
+\begin{DoxyCompactList}\small\item\em Initialize S\+DL Window and Renderer. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{_window_8h_a2ddad779418ef9f9e05a7919e0406316}{window\+\_\+cleanup}} (S\+D\+L\+\_\+\+Window $\ast$window, S\+D\+L\+\_\+\+Renderer $\ast$renderer)
+\begin{DoxyCompactList}\small\item\em Cleanup window. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Functions handling S\+DL 2. 
+
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/11-\/05
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{_window_8h_a2ddad779418ef9f9e05a7919e0406316}\label{_window_8h_a2ddad779418ef9f9e05a7919e0406316}} 
+\index{Window.h@{Window.h}!window\_cleanup@{window\_cleanup}}
+\index{window\_cleanup@{window\_cleanup}!Window.h@{Window.h}}
+\doxysubsubsection{\texorpdfstring{window\_cleanup()}{window\_cleanup()}}
+{\footnotesize\ttfamily void window\+\_\+cleanup (\begin{DoxyParamCaption}\item[{S\+D\+L\+\_\+\+Window $\ast$}]{window,  }\item[{S\+D\+L\+\_\+\+Renderer $\ast$}]{renderer }\end{DoxyParamCaption})}
+
+
+
+Cleanup window. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & Window to cleanup \\
+\hline
+{\em renderer} & Renderer to cleanup \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{_window_8h_aa226b0556c9911e5e6ef36592559b0d6}\label{_window_8h_aa226b0556c9911e5e6ef36592559b0d6}} 
+\index{Window.h@{Window.h}!window\_init@{window\_init}}
+\index{window\_init@{window\_init}!Window.h@{Window.h}}
+\doxysubsubsection{\texorpdfstring{window\_init()}{window\_init()}}
+{\footnotesize\ttfamily bool window\+\_\+init (\begin{DoxyParamCaption}\item[{S\+D\+L\+\_\+\+Window $\ast$$\ast$}]{window,  }\item[{S\+D\+L\+\_\+\+Renderer $\ast$$\ast$}]{renderer,  }\item[{const char $\ast$}]{title,  }\item[{int}]{w,  }\item[{int}]{h,  }\item[{int}]{window\+Flags,  }\item[{int}]{renderer\+Flags }\end{DoxyParamCaption})}
+
+
+
+Initialize S\+DL Window and Renderer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & Pointer to the window to initialize \\
+\hline
+{\em renderer} & Pointer to the renderer to initialize \\
+\hline
+{\em title} & Title of the window \\
+\hline
+{\em w} & Width of the window \\
+\hline
+{\em h} & Height of the window \\
+\hline
+{\em window\+Flags} & Flags for the window \\
+\hline
+{\em renderer\+Flags} & Flags for the renderer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true Successful initialization 
+
+false There was an error during initialization 
+\end{DoxyReturn}

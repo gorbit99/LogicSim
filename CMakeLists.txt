@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.3)
 
 project(Homework)
 
@@ -7,14 +7,15 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_TTF REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIR})
+find_package(SDL2_image REQUIRED)
 
-add_executable(${PROJECT_NAME} main.c Graphics.c Graphics.h debugmalloc.h debugmalloc-impl.h Component.c Component.h 
-                                Utility.c Utility.h Window.c Window.h Input.c Input.h Node.c Node.h Parser.c Parser.h NodeVector.c NodeVector.h)
-
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES})
+add_executable(${PROJECT_NAME} main.c Graphics.c Graphics.h debugmalloc.h debugmalloc-impl.h Component.c Component.h
+                                Utility.c Utility.h Window.c Window.h Input.c Input.h Node.c Node.h Parser.c Parser.h
+                                NodeVector.c NodeVector.h Camera.c Camera.h GUIGraphics.c GUIGraphics.h Wire.c Wire.h)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES C_STANDARD 99)
+
+target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image SDL2::TTF)
 
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD

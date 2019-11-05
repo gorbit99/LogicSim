@@ -1,0 +1,260 @@
+\hypertarget{_input_8h}{}\doxysection{Input.\+h File Reference}
+\label{_input_8h}\index{Input.h@{Input.h}}
+
+
+Structures and functions related to input.  
+
+
+{\ttfamily \#include $<$S\+D\+L.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Graphics.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_button_state}{Button\+State}}
+\begin{DoxyCompactList}\small\item\em State of a button. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{struct_button_state}{Button\+State}} \mbox{\hyperlink{_input_8h_a298a7995250abcb03e4735a94b7b09bc}{Button\+State}}
+\begin{DoxyCompactList}\small\item\em State of a button. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{_input_8h_a4091566cfe0883d7c8ceeee97263cec9}{input\+\_\+reset\+\_\+events}} ()
+\begin{DoxyCompactList}\small\item\em Start a new event handling. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{_input_8h_aec4f44b87b92048be5be647f936d931e}{input\+\_\+handle\+\_\+event}} (S\+D\+L\+\_\+\+Event $\ast$e)
+\begin{DoxyCompactList}\small\item\em Handle event. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_button_state}{Button\+State}} \mbox{\hyperlink{_input_8h_aa12e0a586277dc4a2b2dc8b7582be842}{input\+\_\+get\+\_\+key}} (S\+D\+L\+\_\+\+Scancode code)
+\begin{DoxyCompactList}\small\item\em Get the state of the given key. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_button_state}{Button\+State}} \mbox{\hyperlink{_input_8h_aaac494c8ffb97678fe11cb5c8bda3ace}{input\+\_\+get\+\_\+mouse\+\_\+button}} (int id)
+\begin{DoxyCompactList}\small\item\em Get the state of the given mouse button. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{_input_8h_a4a149d931061f0df0f5fe491e5816956}{input\+\_\+get\+\_\+mouse\+\_\+x}} ()
+\begin{DoxyCompactList}\small\item\em Get mouse X position. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{_input_8h_ab05b5a8a4cdcd1ffdf7d7251846fa5a0}{input\+\_\+get\+\_\+mouse\+\_\+y}} ()
+\begin{DoxyCompactList}\small\item\em Get mouse Y position. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_point}{Point}} \mbox{\hyperlink{_input_8h_a9710ddf5635c9587f818f92efeeb430d}{input\+\_\+get\+\_\+mouse\+\_\+pos}} ()
+\begin{DoxyCompactList}\small\item\em Get the mouse position as a point. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{_input_8h_ac30f37515242c474337778b3e14c8a35}{input\+\_\+get\+\_\+mouse\+\_\+delta\+\_\+x}} ()
+\begin{DoxyCompactList}\small\item\em Get the mouse delta X between this and the last frame. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{_input_8h_ad4045bdc224fbca0abe67e071a286576}{input\+\_\+get\+\_\+mouse\+\_\+delta\+\_\+y}} ()
+\begin{DoxyCompactList}\small\item\em Get the mouse delta Y between this and the last frame. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{_graphics_8h_ad7f27ed6baebc6aab96f3358342ffedc}{Vec}} \mbox{\hyperlink{_input_8h_a1c5ca6f68bc9542cd88944de0989acbf}{input\+\_\+get\+\_\+mouse\+\_\+delta}} ()
+\begin{DoxyCompactList}\small\item\em Get the mouse delta as a vector. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{_input_8h_ad8faab0c29075f4ac4a4e5ba3d8e40f5}{input\+\_\+get\+\_\+mouse\+\_\+wheel\+\_\+x}} ()
+\begin{DoxyCompactList}\small\item\em Get the mouse wheel movement in the horizontal direction. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{_input_8h_a68d88f19b6f11995e6e3d2a2766db840}{input\+\_\+get\+\_\+mouse\+\_\+wheel\+\_\+y}} ()
+\begin{DoxyCompactList}\small\item\em Get the mouse wheel movement in the vertical direction. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{_graphics_8h_ad7f27ed6baebc6aab96f3358342ffedc}{Vec}} \mbox{\hyperlink{_input_8h_a15ad81d223d6045f32f3b96572b234c1}{input\+\_\+get\+\_\+mouse\+\_\+wheel}} ()
+\begin{DoxyCompactList}\small\item\em Get the mouse wheel as a vector. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{_input_8h_a86a93773986ecc7de2150d5f0006c4f7}\label{_input_8h_a86a93773986ecc7de2150d5f0006c4f7}} 
+bool {\bfseries input\+\_\+mouse\+\_\+over} (S\+D\+L\+\_\+\+Rect r)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structures and functions related to input. 
+
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/11-\/05
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{_input_8h_a298a7995250abcb03e4735a94b7b09bc}\label{_input_8h_a298a7995250abcb03e4735a94b7b09bc}} 
+\index{Input.h@{Input.h}!ButtonState@{ButtonState}}
+\index{ButtonState@{ButtonState}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{ButtonState}{ButtonState}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{struct_button_state}{Button\+State}}  \mbox{\hyperlink{struct_button_state}{Button\+State}}}
+
+
+
+State of a button. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{_input_8h_aa12e0a586277dc4a2b2dc8b7582be842}\label{_input_8h_aa12e0a586277dc4a2b2dc8b7582be842}} 
+\index{Input.h@{Input.h}!input\_get\_key@{input\_get\_key}}
+\index{input\_get\_key@{input\_get\_key}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_key()}{input\_get\_key()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_button_state}{Button\+State}} input\+\_\+get\+\_\+key (\begin{DoxyParamCaption}\item[{S\+D\+L\+\_\+\+Scancode}]{code }\end{DoxyParamCaption})}
+
+
+
+Get the state of the given key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em code} & Scancode of the key \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{struct_button_state}{Button\+State}} Resulting state 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_aaac494c8ffb97678fe11cb5c8bda3ace}\label{_input_8h_aaac494c8ffb97678fe11cb5c8bda3ace}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_button@{input\_get\_mouse\_button}}
+\index{input\_get\_mouse\_button@{input\_get\_mouse\_button}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_button()}{input\_get\_mouse\_button()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_button_state}{Button\+State}} input\+\_\+get\+\_\+mouse\+\_\+button (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption})}
+
+
+
+Get the state of the given mouse button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & Id of the mouse button \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{struct_button_state}{Button\+State}} Resulting state 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_a1c5ca6f68bc9542cd88944de0989acbf}\label{_input_8h_a1c5ca6f68bc9542cd88944de0989acbf}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_delta@{input\_get\_mouse\_delta}}
+\index{input\_get\_mouse\_delta@{input\_get\_mouse\_delta}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_delta()}{input\_get\_mouse\_delta()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{_graphics_8h_ad7f27ed6baebc6aab96f3358342ffedc}{Vec}} input\+\_\+get\+\_\+mouse\+\_\+delta (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the mouse delta as a vector. 
+
+\begin{DoxyReturn}{Returns}
+Vec Mouse delta 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_ac30f37515242c474337778b3e14c8a35}\label{_input_8h_ac30f37515242c474337778b3e14c8a35}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_delta\_x@{input\_get\_mouse\_delta\_x}}
+\index{input\_get\_mouse\_delta\_x@{input\_get\_mouse\_delta\_x}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_delta\_x()}{input\_get\_mouse\_delta\_x()}}
+{\footnotesize\ttfamily int input\+\_\+get\+\_\+mouse\+\_\+delta\+\_\+x (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the mouse delta X between this and the last frame. 
+
+\begin{DoxyReturn}{Returns}
+int Mouse dleta X 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_ad4045bdc224fbca0abe67e071a286576}\label{_input_8h_ad4045bdc224fbca0abe67e071a286576}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_delta\_y@{input\_get\_mouse\_delta\_y}}
+\index{input\_get\_mouse\_delta\_y@{input\_get\_mouse\_delta\_y}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_delta\_y()}{input\_get\_mouse\_delta\_y()}}
+{\footnotesize\ttfamily int input\+\_\+get\+\_\+mouse\+\_\+delta\+\_\+y (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the mouse delta Y between this and the last frame. 
+
+\begin{DoxyReturn}{Returns}
+int Mouse delta Y 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_a9710ddf5635c9587f818f92efeeb430d}\label{_input_8h_a9710ddf5635c9587f818f92efeeb430d}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_pos@{input\_get\_mouse\_pos}}
+\index{input\_get\_mouse\_pos@{input\_get\_mouse\_pos}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_pos()}{input\_get\_mouse\_pos()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_point}{Point}} input\+\_\+get\+\_\+mouse\+\_\+pos (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the mouse position as a point. 
+
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{struct_point}{Point}} Mouse position 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_a15ad81d223d6045f32f3b96572b234c1}\label{_input_8h_a15ad81d223d6045f32f3b96572b234c1}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_wheel@{input\_get\_mouse\_wheel}}
+\index{input\_get\_mouse\_wheel@{input\_get\_mouse\_wheel}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_wheel()}{input\_get\_mouse\_wheel()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{_graphics_8h_ad7f27ed6baebc6aab96f3358342ffedc}{Vec}} input\+\_\+get\+\_\+mouse\+\_\+wheel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the mouse wheel as a vector. 
+
+\begin{DoxyReturn}{Returns}
+Vec Mouse wheel delta 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_ad8faab0c29075f4ac4a4e5ba3d8e40f5}\label{_input_8h_ad8faab0c29075f4ac4a4e5ba3d8e40f5}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_wheel\_x@{input\_get\_mouse\_wheel\_x}}
+\index{input\_get\_mouse\_wheel\_x@{input\_get\_mouse\_wheel\_x}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_wheel\_x()}{input\_get\_mouse\_wheel\_x()}}
+{\footnotesize\ttfamily int input\+\_\+get\+\_\+mouse\+\_\+wheel\+\_\+x (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the mouse wheel movement in the horizontal direction. 
+
+\begin{DoxyReturn}{Returns}
+int Mouse wheel X 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_a68d88f19b6f11995e6e3d2a2766db840}\label{_input_8h_a68d88f19b6f11995e6e3d2a2766db840}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_wheel\_y@{input\_get\_mouse\_wheel\_y}}
+\index{input\_get\_mouse\_wheel\_y@{input\_get\_mouse\_wheel\_y}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_wheel\_y()}{input\_get\_mouse\_wheel\_y()}}
+{\footnotesize\ttfamily int input\+\_\+get\+\_\+mouse\+\_\+wheel\+\_\+y (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the mouse wheel movement in the vertical direction. 
+
+\begin{DoxyReturn}{Returns}
+int Mouse wheel Y 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_a4a149d931061f0df0f5fe491e5816956}\label{_input_8h_a4a149d931061f0df0f5fe491e5816956}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_x@{input\_get\_mouse\_x}}
+\index{input\_get\_mouse\_x@{input\_get\_mouse\_x}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_x()}{input\_get\_mouse\_x()}}
+{\footnotesize\ttfamily int input\+\_\+get\+\_\+mouse\+\_\+x (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get mouse X position. 
+
+\begin{DoxyReturn}{Returns}
+int Mouse X position 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_ab05b5a8a4cdcd1ffdf7d7251846fa5a0}\label{_input_8h_ab05b5a8a4cdcd1ffdf7d7251846fa5a0}} 
+\index{Input.h@{Input.h}!input\_get\_mouse\_y@{input\_get\_mouse\_y}}
+\index{input\_get\_mouse\_y@{input\_get\_mouse\_y}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_get\_mouse\_y()}{input\_get\_mouse\_y()}}
+{\footnotesize\ttfamily int input\+\_\+get\+\_\+mouse\+\_\+y (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get mouse Y position. 
+
+\begin{DoxyReturn}{Returns}
+int Mouse Y position 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_input_8h_aec4f44b87b92048be5be647f936d931e}\label{_input_8h_aec4f44b87b92048be5be647f936d931e}} 
+\index{Input.h@{Input.h}!input\_handle\_event@{input\_handle\_event}}
+\index{input\_handle\_event@{input\_handle\_event}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_handle\_event()}{input\_handle\_event()}}
+{\footnotesize\ttfamily void input\+\_\+handle\+\_\+event (\begin{DoxyParamCaption}\item[{S\+D\+L\+\_\+\+Event $\ast$}]{e }\end{DoxyParamCaption})}
+
+
+
+Handle event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & Event to handle \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{_input_8h_a4091566cfe0883d7c8ceeee97263cec9}\label{_input_8h_a4091566cfe0883d7c8ceeee97263cec9}} 
+\index{Input.h@{Input.h}!input\_reset\_events@{input\_reset\_events}}
+\index{input\_reset\_events@{input\_reset\_events}!Input.h@{Input.h}}
+\doxysubsubsection{\texorpdfstring{input\_reset\_events()}{input\_reset\_events()}}
+{\footnotesize\ttfamily void input\+\_\+reset\+\_\+events (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Start a new event handling. 
+

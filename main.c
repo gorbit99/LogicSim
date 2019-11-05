@@ -11,6 +11,8 @@
 #include "Window.h"
 #include "Input.h"
 #include "NodeVector.h"
+#include "Camera.h"
+#include "GUIGraphics.h"
 
 int main(int argc, char **argv) {
 	debugmalloc_log_file("debugmalloclog.txt");
@@ -23,17 +25,47 @@ int main(int argc, char **argv) {
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 80);
 
 	NodeVector vec = nodev_create(0);
+	nodev_push_back(&vec, node_create_switch((Point){0, 0}, renderer)); //0
+	nodev_push_back(&vec, node_create_switch((Point){0, 400}, renderer)); //1
+	nodev_push_back(&vec, node_create_switch((Point){0, 800}, renderer)); //2
+	nodev_push_back(&vec, node_create("NAND3", (Point){500, 100}, font, renderer)); //3
+	nodev_push_back(&vec, node_create("NAND3", (Point){500, 700}, font, renderer)); //4
+	nodev_push_back(&vec, node_create("NAND", (Point){1100, 0}, font, renderer)); //5
+	nodev_push_back(&vec, node_create("NAND", (Point){1100, 800}, font, renderer)); //6
+	nodev_push_back(&vec, node_create("NAND", (Point){1700, 100}, font, renderer)); //7
+	nodev_push_back(&vec, node_create("NAND", (Point){1700, 700}, font, renderer)); //8
+	nodev_push_back(&vec, node_create("NAND", (Point){2300, 0}, font, renderer)); //9
+	nodev_push_back(&vec, node_create("NAND", (Point){2300, 800}, font, renderer)); //10
+	nodev_push_back(&vec, node_create("NOT", (Point){1000, 1400}, font, renderer)); //11
+	nodev_push_back(&vec, node_create_LED((Point){2900, 100}, renderer)); //12
+	nodev_push_back(&vec, node_create_LED((Point){2900, 700}, renderer)); //13
 
-
-	vec.nodes[0].inValues[0] = false;
-	vec.nodes[0].inValues[1] = true;
-
-	for (size_t i = 0; i < vec.count; i++)
-		node_update(&vec.nodes[i]);
+	nodev_connect(&vec, 0, 0, 3, 0);
+	nodev_connect(&vec, 2, 0, 4, 2);
+	nodev_connect(&vec, 1, 0, 3, 1);
+	nodev_connect(&vec, 1, 0, 4, 1);
+	nodev_connect(&vec, 1, 0, 11, 0);
+	nodev_connect(&vec, 3, 0, 5, 0);
+	nodev_connect(&vec, 4, 0, 6, 1);
+	nodev_connect(&vec, 6, 0, 5, 1);
+	nodev_connect(&vec, 5, 0, 6, 0);
+	nodev_connect(&vec, 5, 0, 7, 0);
+	nodev_connect(&vec, 6, 0, 8, 1);
+	nodev_connect(&vec, 11, 0, 7, 1);
+	nodev_connect(&vec, 11, 0, 8, 0);
+	nodev_connect(&vec, 7, 0, 9, 0);
+	nodev_connect(&vec, 10, 0, 9, 1);
+	nodev_connect(&vec, 8, 0, 10, 1);
+	nodev_connect(&vec, 9, 0, 10, 0);
+	nodev_connect(&vec, 9, 0, 4, 0);
+	nodev_connect(&vec, 10, 0, 3, 2);
+	nodev_connect(&vec, 9, 0, 12, 0);
+	nodev_connect(&vec, 10, 0, 13, 0);
 
 	SDL_Cursor *cursor = SDL_GetCursor();
-	Point cameraPos = {0, 0};
-	float zoom = 1;
+	Camera camera;
+	camera.position = (Point){0, 0};
+	camera.zoom = 1;
 
 	bool quit = false;
 	SDL_Event e;
@@ -57,13 +89,29 @@ int main(int argc, char **argv) {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld) {
-			cameraPos.x -= (float) input_get_mouse_delta_x() / zoom;
-			cameraPos.y -= (float) input_get_mouse_delta_y() / zoom;
+		Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos());
+
+		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld)
+			camera_move(&camera, (Vec){(float)input_get_mouse_delta_x(), (float)input_get_mouse_delta_y()});
+
+		if (input_get_mouse_button(SDL_BUTTON_LEFT).isPressed) {
+			for (int i = 0; i < vec.count; i++) {
+				if (nodev_at(&vec, i)->component.type == CT_SWITCH)
+					if (node_is_over(nodev_at(&vec, i), mouseWS)) {
+						//nodev_switch(&vec, i);
+						nodev_at(&vec, i)->outValues[0] ^= 1;
+						for (size_t w = 0; w < nodev_at(&vec, i)->wires[0].conCount; w++)
+							node_set_inval(nodev_at(&vec, i)->wires[0].connections[w].dest,
+								nodev_at(&vec, i)->wires[0].connections[w].pin,
+								nodev_at(&vec, i)->outValues[0]);
+					}
+			}
 		}
+		//if (input_get_key(SDL_SCANCODE_SPACE).isPressed)
+		nodev_update(&vec);
 
 		for (size_t i = 0; i < vec.count; i++)
-			node_render(&vec.nodes[i], cameraPos, zoom);
+			node_render(&vec.nodes[i], camera.position);
 
 		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isPressed) {
 			SDL_FreeCursor(cursor);
@@ -77,17 +125,9 @@ int main(int argc, char **argv) {
 			SDL_SetCursor(cursor);
 			SDL_CaptureMouse(false);
 		}
-		if (input_get_key(SDL_SCANCODE_SPACE).isPressed) {
-			node_set_inval(&vec.nodes[0], 0, rand() % 2);
-			node_set_inval(&vec.nodes[0], 1, rand() % 2);
-			node_set_inval(&vec.nodes[2], 0, rand() % 2);
-			node_set_inval(&vec.nodes[2], 1, rand() % 2);
-		}
 
-		zoom *= powf(0.9f, -(float)input_get_mouse_wheel_y());
-		if (zoom < 0.05) zoom = 0.05f;
-		if (zoom > 1) zoom = 1;
-		SDL_RenderSetScale(renderer, zoom, zoom);
+		camera_zoom(&camera, (float)input_get_mouse_wheel_y(), input_get_mouse_pos());
+		SDL_RenderSetScale(renderer, camera.zoom, camera.zoom);
 
 		SDL_RenderPresent(renderer);
 	}

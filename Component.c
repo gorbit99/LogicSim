@@ -2,6 +2,9 @@
 
 #include "debugmalloc.h"
 
+const float COMPSIZE = 300;
+const float COMPTHICKNESS = 15;
+
 SDL_Surface *component_load_graphic(const char *path, float size, float thickness, TTF_Font *font) {
 
 	FILE *f = fopen(path, "r");
@@ -70,6 +73,15 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 				SDL_Rect blitRect = {x - text->w / 2, y - text->h / 2, text->w, text->h};
 				SDL_BlitSurface(text, NULL, component, &blitRect);
 			}
+		} else if (strcmp(identifier, "AABB") == 0) {
+			Point pos, s;
+			fscanf(f, "%f,%f %f,%f", &pos.x, &pos.y, &s.x, &s.y);
+			pos.x *= size;
+			pos.y *= size;
+			s.x *= size;
+			s.y *= size;
+			gfx_fill_triangle(component, pos, (Point){pos.x + s.x, pos.y}, (Point){pos.x, pos.y + s.y}, 0xffffffff);
+			gfx_fill_triangle(component, (Point){pos.x + s.x, pos.y}, (Point){pos.x, pos.y + s.y}, (Point){pos.x + s.x, pos.y + s.y}, 0xffffffff);
 		}
 	}
 
@@ -103,28 +115,24 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	return data;
 }
 
-void component_update_texture(ComponentData *dat, SDL_Texture *texture) {
-	SDL_QueryTexture(texture, NULL, NULL, &(dat->w), &(dat->h));
-	dat->texture = texture;
-}
-
 void component_free_data(ComponentData *dat) {
 	free(dat->pinData.pins);
 	parser_free_function(&dat->funData);
 }
 
-void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, float zoom, Color color) {
+void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color) {
 	SDL_FRect r = {
-			(dat->x - camPos.x),
-			(dat->y - camPos.y),
+			(dat->x - camPos.x - (float)dat->w / 2),
+			(dat->y - camPos.y - (float)dat->h / 2),
 			(float) dat->w,
 			(float) dat->h
 	};
-	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000) >> 24, (color & 0x00ff0000) >> 16, (color & 0x0000ff00) >> 8);
+
+	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000u) >> 24u, (color & 0x00ff0000u) >> 16u, (color & 0x0000ff00u) >> 8u);
 	SDL_RenderCopyF(renderer, dat->texture, NULL, &r);
 }
 
-SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness) {
+SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness, Point *pin1Pos) {
 	float dx1 = cosf(ang1) * size / 2;
 	float dy1 = sinf(ang1) * size / 2;
 	float dx2 = cosf(ang2) * size / 2;
@@ -159,6 +167,8 @@ SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float
 	C2.x += 1.5f * thickness - minX;
 	C2.y += 1.5f * thickness - minY;
 
+	*pin1Pos = V1;
+
 	gfx_draw_bezier_cubic(wire, V1, V2, C1, C2, thickness, 0xffffffff);
 	return wire;
 }
@@ -190,20 +200,23 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 		float size, float thickness, SDL_Renderer *renderer) {
 	ComponentData data;
 
+	Point pin1Pos;
+
 	SDL_Surface *surf = component_create_wire_texture(
-		(Point){comp1->x + comp1->pinData.pins[pin1].pos.x, comp1->y + comp1->pinData.pins[pin1].pos.y}, 
-		(Point){comp2->x + comp2->pinData.pins[pin2].pos.x, comp2->y + comp2->pinData.pins[pin2].pos.y},
+		(Point){comp1->x + comp1->pinData.pins[pin1].pos.x - (float)comp1->w / 2, comp1->y + comp1->pinData.pins[pin1].pos.y - (float)comp1->h / 2},
+		(Point){comp2->x + comp2->pinData.pins[pin2].pos.x - (float)comp2->w / 2, comp2->y + comp2->pinData.pins[pin2].pos.y - (float)comp2->h / 2},
 		comp1->pinData.pins[pin1].angle, 
 		comp2->pinData.pins[pin2].angle, 
 		size, 
-		thickness);
+		thickness,
+		&pin1Pos);
 
 	data.texture = SDL_CreateTextureFromSurface(renderer, surf);
 	data.w = surf->w;
 	data.h = surf->h;
 	SDL_FreeSurface(surf);
-	data.x = (comp1->x + comp1->pinData.pins[pin1].pos.x + comp2->x + comp2->pinData.pins[pin2].pos.x) / 2 - data.w / 2;
-	data.y = (comp1->y + comp1->pinData.pins[pin1].pos.y + comp2->y + comp2->pinData.pins[pin2].pos.y) / 2 - data.h / 2;
+	data.x = comp1->x + comp1->pinData.pins[pin1].pos.x - pin1Pos.x + (float)data.w / 2 - (float)comp1->w / 2;
+	data.y = comp1->y + comp1->pinData.pins[pin1].pos.y - pin1Pos.y + (float)data.h / 2 - (float)comp1->h / 2;
 	data.pinData.pinCount = 2;
 	data.pinData.pins = NULL;
 
@@ -219,4 +232,14 @@ ComponentData component_create_LED(float x, float y, float size, float thickness
 	ComponentData data = component_create(x, y, "LED", size, thickness, NULL, renderer);
 	data.type = CT_LED;
 	return data;
+}
+
+ComponentData component_create_switch(float x, float y, float size, float thickness, SDL_Renderer *renderer) {
+	ComponentData data = component_create(x, y, "SWITCH", size, thickness, NULL, renderer);
+	data.type = CT_SWITCH;
+	return data;
+}
+
+void component_run(ComponentData *component, bool *in, bool *out) {
+	parser_run_function(&component->funData, in, out);
 }

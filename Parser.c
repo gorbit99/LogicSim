@@ -77,6 +77,15 @@ void parser_handle_operation(Operation *op, bool *in, bool *out) {
     }
 }
 
+void parser_run_assign(Assign *assign, bool *in, bool *out) {
+    parser_handle_operation(assign->op, in, &out[assign->outPins[0]]);
+}
+
+void parser_run_function(FunctionData *function, bool *in, bool *out) {
+    for (int i = 0; i < function->assignC; i++)
+        parser_run_assign(&function->assigns[i], in, out);
+}
+
 Operation *parser_string_to_op(char *str) {
     int sp = 0;
     Operation stack[512];
@@ -182,6 +191,8 @@ Operation *parser_string_to_op(char *str) {
                 opStack[sp - 1] = op;
                 break;
             }
+			default:
+				break;
         }
     }
     return opStack[0];
