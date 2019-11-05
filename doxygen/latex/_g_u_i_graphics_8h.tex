@@ -1,0 +1,149 @@
+\hypertarget{_g_u_i_graphics_8h}{}\doxysection{G\+U\+I\+Graphics.\+h File Reference}
+\label{_g_u_i_graphics_8h}\index{GUIGraphics.h@{GUIGraphics.h}}
+
+
+Structures and functions related to G\+UI Graphics.  
+
+
+{\ttfamily \#include $<$S\+D\+L.\+h$>$}\newline
+{\ttfamily \#include $<$S\+D\+L\+\_\+image.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Utility.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}}
+\begin{DoxyCompactList}\small\item\em Data for a 9-\/slice texture. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef enum \mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}{Slice\+Type}} \mbox{\hyperlink{_g_u_i_graphics_8h_a2aed74f51aa51f0ebc2c8a8d3b2f4833}{Slice\+Type}}
+\begin{DoxyCompactList}\small\item\em Type of a 9-\/slice texture. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}} \mbox{\hyperlink{_g_u_i_graphics_8h_a894006e356ddbf8f02b6dccf31ecc288}{N\+Slice\+Texture}}
+\begin{DoxyCompactList}\small\item\em Data for a 9-\/slice texture. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}{Slice\+Type}} \{ \mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71ae5146457bd14e610516e161fa78d8ee0}{S\+T\+\_\+\+C\+L\+A\+MP}}, 
+\mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71a77bc7e40d45c069d72690035e46a6cc2}{S\+T\+\_\+\+R\+E\+P\+E\+AT}}
+ \}
+\begin{DoxyCompactList}\small\item\em Type of a 9-\/slice texture. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}} \mbox{\hyperlink{_g_u_i_graphics_8h_aae90b8c38dc256aa8699f18677860d54}{guigfx\+\_\+create\+\_\+nslice}} (char $\ast$path, \mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}{Slice\+Type}} type, int x1, int y1, int x2, int y2, S\+D\+L\+\_\+\+Renderer $\ast$renderer)
+\begin{DoxyCompactList}\small\item\em Create 9-\/slice texture. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{_g_u_i_graphics_8h_a3e60402190299fbe90967fa90fdcdc93}{guigfx\+\_\+render\+\_\+9slice}} (\mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}} $\ast$data, S\+D\+L\+\_\+\+Rect rect, S\+D\+L\+\_\+\+Renderer $\ast$renderer)
+\begin{DoxyCompactList}\small\item\em Render 9-\/slice texture into given area. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structures and functions related to G\+UI Graphics. 
+
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/11-\/05
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{_g_u_i_graphics_8h_a894006e356ddbf8f02b6dccf31ecc288}\label{_g_u_i_graphics_8h_a894006e356ddbf8f02b6dccf31ecc288}} 
+\index{GUIGraphics.h@{GUIGraphics.h}!NSliceTexture@{NSliceTexture}}
+\index{NSliceTexture@{NSliceTexture}!GUIGraphics.h@{GUIGraphics.h}}
+\doxysubsubsection{\texorpdfstring{NSliceTexture}{NSliceTexture}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}}  \mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}}}
+
+
+
+Data for a 9-\/slice texture. 
+
+\mbox{\Hypertarget{_g_u_i_graphics_8h_a2aed74f51aa51f0ebc2c8a8d3b2f4833}\label{_g_u_i_graphics_8h_a2aed74f51aa51f0ebc2c8a8d3b2f4833}} 
+\index{GUIGraphics.h@{GUIGraphics.h}!SliceType@{SliceType}}
+\index{SliceType@{SliceType}!GUIGraphics.h@{GUIGraphics.h}}
+\doxysubsubsection{\texorpdfstring{SliceType}{SliceType}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}{Slice\+Type}}  \mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}{Slice\+Type}}}
+
+
+
+Type of a 9-\/slice texture. 
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}\label{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}} 
+\index{GUIGraphics.h@{GUIGraphics.h}!SliceType@{SliceType}}
+\index{SliceType@{SliceType}!GUIGraphics.h@{GUIGraphics.h}}
+\doxysubsubsection{\texorpdfstring{SliceType}{SliceType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}{Slice\+Type}}}
+
+
+
+Type of a 9-\/slice texture. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ST\_CLAMP@{ST\_CLAMP}!GUIGraphics.h@{GUIGraphics.h}}\index{GUIGraphics.h@{GUIGraphics.h}!ST\_CLAMP@{ST\_CLAMP}}}\mbox{\Hypertarget{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71ae5146457bd14e610516e161fa78d8ee0}\label{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71ae5146457bd14e610516e161fa78d8ee0}} 
+S\+T\+\_\+\+C\+L\+A\+MP&Clamp the texture to the edges \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ST\_REPEAT@{ST\_REPEAT}!GUIGraphics.h@{GUIGraphics.h}}\index{GUIGraphics.h@{GUIGraphics.h}!ST\_REPEAT@{ST\_REPEAT}}}\mbox{\Hypertarget{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71a77bc7e40d45c069d72690035e46a6cc2}\label{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71a77bc7e40d45c069d72690035e46a6cc2}} 
+S\+T\+\_\+\+R\+E\+P\+E\+AT&Repeat texture over the given area \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{_g_u_i_graphics_8h_aae90b8c38dc256aa8699f18677860d54}\label{_g_u_i_graphics_8h_aae90b8c38dc256aa8699f18677860d54}} 
+\index{GUIGraphics.h@{GUIGraphics.h}!guigfx\_create\_nslice@{guigfx\_create\_nslice}}
+\index{guigfx\_create\_nslice@{guigfx\_create\_nslice}!GUIGraphics.h@{GUIGraphics.h}}
+\doxysubsubsection{\texorpdfstring{guigfx\_create\_nslice()}{guigfx\_create\_nslice()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}} guigfx\+\_\+create\+\_\+nslice (\begin{DoxyParamCaption}\item[{char $\ast$}]{path,  }\item[{\mbox{\hyperlink{_g_u_i_graphics_8h_a8fc5fd31653a387f7430d29863620f71}{Slice\+Type}}}]{type,  }\item[{int}]{x1,  }\item[{int}]{y1,  }\item[{int}]{x2,  }\item[{int}]{y2,  }\item[{S\+D\+L\+\_\+\+Renderer $\ast$}]{renderer }\end{DoxyParamCaption})}
+
+
+
+Create 9-\/slice texture. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Path to load image from \\
+\hline
+{\em type} & Type of the texture \\
+\hline
+{\em x1} & First vertical slice x position \\
+\hline
+{\em y1} & First horizontal slice y position \\
+\hline
+{\em x2} & Second vertical slice x position \\
+\hline
+{\em y2} & Second horizontal slice y position \\
+\hline
+{\em renderer} & Renderer to send texture to \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}} Resulting 9-\/slice texture 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_g_u_i_graphics_8h_a3e60402190299fbe90967fa90fdcdc93}\label{_g_u_i_graphics_8h_a3e60402190299fbe90967fa90fdcdc93}} 
+\index{GUIGraphics.h@{GUIGraphics.h}!guigfx\_render\_9slice@{guigfx\_render\_9slice}}
+\index{guigfx\_render\_9slice@{guigfx\_render\_9slice}!GUIGraphics.h@{GUIGraphics.h}}
+\doxysubsubsection{\texorpdfstring{guigfx\_render\_9slice()}{guigfx\_render\_9slice()}}
+{\footnotesize\ttfamily void guigfx\+\_\+render\+\_\+9slice (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_n_slice_texture}{N\+Slice\+Texture}} $\ast$}]{data,  }\item[{S\+D\+L\+\_\+\+Rect}]{rect,  }\item[{S\+D\+L\+\_\+\+Renderer $\ast$}]{renderer }\end{DoxyParamCaption})}
+
+
+
+Render 9-\/slice texture into given area. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Texture to render \\
+\hline
+{\em rect} & Rect to render to \\
+\hline
+{\em renderer} & Renderer to render with \\
+\hline
+\end{DoxyParams}

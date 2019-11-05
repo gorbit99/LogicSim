@@ -1,19 +1,51 @@
 \hypertarget{struct_connection}{}\doxysection{Connection Struct Reference}
 \label{struct_connection}\index{Connection@{Connection}}
+
+
+Structure holding information about a connection.  
+
+
+
+
+{\ttfamily \#include $<$Wire.\+h$>$}
+
 \doxysubsection*{Data Fields}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{struct_connection_a76ec6b5abe73168d8cad263d745524b3}\label{struct_connection_a76ec6b5abe73168d8cad263d745524b3}} 
-\mbox{\hyperlink{struct_node}{Node}} $\ast$ {\bfseries dest}
+\mbox{\hyperlink{struct_node}{Node}} $\ast$ \mbox{\hyperlink{struct_connection_a76ec6b5abe73168d8cad263d745524b3}{dest}}
 \item 
-\mbox{\Hypertarget{struct_connection_af5ebb4fe8c6253d3314a8f5f6ea61e9f}\label{struct_connection_af5ebb4fe8c6253d3314a8f5f6ea61e9f}} 
-int {\bfseries pin}
+int \mbox{\hyperlink{struct_connection_af5ebb4fe8c6253d3314a8f5f6ea61e9f}{pin}}
 \item 
-\mbox{\Hypertarget{struct_connection_ad5fa49513a0113502e43e4e0403f496d}\label{struct_connection_ad5fa49513a0113502e43e4e0403f496d}} 
-\mbox{\hyperlink{struct_component_data}{Component\+Data}} {\bfseries wire\+Comp}
+\mbox{\hyperlink{struct_component_data}{Component\+Data}} \mbox{\hyperlink{struct_connection_ad5fa49513a0113502e43e4e0403f496d}{wire\+Comp}}
 \end{DoxyCompactItemize}
 
 
+\doxysubsection{Detailed Description}
+Structure holding information about a connection. 
+
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{struct_connection_a76ec6b5abe73168d8cad263d745524b3}\label{struct_connection_a76ec6b5abe73168d8cad263d745524b3}} 
+\index{Connection@{Connection}!dest@{dest}}
+\index{dest@{dest}!Connection@{Connection}}
+\doxysubsubsection{\texorpdfstring{dest}{dest}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_node}{Node}}$\ast$ Connection\+::dest}
+
+Destination node \mbox{\Hypertarget{struct_connection_af5ebb4fe8c6253d3314a8f5f6ea61e9f}\label{struct_connection_af5ebb4fe8c6253d3314a8f5f6ea61e9f}} 
+\index{Connection@{Connection}!pin@{pin}}
+\index{pin@{pin}!Connection@{Connection}}
+\doxysubsubsection{\texorpdfstring{pin}{pin}}
+{\footnotesize\ttfamily int Connection\+::pin}
+
+Destination pin \mbox{\Hypertarget{struct_connection_ad5fa49513a0113502e43e4e0403f496d}\label{struct_connection_ad5fa49513a0113502e43e4e0403f496d}} 
+\index{Connection@{Connection}!wireComp@{wireComp}}
+\index{wireComp@{wireComp}!Connection@{Connection}}
+\doxysubsubsection{\texorpdfstring{wireComp}{wireComp}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_component_data}{Component\+Data}} Connection\+::wire\+Comp}
+
+\mbox{\hyperlink{struct_wire}{Wire}} corresponding to the connection 
+
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-Wire.\+h\end{DoxyCompactItemize}
+\mbox{\hyperlink{_wire_8h}{Wire.\+h}}\end{DoxyCompactItemize}

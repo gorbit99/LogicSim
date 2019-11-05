@@ -66,49 +66,71 @@ $(function() {
 <div class="title">Node.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef HOMEWORK_NODE_H</span></div>
+<a href="_node_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef HOMEWORK_NODE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define HOMEWORK_NODE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;Component.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;Input.h&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;Wire.h&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">struct </span><a class="code" href="struct_node.html">Node</a>;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct_wire.html">Wire</a> <a class="code" href="struct_wire.html">Wire</a>;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="struct_node.html">   11</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct_node.html">Node</a> {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <a class="code" href="struct_component_data.html">ComponentData</a> component;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <a class="code" href="struct_wire.html">Wire</a> *wires;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">bool</span> *inValues;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">bool</span> *nextInValues;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">bool</span> *outValues;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    SDL_Renderer *renderer;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;} <a class="code" href="struct_node.html">Node</a>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<a class="code" href="struct_node.html">Node</a> node_create(<span class="keywordtype">char</span> *compName, <a class="code" href="struct_point.html">Point</a> pos, TTF_Font *font, SDL_Renderer *renderer);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<a class="code" href="struct_node.html">Node</a> node_create_LED(<a class="code" href="struct_point.html">Point</a> pos, SDL_Renderer *renderer);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<a class="code" href="struct_node.html">Node</a> node_create_switch(<a class="code" href="struct_point.html">Point</a> pos, SDL_Renderer *renderer);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keywordtype">void</span> node_add_connection(<a class="code" href="struct_node.html">Node</a> *node, <span class="keywordtype">int</span> pinA, <a class="code" href="struct_node.html">Node</a> *other, <span class="keywordtype">int</span> pinB);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">void</span> node_set_inval(<a class="code" href="struct_node.html">Node</a> *node, <span class="keywordtype">int</span> pinIn, <span class="keywordtype">bool</span> value);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordtype">void</span> node_update_values(<a class="code" href="struct_node.html">Node</a> *node);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keywordtype">void</span> node_run(<a class="code" href="struct_node.html">Node</a> *node);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keywordtype">void</span> node_render(<a class="code" href="struct_node.html">Node</a> *node, <a class="code" href="struct_point.html">Point</a> camPos);</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_component_8h.html">Component.h</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_input_8h.html">Input.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_wire_8h.html">Wire.h</a>&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">struct </span><a class="code" href="struct_node.html">Node</a>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct_wire.html">Wire</a> <a class="code" href="struct_wire.html">Wire</a>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="struct_node.html">   25</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct_node.html">Node</a> {</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="struct_node.html#a14f9ab93c8d5708cea98f4dc8c4560c4">   26</a></span>&#160;    <a class="code" href="struct_component_data.html">ComponentData</a> <a class="code" href="struct_node.html#a14f9ab93c8d5708cea98f4dc8c4560c4">component</a>; </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="struct_node.html#ad09fa4eaeeeeafdfa369b5e32b8e9c52">   27</a></span>&#160;    <a class="code" href="struct_wire.html">Wire</a> *<a class="code" href="struct_node.html#ad09fa4eaeeeeafdfa369b5e32b8e9c52">wires</a>; </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="struct_node.html#abc6f42eea302f44a1c91dda01eac0000">   28</a></span>&#160;    <span class="keywordtype">bool</span> *<a class="code" href="struct_node.html#abc6f42eea302f44a1c91dda01eac0000">inValues</a>; </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="struct_node.html#a51e6640c08b4199be9bdce3ca14330ec">   29</a></span>&#160;    <span class="keywordtype">bool</span> *<a class="code" href="struct_node.html#a51e6640c08b4199be9bdce3ca14330ec">nextInValues</a>; </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="struct_node.html#a874a358a49b6abdb4f7b34654c1ff4b5">   30</a></span>&#160;    <span class="keywordtype">bool</span> *<a class="code" href="struct_node.html#a874a358a49b6abdb4f7b34654c1ff4b5">outValues</a>; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="struct_node.html#abe7396487858a0633d8915fde0228ba2">   31</a></span>&#160;    SDL_Renderer *<a class="code" href="struct_node.html#abe7396487858a0633d8915fde0228ba2">renderer</a>; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;} <a class="code" href="_node_8h.html#a0466fc5f1bc9e6de776e48149b19c471">Node</a>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keywordtype">void</span> node_free(<a class="code" href="struct_node.html">Node</a> *node);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keywordtype">bool</span> node_is_over(<a class="code" href="struct_node.html">Node</a> *node, <a class="code" href="struct_point.html">Point</a> p);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#endif //HOMEWORK_NODE_H</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<a class="code" href="struct_node.html">Node</a> <a class="code" href="_node_8h.html#a24bedf385890b8c173bcde5aa392618b">node_create</a>(<span class="keywordtype">char</span> *compName, <a class="code" href="struct_point.html">Point</a> pos, TTF_Font *font, SDL_Renderer *renderer);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<a class="code" href="struct_node.html">Node</a> <a class="code" href="_node_8h.html#a4b886f0943289ce514357f3edf699be8">node_create_LED</a>(<a class="code" href="struct_point.html">Point</a> pos, SDL_Renderer *renderer);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<a class="code" href="struct_node.html">Node</a> <a class="code" href="_node_8h.html#a396cc95927a8b21f9b3c0020a5eb79d4">node_create_switch</a>(<a class="code" href="struct_point.html">Point</a> pos, SDL_Renderer *renderer);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_node_8h.html#a5e15613bd91289808b5686ba895e0a43">node_add_connection</a>(<a class="code" href="struct_node.html">Node</a> *node, <span class="keywordtype">int</span> pinA, <a class="code" href="struct_node.html">Node</a> *other, <span class="keywordtype">int</span> pinB);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_node_8h.html#ae0fcfa0cb06bb629c43585a436c947cf">node_set_inval</a>(<a class="code" href="struct_node.html">Node</a> *node, <span class="keywordtype">int</span> pinIn, <span class="keywordtype">bool</span> value);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_node_8h.html#a72f88583e85b0c61d167df0a623d0a8c">node_update_values</a>(<a class="code" href="struct_node.html">Node</a> *node);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_node_8h.html#a925b966c9a658934541197abf13e9deb">node_run</a>(<a class="code" href="struct_node.html">Node</a> *node);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_node_8h.html#af2ae9e273dc6e7c4f4d651df53c8b1ec">node_render</a>(<a class="code" href="struct_node.html">Node</a> *node, <a class="code" href="struct_point.html">Point</a> camPos);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_node_8h.html#a9158549a90b34b758a3371f60e93a65b">node_free</a>(<a class="code" href="struct_node.html">Node</a> *node);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="_node_8h.html#aa5619ba77402bd8d8aaf122015b81a02">node_is_over</a>(<a class="code" href="struct_node.html">Node</a> *node, <a class="code" href="struct_point.html">Point</a> p);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">#endif //HOMEWORK_NODE_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astruct_component_data_html"><div class="ttname"><a href="struct_component_data.html">ComponentData</a></div><div class="ttdef"><b>Definition:</b> Component.h:39</div></div>
-<div class="ttc" id="astruct_node_html"><div class="ttname"><a href="struct_node.html">Node</a></div><div class="ttdef"><b>Definition:</b> Node.h:11</div></div>
-<div class="ttc" id="astruct_wire_html"><div class="ttname"><a href="struct_wire.html">Wire</a></div><div class="ttdef"><b>Definition:</b> Wire.h:14</div></div>
-<div class="ttc" id="astruct_point_html"><div class="ttname"><a href="struct_point.html">Point</a></div><div class="ttdef"><b>Definition:</b> Graphics.h:13</div></div>
+<div class="ttc" id="a_input_8h_html"><div class="ttname"><a href="_input_8h.html">Input.h</a></div><div class="ttdoc">Structures and functions related to input.</div></div>
+<div class="ttc" id="a_node_8h_html_af2ae9e273dc6e7c4f4d651df53c8b1ec"><div class="ttname"><a href="_node_8h.html#af2ae9e273dc6e7c4f4d651df53c8b1ec">node_render</a></div><div class="ttdeci">void node_render(Node *node, Point camPos)</div><div class="ttdoc">Render node.</div><div class="ttdef"><b>Definition:</b> Node.c:69</div></div>
+<div class="ttc" id="astruct_component_data_html"><div class="ttname"><a href="struct_component_data.html">ComponentData</a></div><div class="ttdoc">Component.</div><div class="ttdef"><b>Definition:</b> Component.h:69</div></div>
+<div class="ttc" id="astruct_node_html_abc6f42eea302f44a1c91dda01eac0000"><div class="ttname"><a href="struct_node.html#abc6f42eea302f44a1c91dda01eac0000">Node::inValues</a></div><div class="ttdeci">bool * inValues</div><div class="ttdef"><b>Definition:</b> Node.h:28</div></div>
+<div class="ttc" id="a_component_8h_html"><div class="ttname"><a href="_component_8h.html">Component.h</a></div><div class="ttdoc">Structures and functions related to components.</div></div>
+<div class="ttc" id="a_node_8h_html_a396cc95927a8b21f9b3c0020a5eb79d4"><div class="ttname"><a href="_node_8h.html#a396cc95927a8b21f9b3c0020a5eb79d4">node_create_switch</a></div><div class="ttdeci">Node node_create_switch(Point pos, SDL_Renderer *renderer)</div><div class="ttdoc">Create a switch node.</div><div class="ttdef"><b>Definition:</b> Node.c:29</div></div>
+<div class="ttc" id="a_wire_8h_html"><div class="ttname"><a href="_wire_8h.html">Wire.h</a></div><div class="ttdoc">Functions and structures related to wiring between nodes.</div></div>
+<div class="ttc" id="a_node_8h_html_a24bedf385890b8c173bcde5aa392618b"><div class="ttname"><a href="_node_8h.html#a24bedf385890b8c173bcde5aa392618b">node_create</a></div><div class="ttdeci">Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *renderer)</div><div class="ttdoc">Create a generic node given a name.</div><div class="ttdef"><b>Definition:</b> Node.c:15</div></div>
+<div class="ttc" id="astruct_node_html"><div class="ttname"><a href="struct_node.html">Node</a></div><div class="ttdoc">Data about a single node in the logic diagram.</div><div class="ttdef"><b>Definition:</b> Node.h:25</div></div>
+<div class="ttc" id="astruct_node_html_a14f9ab93c8d5708cea98f4dc8c4560c4"><div class="ttname"><a href="struct_node.html#a14f9ab93c8d5708cea98f4dc8c4560c4">Node::component</a></div><div class="ttdeci">ComponentData component</div><div class="ttdef"><b>Definition:</b> Node.h:26</div></div>
+<div class="ttc" id="a_node_8h_html_ae0fcfa0cb06bb629c43585a436c947cf"><div class="ttname"><a href="_node_8h.html#ae0fcfa0cb06bb629c43585a436c947cf">node_set_inval</a></div><div class="ttdeci">void node_set_inval(Node *node, int pinIn, bool value)</div><div class="ttdoc">Set the input value of the node for the next frame.</div><div class="ttdef"><b>Definition:</b> Node.c:40</div></div>
+<div class="ttc" id="astruct_node_html_ad09fa4eaeeeeafdfa369b5e32b8e9c52"><div class="ttname"><a href="struct_node.html#ad09fa4eaeeeeafdfa369b5e32b8e9c52">Node::wires</a></div><div class="ttdeci">Wire * wires</div><div class="ttdef"><b>Definition:</b> Node.h:27</div></div>
+<div class="ttc" id="a_node_8h_html_a925b966c9a658934541197abf13e9deb"><div class="ttname"><a href="_node_8h.html#a925b966c9a658934541197abf13e9deb">node_run</a></div><div class="ttdeci">void node_run(Node *node)</div><div class="ttdoc">Simulate node.</div><div class="ttdef"><b>Definition:</b> Node.c:51</div></div>
+<div class="ttc" id="astruct_node_html_abe7396487858a0633d8915fde0228ba2"><div class="ttname"><a href="struct_node.html#abe7396487858a0633d8915fde0228ba2">Node::renderer</a></div><div class="ttdeci">SDL_Renderer * renderer</div><div class="ttdef"><b>Definition:</b> Node.h:31</div></div>
+<div class="ttc" id="astruct_wire_html"><div class="ttname"><a href="struct_wire.html">Wire</a></div><div class="ttdoc">Structure holding information about a wire.</div><div class="ttdef"><b>Definition:</b> Wire.h:32</div></div>
+<div class="ttc" id="a_node_8h_html_a5e15613bd91289808b5686ba895e0a43"><div class="ttname"><a href="_node_8h.html#a5e15613bd91289808b5686ba895e0a43">node_add_connection</a></div><div class="ttdeci">void node_add_connection(Node *node, int pinA, Node *other, int pinB)</div><div class="ttdoc">Connect node to given node.</div><div class="ttdef"><b>Definition:</b> Node.c:36</div></div>
+<div class="ttc" id="astruct_node_html_a874a358a49b6abdb4f7b34654c1ff4b5"><div class="ttname"><a href="struct_node.html#a874a358a49b6abdb4f7b34654c1ff4b5">Node::outValues</a></div><div class="ttdeci">bool * outValues</div><div class="ttdef"><b>Definition:</b> Node.h:30</div></div>
+<div class="ttc" id="a_node_8h_html_a72f88583e85b0c61d167df0a623d0a8c"><div class="ttname"><a href="_node_8h.html#a72f88583e85b0c61d167df0a623d0a8c">node_update_values</a></div><div class="ttdeci">void node_update_values(Node *node)</div><div class="ttdoc">Load input values for the next frame.</div><div class="ttdef"><b>Definition:</b> Node.c:46</div></div>
+<div class="ttc" id="astruct_node_html_a51e6640c08b4199be9bdce3ca14330ec"><div class="ttname"><a href="struct_node.html#a51e6640c08b4199be9bdce3ca14330ec">Node::nextInValues</a></div><div class="ttdeci">bool * nextInValues</div><div class="ttdef"><b>Definition:</b> Node.h:29</div></div>
+<div class="ttc" id="a_node_8h_html_a9158549a90b34b758a3371f60e93a65b"><div class="ttname"><a href="_node_8h.html#a9158549a90b34b758a3371f60e93a65b">node_free</a></div><div class="ttdeci">void node_free(Node *node)</div><div class="ttdoc">Free node.</div><div class="ttdef"><b>Definition:</b> Node.c:57</div></div>
+<div class="ttc" id="a_node_8h_html_a4b886f0943289ce514357f3edf699be8"><div class="ttname"><a href="_node_8h.html#a4b886f0943289ce514357f3edf699be8">node_create_LED</a></div><div class="ttdeci">Node node_create_LED(Point pos, SDL_Renderer *renderer)</div><div class="ttdoc">Create an LED node.</div><div class="ttdef"><b>Definition:</b> Node.c:22</div></div>
+<div class="ttc" id="a_node_8h_html_a0466fc5f1bc9e6de776e48149b19c471"><div class="ttname"><a href="_node_8h.html#a0466fc5f1bc9e6de776e48149b19c471">Node</a></div><div class="ttdeci">struct Node Node</div><div class="ttdoc">Data about a single node in the logic diagram.</div></div>
+<div class="ttc" id="astruct_point_html"><div class="ttname"><a href="struct_point.html">Point</a></div><div class="ttdoc">Represents a point.</div><div class="ttdef"><b>Definition:</b> Graphics.h:27</div></div>
+<div class="ttc" id="a_node_8h_html_aa5619ba77402bd8d8aaf122015b81a02"><div class="ttname"><a href="_node_8h.html#aa5619ba77402bd8d8aaf122015b81a02">node_is_over</a></div><div class="ttdeci">bool node_is_over(Node *node, Point p)</div><div class="ttdoc">Is a point over a node.</div><div class="ttdef"><b>Definition:</b> Node.c:93</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

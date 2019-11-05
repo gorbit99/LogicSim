@@ -66,20 +66,24 @@ $(function() {
 <div class="title">Window.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef HOMEWORK_WINDOW_H</span></div>
+<a href="_window_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef HOMEWORK_WINDOW_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define HOMEWORK_WINDOW_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;SDL.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;SDL_ttf.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;time.h&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;Utility.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keywordtype">bool</span> window_init(SDL_Window **window, SDL_Renderer **renderer, <span class="keyword">const</span> <span class="keywordtype">char</span> *title, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h, <span class="keywordtype">int</span> windowFlags, <span class="keywordtype">int</span> rendererFlags);</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keywordtype">void</span> window_cleanup(SDL_Window *window, SDL_Renderer *renderer);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#endif //HOMEWORK_WINDOW_H</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;SDL.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;SDL_ttf.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;time.h&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_utility_8h.html">Utility.h</a>&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="_window_8h.html#aa226b0556c9911e5e6ef36592559b0d6">window_init</a>(SDL_Window **window, SDL_Renderer **renderer, <span class="keyword">const</span> <span class="keywordtype">char</span> *title, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h, <span class="keywordtype">int</span> windowFlags, <span class="keywordtype">int</span> rendererFlags);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_window_8h.html#a2ddad779418ef9f9e05a7919e0406316">window_cleanup</a>(SDL_Window *window, SDL_Renderer *renderer);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif //HOMEWORK_WINDOW_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="a_window_8h_html_a2ddad779418ef9f9e05a7919e0406316"><div class="ttname"><a href="_window_8h.html#a2ddad779418ef9f9e05a7919e0406316">window_cleanup</a></div><div class="ttdeci">void window_cleanup(SDL_Window *window, SDL_Renderer *renderer)</div><div class="ttdoc">Cleanup window.</div><div class="ttdef"><b>Definition:</b> Window.c:48</div></div>
+<div class="ttc" id="a_window_8h_html_aa226b0556c9911e5e6ef36592559b0d6"><div class="ttname"><a href="_window_8h.html#aa226b0556c9911e5e6ef36592559b0d6">window_init</a></div><div class="ttdeci">bool window_init(SDL_Window **window, SDL_Renderer **renderer, const char *title, int w, int h, int windowFlags, int rendererFlags)</div><div class="ttdoc">Initialize SDL Window and Renderer.</div><div class="ttdef"><b>Definition:</b> Window.c:15</div></div>
+<div class="ttc" id="a_utility_8h_html"><div class="ttname"><a href="_utility_8h.html">Utility.h</a></div><div class="ttdoc">Utility functions for other header files.</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

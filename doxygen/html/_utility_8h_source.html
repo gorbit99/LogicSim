@@ -66,23 +66,29 @@ $(function() {
 <div class="title">Utility.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef HOMEWORK_UTILITY_H</span></div>
+<a href="_utility_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef HOMEWORK_UTILITY_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define HOMEWORK_UTILITY_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;SDL.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#define log_error(fmt, ...) (log_error_base(__FILE__, __LINE__, fmt, ##__VA_ARGS__))</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define min(a, b) ((a) &lt; (b) ? (a) : (b))</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define max(a, b) ((a) &gt; (b) ? (a) : (b))</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;SDL_Surface *get_rgba_surface(<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keywordtype">char</span> *file_from_path(<span class="keywordtype">char</span> *path);</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keywordtype">void</span> log_error_base(<span class="keyword">const</span> <span class="keywordtype">char</span> *file, <span class="keywordtype">int</span> line, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#endif //HOMEWORK_UTILITY_H</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;SDL.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="_utility_8h.html#a887f83dbb884a13949e4f2ad710e5ddf">   21</a></span>&#160;<span class="preprocessor">#define log_error(fmt, ...) (log_error_base(__FILE__, __LINE__, fmt, ##__VA_ARGS__))</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="_utility_8h.html#ac6afabdc09a49a433ee19d8a9486056d">   27</a></span>&#160;<span class="preprocessor">#define min(a, b) ((a) &lt; (b) ? (a) : (b))</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="_utility_8h.html#affe776513b24d84b39af8ab0930fef7f">   33</a></span>&#160;<span class="preprocessor">#define max(a, b) ((a) &gt; (b) ? (a) : (b))</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;SDL_Surface *<a class="code" href="_utility_8h.html#ae369214608a89dd474b1760e8a930e5d">get_rgba_surface</a>(<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">char</span> *<a class="code" href="_utility_8h.html#a21b2261dc9c958a46aeef97375ea9320">file_from_path</a>(<span class="keywordtype">char</span> *path);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keywordtype">void</span> <a class="code" href="_utility_8h.html#a7e48ca4a3c190db2337dccb670446d9c">log_error_base</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *file, <span class="keywordtype">int</span> line, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#endif //HOMEWORK_UTILITY_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="a_utility_8h_html_ae369214608a89dd474b1760e8a930e5d"><div class="ttname"><a href="_utility_8h.html#ae369214608a89dd474b1760e8a930e5d">get_rgba_surface</a></div><div class="ttdeci">SDL_Surface * get_rgba_surface(int w, int h)</div><div class="ttdoc">Create an rgba surface.</div><div class="ttdef"><b>Definition:</b> Utility.c:5</div></div>
+<div class="ttc" id="a_utility_8h_html_a7e48ca4a3c190db2337dccb670446d9c"><div class="ttname"><a href="_utility_8h.html#a7e48ca4a3c190db2337dccb670446d9c">log_error_base</a></div><div class="ttdeci">void log_error_base(const char *file, int line, const char *fmt,...)</div><div class="ttdoc">Base function for logging errors.</div><div class="ttdef"><b>Definition:</b> Utility.c:19</div></div>
+<div class="ttc" id="a_utility_8h_html_a21b2261dc9c958a46aeef97375ea9320"><div class="ttname"><a href="_utility_8h.html#a21b2261dc9c958a46aeef97375ea9320">file_from_path</a></div><div class="ttdeci">char * file_from_path(char *path)</div><div class="ttdoc">Get the file name from a path.</div><div class="ttdef"><b>Definition:</b> Utility.c:10</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
