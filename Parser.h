@@ -59,6 +59,7 @@ typedef struct Operation {
  */
 typedef struct Assign {
     int *outPins; /**< Ids of the output pins */
+    int outNum;
     Operation *op; /**< Operation */
 } Assign;
 
@@ -79,6 +80,7 @@ typedef struct FunctionData {
  */
 typedef struct Module {
     FunctionData function;
+    int *inPins;
 } Module;
 
 /**
@@ -123,6 +125,14 @@ void parser_run_function(FunctionData *function, bool *in, bool *out);
  * @return Operation* Resulting operation
  */
 Operation *parser_string_to_op(char *str);
+
+/**
+ * @brief Convert C string to module
+ * 
+ * @param str String to convert
+ * @return Operation* Resulting operation
+ */
+Operation *parser_string_to_module(char *str);
 
 /**
  * @brief Free operation
