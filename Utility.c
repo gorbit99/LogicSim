@@ -21,6 +21,6 @@ void log_error_base(const char *file, int line, const char *fmt, ...) {
 	char *fileName = file_from_path((char *)file);
 	SDL_LogMessage(SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_CRITICAL, "Error in file %s on line %d:\n", fileName, line);
 	va_start(valist, fmt);
-	SDL_LogMessageV(SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_CRITICAL, fmt, valist);
+	SDL_LogMessageV(SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_ERROR, fmt, valist);
 	va_end(valist);
 }

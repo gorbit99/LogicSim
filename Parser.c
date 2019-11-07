@@ -43,6 +43,7 @@ void __parse_assign(Assign *result, char *str) {
 	    char *operation = (char *)malloc(sizeof(char) * strlen(str));
 	    strcpy(operation, str + offset);
 	    result->op = parser_string_to_module(operation);
+	    free(operation);
     }
 }
 
@@ -145,6 +146,8 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
 				if (pins[i].type == AP_WIRE)
 					wires[pins[i].pinId] = moduleOut[i];
 			}
+			free(moduleIn);
+			free(moduleOut);
 			break;
 		}
 		case OP_LPAREN:

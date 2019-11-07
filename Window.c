@@ -6,7 +6,8 @@ void __log_output_function(void *unused, int category, SDL_LogPriority priority,
 	FILE *file = fopen("log.txt", "a");
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
-	fprintf(file, "----------%d-%02d-%02d %02d:%02d:%02d----------\n", tm.tm_year + 1900,
+	if (priority == SDL_LOG_PRIORITY_CRITICAL)
+		fprintf(file, "----------%d-%02d-%02d %02d:%02d:%02d----------\n", tm.tm_year + 1900,
 			tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 	fprintf(file, "%s", message);
 	fprintf(file, "\n");
