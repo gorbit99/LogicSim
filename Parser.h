@@ -143,7 +143,7 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
  * @brief Run a single assignment
  * 
  * @param assign Assignment to run
- * @paramconst  in Input values
+ * @param  in Input values
  * @param wires State of the inner wires
  * @param out Output values
  */

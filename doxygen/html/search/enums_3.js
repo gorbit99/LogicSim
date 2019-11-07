@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['slicetype_362',['SliceType',['../_g_u_i_graphics_8h.html#a8fc5fd31653a387f7430d29863620f71',1,'GUIGraphics.h']]]
+  ['operationtype_384',['OperationType',['../_parser_8h.html#a9a2c9c31d675b34f6ec35cc1ca89e047',1,'Parser.h']]]
 ];

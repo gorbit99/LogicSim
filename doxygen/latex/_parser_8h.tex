@@ -17,10 +17,14 @@ struct \mbox{\hyperlink{struct_operation}{Operation}}
 \begin{DoxyCompactList}\small\item\em Structure holding data for an operation. \end{DoxyCompactList}\item 
 union \mbox{\hyperlink{union_operation_1_1_a}{Operation\+::A}}
 \begin{DoxyCompactList}\small\item\em First operand. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_assign_pin}{Assign\+Pin}}
+\begin{DoxyCompactList}\small\item\em Struct holding information about a pin in an assignment. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{struct_assign}{Assign}}
 \begin{DoxyCompactList}\small\item\em Struct holding assignment data. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{struct_function_data}{Function\+Data}}
 \begin{DoxyCompactList}\small\item\em Structure holding function data. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_module_pin}{Module\+Pin}}
+\begin{DoxyCompactList}\small\item\em Struct holding information about a module pin. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{struct_module}{Module}}
 \begin{DoxyCompactList}\small\item\em Structure holding data for a module. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Typedefs}
@@ -30,10 +34,22 @@ typedef enum \mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047}{Oper
 \begin{DoxyCompactList}\small\item\em Type of an operation. \end{DoxyCompactList}\item 
 typedef struct \mbox{\hyperlink{struct_operation}{Operation}} \mbox{\hyperlink{_parser_8h_ad22f5ac06bffaeea6e8c2b85a2c7ecdf}{Operation}}
 \begin{DoxyCompactList}\small\item\em Structure holding data for an operation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{_parser_8h_a6b8f28807b71fcd3256b39df475caaec}\label{_parser_8h_a6b8f28807b71fcd3256b39df475caaec}} 
+typedef enum \mbox{\hyperlink{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4}{A\+P\+Type}} \mbox{\hyperlink{_parser_8h_a6b8f28807b71fcd3256b39df475caaec}{A\+P\+Type}}
+\begin{DoxyCompactList}\small\item\em Represents the type of a pin in an assignment. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{_parser_8h_ae1bbc56a1c54a3d69d6f08d63d7fdcb3}\label{_parser_8h_ae1bbc56a1c54a3d69d6f08d63d7fdcb3}} 
+typedef struct \mbox{\hyperlink{struct_assign_pin}{Assign\+Pin}} \mbox{\hyperlink{_parser_8h_ae1bbc56a1c54a3d69d6f08d63d7fdcb3}{Assign\+Pin}}
+\begin{DoxyCompactList}\small\item\em Struct holding information about a pin in an assignment. \end{DoxyCompactList}\item 
 typedef struct \mbox{\hyperlink{struct_assign}{Assign}} \mbox{\hyperlink{_parser_8h_aa247e8c8ac94b9780c453b041eb4fa05}{Assign}}
 \begin{DoxyCompactList}\small\item\em Struct holding assignment data. \end{DoxyCompactList}\item 
 typedef struct \mbox{\hyperlink{struct_function_data}{Function\+Data}} \mbox{\hyperlink{_parser_8h_a6b050985bcadcde93420e7411bab5ffb}{Function\+Data}}
 \begin{DoxyCompactList}\small\item\em Structure holding function data. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{_parser_8h_ad924432af70016374a8c8e4aad8431ae}\label{_parser_8h_ad924432af70016374a8c8e4aad8431ae}} 
+typedef enum \mbox{\hyperlink{_parser_8h_a33f3de711367ebfc4f62642176a23714}{M\+P\+Type}} \mbox{\hyperlink{_parser_8h_ad924432af70016374a8c8e4aad8431ae}{M\+P\+Type}}
+\begin{DoxyCompactList}\small\item\em Type of a module pin. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{_parser_8h_a9fe6eb5b2c6fcb705130e9d5d28068f6}\label{_parser_8h_a9fe6eb5b2c6fcb705130e9d5d28068f6}} 
+typedef struct \mbox{\hyperlink{struct_module_pin}{Module\+Pin}} \mbox{\hyperlink{_parser_8h_a9fe6eb5b2c6fcb705130e9d5d28068f6}{Module\+Pin}}
+\begin{DoxyCompactList}\small\item\em Struct holding information about a module pin. \end{DoxyCompactList}\item 
 typedef struct \mbox{\hyperlink{struct_module}{Module}} \mbox{\hyperlink{_parser_8h_a791a4cc185565154db9234613c7c919e}{Module}}
 \begin{DoxyCompactList}\small\item\em Structure holding data for a module. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Enumerations}
@@ -46,24 +62,39 @@ enum \mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047}{Operation\+T
 \mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047a36a6b73cc4823f54891a013e2cc760d1}{O\+P\+\_\+\+N\+OT}}, 
 \newline
 \mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047ad962c9805bc7759510ef20ed2c9165f4}{O\+P\+\_\+\+P\+IN}}, 
+\mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047ab8f3df7049b8e5f702e98df0041fb3cc}{O\+P\+\_\+\+W\+I\+RE}}, 
 \mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047a28ee363b44279419901c913f8062ca90}{O\+P\+\_\+\+C\+O\+N\+ST}}, 
 \mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047a17c38a988cf5080355ed77827339a229}{O\+P\+\_\+\+M\+O\+D\+U\+LE}}, 
+\newline
 \mbox{\hyperlink{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047ab2299615231df130d8203f94f19397ce}{O\+P\+\_\+\+L\+P\+A\+R\+EN}}
  \}
-\begin{DoxyCompactList}\small\item\em Type of an operation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Type of an operation. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4}{A\+P\+Type}} \{ \mbox{\hyperlink{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4a4447977919c3441033cd8a0f9837bab2}{A\+P\+\_\+\+P\+IN}}, 
+\mbox{\hyperlink{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4adbc68351fd82dd55cd6de1207a5c4c93}{A\+P\+\_\+\+D\+O\+N\+T\+C\+A\+RE}}, 
+\mbox{\hyperlink{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4a8d67045d688184c91d8cd50a124bb1b7}{A\+P\+\_\+\+W\+I\+RE}}
+ \}
+\begin{DoxyCompactList}\small\item\em Represents the type of a pin in an assignment. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{_parser_8h_a33f3de711367ebfc4f62642176a23714}{M\+P\+Type}} \{ \mbox{\hyperlink{_parser_8h_a33f3de711367ebfc4f62642176a23714a8c509427c0c540b530e0c725fe98590a}{M\+P\+\_\+\+P\+IN}}, 
+\mbox{\hyperlink{_parser_8h_a33f3de711367ebfc4f62642176a23714ad086e3db931c85dfb3da85934d53a895}{M\+P\+\_\+\+W\+I\+RE}}, 
+\mbox{\hyperlink{_parser_8h_a33f3de711367ebfc4f62642176a23714aa23702a3c747e0467ce5787a07f1ac01}{M\+P\+\_\+\+P\+U\+L\+L\+UP}}, 
+\mbox{\hyperlink{_parser_8h_a33f3de711367ebfc4f62642176a23714acec45854709c562ff71f2c1a78c8f513}{M\+P\+\_\+\+P\+U\+L\+L\+D\+O\+WN}}
+ \}
+\begin{DoxyCompactList}\small\item\em Type of a module pin. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\hyperlink{struct_function_data}{Function\+Data}} \mbox{\hyperlink{_parser_8h_ada90ad7b7b6758c6c6bc34bfd234e0ed}{parser\+\_\+load\+\_\+function}} (char $\ast$path)
 \begin{DoxyCompactList}\small\item\em Load a function from file. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{_parser_8h_a034324a71707650c0d1e1da8461d492b}{parser\+\_\+handle\+\_\+operation}} (\mbox{\hyperlink{struct_operation}{Operation}} $\ast$op, bool $\ast$in, bool $\ast$out)
+void \mbox{\hyperlink{_parser_8h_a1b7ea8abcfb42f0572f3670c47f73f6c}{parser\+\_\+handle\+\_\+operation}} (\mbox{\hyperlink{struct_operation}{Operation}} $\ast$op, const bool $\ast$in, bool $\ast$wires, bool $\ast$out, \mbox{\hyperlink{struct_assign_pin}{Assign\+Pin}} $\ast$pins)
 \begin{DoxyCompactList}\small\item\em Handle a single operation. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{_parser_8h_adb2d1ce973d0886a1d545f079d78263a}{parser\+\_\+run\+\_\+assign}} (\mbox{\hyperlink{struct_assign}{Assign}} $\ast$assign, bool $\ast$in, bool $\ast$out)
+void \mbox{\hyperlink{_parser_8h_a2d64a6e1890f368f476427f56d6f8e1f}{parser\+\_\+run\+\_\+assign}} (\mbox{\hyperlink{struct_assign}{Assign}} $\ast$assign, bool $\ast$in, bool $\ast$wires, bool $\ast$out)
 \begin{DoxyCompactList}\small\item\em Run a single assignment. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{_parser_8h_a852f7c91e32c4e2b6b59fb6afb2e7e29}{parser\+\_\+run\+\_\+function}} (\mbox{\hyperlink{struct_function_data}{Function\+Data}} $\ast$function, bool $\ast$in, bool $\ast$out)
 \begin{DoxyCompactList}\small\item\em Run function. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{struct_operation}{Operation}} $\ast$ \mbox{\hyperlink{_parser_8h_a3d81bef59b785d5208647ae03b0ed318}{parser\+\_\+string\+\_\+to\+\_\+op}} (char $\ast$str)
 \begin{DoxyCompactList}\small\item\em Convert C string to operation. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_operation}{Operation}} $\ast$ \mbox{\hyperlink{_parser_8h_a84116bc390e8d2e20ad103f824ecbc76}{parser\+\_\+string\+\_\+to\+\_\+module}} (char $\ast$str)
+\begin{DoxyCompactList}\small\item\em Convert C string to module. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{_parser_8h_a8d083fb7309966334e5005024779b548}{parser\+\_\+free\+\_\+operation}} (\mbox{\hyperlink{struct_operation}{Operation}} $\ast$operation)
 \begin{DoxyCompactList}\small\item\em Free operation. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{_parser_8h_ab25f59894d5d33d79919c4fe830702cc}{parser\+\_\+free\+\_\+assign}} (\mbox{\hyperlink{struct_assign}{Assign}} $\ast$assign)
@@ -140,6 +171,58 @@ Type of an operation.
 
 
 \doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4}\label{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4}} 
+\index{Parser.h@{Parser.h}!APType@{APType}}
+\index{APType@{APType}!Parser.h@{Parser.h}}
+\doxysubsubsection{\texorpdfstring{APType}{APType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4}{A\+P\+Type}}}
+
+
+
+Represents the type of a pin in an assignment. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AP\_PIN@{AP\_PIN}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!AP\_PIN@{AP\_PIN}}}\mbox{\Hypertarget{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4a4447977919c3441033cd8a0f9837bab2}\label{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4a4447977919c3441033cd8a0f9837bab2}} 
+A\+P\+\_\+\+P\+IN&\mbox{\hyperlink{struct_pin}{Pin}} \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AP\_DONTCARE@{AP\_DONTCARE}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!AP\_DONTCARE@{AP\_DONTCARE}}}\mbox{\Hypertarget{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4adbc68351fd82dd55cd6de1207a5c4c93}\label{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4adbc68351fd82dd55cd6de1207a5c4c93}} 
+A\+P\+\_\+\+D\+O\+N\+T\+C\+A\+RE&Disconnected \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AP\_WIRE@{AP\_WIRE}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!AP\_WIRE@{AP\_WIRE}}}\mbox{\Hypertarget{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4a8d67045d688184c91d8cd50a124bb1b7}\label{_parser_8h_a06275d6809519b72ee1a12bf11bea7d4a8d67045d688184c91d8cd50a124bb1b7}} 
+A\+P\+\_\+\+W\+I\+RE&Inner wire \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{_parser_8h_a33f3de711367ebfc4f62642176a23714}\label{_parser_8h_a33f3de711367ebfc4f62642176a23714}} 
+\index{Parser.h@{Parser.h}!MPType@{MPType}}
+\index{MPType@{MPType}!Parser.h@{Parser.h}}
+\doxysubsubsection{\texorpdfstring{MPType}{MPType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_parser_8h_a33f3de711367ebfc4f62642176a23714}{M\+P\+Type}}}
+
+
+
+Type of a module pin. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MP\_PIN@{MP\_PIN}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!MP\_PIN@{MP\_PIN}}}\mbox{\Hypertarget{_parser_8h_a33f3de711367ebfc4f62642176a23714a8c509427c0c540b530e0c725fe98590a}\label{_parser_8h_a33f3de711367ebfc4f62642176a23714a8c509427c0c540b530e0c725fe98590a}} 
+M\+P\+\_\+\+P\+IN&\mbox{\hyperlink{struct_pin}{Pin}} \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MP\_WIRE@{MP\_WIRE}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!MP\_WIRE@{MP\_WIRE}}}\mbox{\Hypertarget{_parser_8h_a33f3de711367ebfc4f62642176a23714ad086e3db931c85dfb3da85934d53a895}\label{_parser_8h_a33f3de711367ebfc4f62642176a23714ad086e3db931c85dfb3da85934d53a895}} 
+M\+P\+\_\+\+W\+I\+RE&\mbox{\hyperlink{struct_wire}{Wire}} \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MP\_PULLUP@{MP\_PULLUP}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!MP\_PULLUP@{MP\_PULLUP}}}\mbox{\Hypertarget{_parser_8h_a33f3de711367ebfc4f62642176a23714aa23702a3c747e0467ce5787a07f1ac01}\label{_parser_8h_a33f3de711367ebfc4f62642176a23714aa23702a3c747e0467ce5787a07f1ac01}} 
+M\+P\+\_\+\+P\+U\+L\+L\+UP&Pulled to 1 \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MP\_PULLDOWN@{MP\_PULLDOWN}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!MP\_PULLDOWN@{MP\_PULLDOWN}}}\mbox{\Hypertarget{_parser_8h_a33f3de711367ebfc4f62642176a23714acec45854709c562ff71f2c1a78c8f513}\label{_parser_8h_a33f3de711367ebfc4f62642176a23714acec45854709c562ff71f2c1a78c8f513}} 
+M\+P\+\_\+\+P\+U\+L\+L\+D\+O\+WN&Pulled to 0 \\
+\hline
+
+\end{DoxyEnumFields}
 \mbox{\Hypertarget{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047}\label{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047}} 
 \index{Parser.h@{Parser.h}!OperationType@{OperationType}}
 \index{OperationType@{OperationType}!Parser.h@{Parser.h}}
@@ -169,6 +252,10 @@ O\+P\+\_\+\+N\+OT&N\+OT gate \\
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{OP\_PIN@{OP\_PIN}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!OP\_PIN@{OP\_PIN}}}\mbox{\Hypertarget{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047ad962c9805bc7759510ef20ed2c9165f4}\label{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047ad962c9805bc7759510ef20ed2c9165f4}} 
 O\+P\+\_\+\+P\+IN&\mbox{\hyperlink{struct_pin}{Pin}} \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{OP\_WIRE@{OP\_WIRE}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!OP\_WIRE@{OP\_WIRE}}}\mbox{\Hypertarget{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047ab8f3df7049b8e5f702e98df0041fb3cc}\label{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047ab8f3df7049b8e5f702e98df0041fb3cc}} 
+O\+P\+\_\+\+W\+I\+RE&Inner wire \\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{OP\_CONST@{OP\_CONST}!Parser.h@{Parser.h}}\index{Parser.h@{Parser.h}!OP\_CONST@{OP\_CONST}}}\mbox{\Hypertarget{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047a28ee363b44279419901c913f8062ca90}\label{_parser_8h_a9a2c9c31d675b34f6ec35cc1ca89e047a28ee363b44279419901c913f8062ca90}} 
@@ -232,11 +319,11 @@ Free operation.
 {\em operation} & \mbox{\hyperlink{struct_operation}{Operation}} to free \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{_parser_8h_a034324a71707650c0d1e1da8461d492b}\label{_parser_8h_a034324a71707650c0d1e1da8461d492b}} 
+\mbox{\Hypertarget{_parser_8h_a1b7ea8abcfb42f0572f3670c47f73f6c}\label{_parser_8h_a1b7ea8abcfb42f0572f3670c47f73f6c}} 
 \index{Parser.h@{Parser.h}!parser\_handle\_operation@{parser\_handle\_operation}}
 \index{parser\_handle\_operation@{parser\_handle\_operation}!Parser.h@{Parser.h}}
 \doxysubsubsection{\texorpdfstring{parser\_handle\_operation()}{parser\_handle\_operation()}}
-{\footnotesize\ttfamily void parser\+\_\+handle\+\_\+operation (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_operation}{Operation}} $\ast$}]{op,  }\item[{bool $\ast$}]{in,  }\item[{bool $\ast$}]{out }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parser\+\_\+handle\+\_\+operation (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_operation}{Operation}} $\ast$}]{op,  }\item[{const bool $\ast$}]{in,  }\item[{bool $\ast$}]{wires,  }\item[{bool $\ast$}]{out,  }\item[{\mbox{\hyperlink{struct_assign_pin}{Assign\+Pin}} $\ast$}]{pins }\end{DoxyParamCaption})}
 
 
 
@@ -248,7 +335,11 @@ Handle a single operation.
 \hline
 {\em in} & Input values \\
 \hline
+{\em wires} & State of the inner wires \\
+\hline
 {\em out} & Output values \\
+\hline
+{\em pins} & The pins used in the assignment \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_parser_8h_ada90ad7b7b6758c6c6bc34bfd234e0ed}\label{_parser_8h_ada90ad7b7b6758c6c6bc34bfd234e0ed}} 
@@ -269,11 +360,11 @@ Load a function from file.
 \begin{DoxyReturn}{Returns}
 \mbox{\hyperlink{struct_function_data}{Function\+Data}} Resulting function 
 \end{DoxyReturn}
-\mbox{\Hypertarget{_parser_8h_adb2d1ce973d0886a1d545f079d78263a}\label{_parser_8h_adb2d1ce973d0886a1d545f079d78263a}} 
+\mbox{\Hypertarget{_parser_8h_a2d64a6e1890f368f476427f56d6f8e1f}\label{_parser_8h_a2d64a6e1890f368f476427f56d6f8e1f}} 
 \index{Parser.h@{Parser.h}!parser\_run\_assign@{parser\_run\_assign}}
 \index{parser\_run\_assign@{parser\_run\_assign}!Parser.h@{Parser.h}}
 \doxysubsubsection{\texorpdfstring{parser\_run\_assign()}{parser\_run\_assign()}}
-{\footnotesize\ttfamily void parser\+\_\+run\+\_\+assign (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_assign}{Assign}} $\ast$}]{assign,  }\item[{bool $\ast$}]{in,  }\item[{bool $\ast$}]{out }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parser\+\_\+run\+\_\+assign (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_assign}{Assign}} $\ast$}]{assign,  }\item[{bool $\ast$}]{in,  }\item[{bool $\ast$}]{wires,  }\item[{bool $\ast$}]{out }\end{DoxyParamCaption})}
 
 
 
@@ -284,6 +375,8 @@ Run a single assignment.
 {\em assign} & Assignment to run \\
 \hline
 {\em in} & Input values \\
+\hline
+{\em wires} & State of the inner wires \\
 \hline
 {\em out} & Output values \\
 \hline
@@ -307,6 +400,24 @@ Run function.
 {\em out} & Output values \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{_parser_8h_a84116bc390e8d2e20ad103f824ecbc76}\label{_parser_8h_a84116bc390e8d2e20ad103f824ecbc76}} 
+\index{Parser.h@{Parser.h}!parser\_string\_to\_module@{parser\_string\_to\_module}}
+\index{parser\_string\_to\_module@{parser\_string\_to\_module}!Parser.h@{Parser.h}}
+\doxysubsubsection{\texorpdfstring{parser\_string\_to\_module()}{parser\_string\_to\_module()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_operation}{Operation}}$\ast$ parser\+\_\+string\+\_\+to\+\_\+module (\begin{DoxyParamCaption}\item[{char $\ast$}]{str }\end{DoxyParamCaption})}
+
+
+
+Convert C string to module. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & String to convert \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Operation$\ast$ Resulting operation 
+\end{DoxyReturn}
 \mbox{\Hypertarget{_parser_8h_a3d81bef59b785d5208647ae03b0ed318}\label{_parser_8h_a3d81bef59b785d5208647ae03b0ed318}} 
 \index{Parser.h@{Parser.h}!parser\_string\_to\_op@{parser\_string\_to\_op}}
 \index{parser\_string\_to\_op@{parser\_string\_to\_op}!Parser.h@{Parser.h}}

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['module_189',['Module',['../struct_module.html',1,'']]]
+  ['module_204',['Module',['../struct_module.html',1,'']]],
+  ['modulepin_205',['ModulePin',['../struct_module_pin.html',1,'']]]
 ];

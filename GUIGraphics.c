@@ -1,4 +1,5 @@
 #include "GUIGraphics.h"
+#include "debugmalloc.h"
 
 NSliceTexture guigfx_create_nslice(char *path, SliceType type, int x1, int y1, int x2, int y2, SDL_Renderer *renderer) {
 	SDL_Surface *surface = IMG_Load(path);

@@ -12,7 +12,9 @@ Struct holding assignment data.
 \doxysubsection*{Data Fields}
 \begin{DoxyCompactItemize}
 \item 
-int $\ast$ \mbox{\hyperlink{struct_assign_a2d8423dc23d62fb067845c0b99601b71}{out\+Pins}}
+\mbox{\hyperlink{struct_assign_pin}{Assign\+Pin}} $\ast$ \mbox{\hyperlink{struct_assign_a0deef94fffa737cf9094df1bbc26ad9f}{pins}}
+\item 
+int \mbox{\hyperlink{struct_assign_aead8527214b4a89d77af6c7d68468ff7}{pin\+Num}}
 \item 
 \mbox{\hyperlink{struct_operation}{Operation}} $\ast$ \mbox{\hyperlink{struct_assign_af97b4ae8e0a7a8e4ff2570bd5a7aed4a}{op}}
 \end{DoxyCompactItemize}
@@ -30,13 +32,19 @@ Struct holding assignment data.
 \doxysubsubsection{\texorpdfstring{op}{op}}
 {\footnotesize\ttfamily \mbox{\hyperlink{struct_operation}{Operation}}$\ast$ Assign\+::op}
 
-\mbox{\hyperlink{struct_operation}{Operation}} \mbox{\Hypertarget{struct_assign_a2d8423dc23d62fb067845c0b99601b71}\label{struct_assign_a2d8423dc23d62fb067845c0b99601b71}} 
-\index{Assign@{Assign}!outPins@{outPins}}
-\index{outPins@{outPins}!Assign@{Assign}}
-\doxysubsubsection{\texorpdfstring{outPins}{outPins}}
-{\footnotesize\ttfamily int$\ast$ Assign\+::out\+Pins}
+\mbox{\hyperlink{struct_operation}{Operation}} \mbox{\Hypertarget{struct_assign_aead8527214b4a89d77af6c7d68468ff7}\label{struct_assign_aead8527214b4a89d77af6c7d68468ff7}} 
+\index{Assign@{Assign}!pinNum@{pinNum}}
+\index{pinNum@{pinNum}!Assign@{Assign}}
+\doxysubsubsection{\texorpdfstring{pinNum}{pinNum}}
+{\footnotesize\ttfamily int Assign\+::pin\+Num}
 
-Ids of the output pins 
+Number of pins \mbox{\Hypertarget{struct_assign_a0deef94fffa737cf9094df1bbc26ad9f}\label{struct_assign_a0deef94fffa737cf9094df1bbc26ad9f}} 
+\index{Assign@{Assign}!pins@{pins}}
+\index{pins@{pins}!Assign@{Assign}}
+\doxysubsubsection{\texorpdfstring{pins}{pins}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_assign_pin}{Assign\+Pin}}$\ast$ Assign\+::pins}
+
+Data about pins 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
