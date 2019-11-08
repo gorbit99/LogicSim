@@ -69,11 +69,27 @@ Node *nodev_at(NodeVector *vector, int index);
 void nodev_connect(NodeVector *vector, int idA, int pinA, int idB, int pinB);
 
 /**
+ * @brief Render the nodes inside a vector
+ * 
+ * @param vector Vector to render
+ * @param camPos Camera position to render at
+ */
+void nodev_render(NodeVector *vector, Point camPos);
+
+/**
  * @brief Run simulation
  * 
  * @param vector Vector to simulate
  */
 void nodev_update(NodeVector *vector);
+
+/**
+ * @brief Check and handle mouse clicks
+ * 
+ * @param vector Vector to check
+ * @param mousePos Position of the mouse
+ */
+void nodev_check_clicks(NodeVector *vector, Point mousePos);
 
 /**
  * @brief Free vector

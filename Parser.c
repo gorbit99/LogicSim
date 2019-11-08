@@ -290,7 +290,7 @@ Operation *parser_string_to_module(char *str) {
     int readPos = 0;
     sscanf(str, "%[A-Za-z0-9-_.]%n", name, &readPos);
     char path[256];
-    sprintf(path, "res/%s.fun", name);
+    sprintf(path, "res/Modules/%s.fun", name);
     Operation *op = (Operation *)malloc(sizeof(Operation));
     op->type = OP_MODULE;
     op->A.module = (Module *)malloc(sizeof(Module));

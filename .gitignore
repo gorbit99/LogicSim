@@ -3,3 +3,4 @@
 **/.exe
 **/cmake-build-debug
 **/log.txt
+**/doxygen
