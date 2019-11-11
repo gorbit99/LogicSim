@@ -91,9 +91,7 @@ void node_render(Node *node, Point camPos) {
 }
 
 bool node_is_over(Node *node, Point p) {
-	if (!input_get_mouse_button(SDL_BUTTON_LEFT).isPressed)
-		return false;
 	SDL_Point sp = {(int)p.x, (int)p.y};
-	SDL_Rect rect = {node->component.x - node->component.w / 2,node->component.y - node->component.h / 2, node->component.w, node->component.h};
-	return SDL_PointInRect(&sp, &rect);	
+	SDL_Rect rect = {(int)node->component.x - (int)node->component.w / 2,(int)node->component.y - node->component.h / 2, node->component.w, node->component.h};
+	return SDL_PointInRect(&sp, &rect);
 }

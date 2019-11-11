@@ -9,9 +9,9 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_TTF REQUIRED)
 find_package(SDL2_image REQUIRED)
 
-add_executable(${PROJECT_NAME} main.c Graphics.c Graphics.h debugmalloc.h debugmalloc-impl.h Component.c Component.h
-                                Utility.c Utility.h Input.c Input.h Node.c Node.h Parser.c Parser.h Windowing.c Windowing.h
-                                NodeVector.c NodeVector.h Camera.c Camera.h GUIGraphics.c GUIGraphics.h Wire.c Wire.h)
+file(GLOB SRC *.c *.h)
+
+add_executable(${PROJECT_NAME} ${SRC})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES C_STANDARD 99)
 
