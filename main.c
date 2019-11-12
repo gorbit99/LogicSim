@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 			searchWindow.renderer
 	);
 
-	TextInput textInput = textinput_create();
+	SearchData search = search_create();
 
 	NodeVector vec = nodev_create(0);
 	nodev_push_back(&vec, node_create_switch((Point) {0, 0}, mainWindow.renderer));
@@ -92,8 +92,6 @@ int main(int argc, char **argv) {
 	camera.position = (Point) {0, 0};
 	camera.zoom = 1;
 
-	ModuleList moduleList;
-
 	bool quit = false;
 	SDL_Event e;
 	while (!quit) {
@@ -101,10 +99,9 @@ int main(int argc, char **argv) {
 		while (SDL_PollEvent(&e)) {
 			window_handle_event(&mainWindow, &e);
 			window_handle_event(&searchWindow, &e);
-			if (SDL_IsTextInputActive())
-				textinput_handle_event(&textInput, &e);
+			if (state == CHOOSING_COMPONENT)
+				search_handle_event(&search, &e);
 		}
-
 		SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
 		SDL_RenderClear(mainWindow.renderer);
 
@@ -142,8 +139,7 @@ int main(int argc, char **argv) {
 					state = CHOOSING_COMPONENT;
 					window_show(&searchWindow);
 					window_get_focus(&searchWindow);
-					textinput_start();
-					moduleList = search_load_modules("res/Modules", searchbarFont, searchWindow.renderer);
+					search_start(&search, "res/Modules", searchbarFont, searchWindow.renderer);
 				}
 				break;
 			}
@@ -154,26 +150,32 @@ int main(int argc, char **argv) {
 					window_get_focus(&searchWindow);
 				}
 
-				//textinput_update_graphic(&textInput, searchbarFont);
-
 				//Graphics
 				SDL_SetRenderDrawColor(searchWindow.renderer, 50, 50, 50, 255);
 				SDL_RenderClear(searchWindow.renderer);
-				/*guigfx_render_nslice(&textBoxTexture, (SDL_Rect){275, 100, 200, 40}, searchWindow.renderer);
-				guigfx_render_nslice(&panelTexture, (SDL_Rect){10, 10, 230, 480}, searchWindow.renderer);*/
+				guigfx_render_nslice(&textBoxTexture, (SDL_Rect){275, 100, 200, 40}, searchWindow.renderer);
+				guigfx_render_nslice(&panelTexture, (SDL_Rect){10, 10, 230, 480}, searchWindow.renderer);
 
-				//textinput_render(&textInput, searchbarFont, 280, 105, searchWindow.renderer);
-				search_render(&moduleList, (SDL_Rect){15, 15, 220, 470}, textInput.text, 0, searchWindow.renderer);
+				search_render(&search, (SDL_Rect){15, 15, 220, 470}, searchbarFont, 280, 105, searchWindow.renderer);
+				
 				SDL_RenderPresent(searchWindow.renderer);
 
 				//Transitions
 				if (searchWindow.requestClose) {
-					textinput_end();
 					searchWindow.requestClose = false;
 					window_hide(&searchWindow);
 					state = VIEWING_CIRCUIT;
 					window_get_focus(&mainWindow);
-					search_free_modules(&moduleList);
+					SearchResult result = search_end(&search);
+					search_free_result(&result);
+				}
+				if (search.searchOver) {
+					SearchResult result = search_end(&search);
+					nodev_push_back(&vec, node_create(result.selectedModule, (Point){0, 0}, font, mainWindow.renderer));
+					search_free_result(&result);
+					window_hide(&searchWindow);
+					window_get_focus(&mainWindow);
+					state = VIEWING_CIRCUIT;
 				}
 				break;
 			}
@@ -191,7 +193,7 @@ int main(int argc, char **argv) {
 	window_free(&mainWindow);
 	window_free(&searchWindow);
 
-	textinput_free(&textInput);
+	search_free(&search);
 
 	window_quit_SDL();
 

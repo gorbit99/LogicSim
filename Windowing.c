@@ -63,6 +63,7 @@ Window window_create(char *title, int w, int h, unsigned int windowFlags, unsign
 	result.keyboardFocus = (windowFlags & (unsigned) SDL_WINDOW_INPUT_FOCUS);
 	result.mouseFocus = (windowFlags & (unsigned) SDL_WINDOW_MOUSE_FOCUS);
 	result.requestClose = false;
+    SDL_SetRenderDrawBlendMode(result.renderer, SDL_BLENDMODE_BLEND);
 
 	return result;
 }

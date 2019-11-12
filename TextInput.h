@@ -22,13 +22,15 @@ TextInput textinput_create();
 
 void textinput_start();
 
-void textinput_handle_event(TextInput *textinput, SDL_Event *e);
+bool textinput_handle_event(TextInput *textinput, SDL_Event *e);
 
 void textinput_update_graphic(TextInput *textinput, TTF_Font *font);
 
 SDL_Rect textinput_get_cursor_rect(TextInput *textinput, TTF_Font *font, int x, int y);
 
 void textinput_render(TextInput *textinput, TTF_Font *font, int x, int y, SDL_Renderer *renderer);
+
+void textinput_clear(TextInput *textinput);
 
 void textinput_free(TextInput *textinput);
 
