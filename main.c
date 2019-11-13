@@ -1,7 +1,3 @@
-#include <stdio.h>
-
-#define SDL_MAIN_HANDLED
-
 #include "debugmalloc.h"
 
 #include <SDL.h>
@@ -13,8 +9,8 @@
 #include "Camera.h"
 #include "GUIGraphics.h"
 #include "Windowing.h"
-#include "TextInput.h"
 #include "Search.h"
+#include "WireDrawing.h"
 
 enum ProgramState {
 	VIEWING_CIRCUIT,
@@ -72,6 +68,14 @@ int main(int argc, char **argv) {
 	Node *moved = NULL;
 
 	NodeVector vec = nodev_create(0);
+
+	nodev_push_back(&vec, node_create("switch", (Point){0, 0}, font, mainWindow.renderer));
+	nodev_push_back(&vec, node_create("led", (Point){600, 300}, font, mainWindow.renderer));
+	nodev_push_back(&vec, node_create("led", (Point){1200, 300}, font, mainWindow.renderer));
+	nodev_push_back(&vec, node_create("led", (Point){300, 700}, font, mainWindow.renderer));
+	nodev_connect(&vec, 0, 0, 1, 0);
+	nodev_connect(&vec, 0, 0, 2, 0);
+	nodev_connect(&vec, 0, 0, 3, 0);
 
 	Camera camera;
 	camera.position = (Point) {0, 0};
@@ -164,6 +168,19 @@ int main(int argc, char **argv) {
 		nodev_update(&vec);
 
 		nodev_render(&vec, camera.position);
+
+		//Test
+		float dist;
+		Point p = closest_point_on_wires(&vec, &dist, mouseWS);
+		SDL_Rect rect = {
+				p.x - camera.position.x - 3,
+				p.y - camera.position.y - 3,
+				6,
+				6
+		};
+		SDL_SetRenderDrawColor(mainWindow.renderer, 255, 255, 255, 255);
+		SDL_RenderFillRect(mainWindow.renderer, &rect);
+		//
 
 		SDL_RenderPresent(mainWindow.renderer);
 

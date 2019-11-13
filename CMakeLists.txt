@@ -5,6 +5,8 @@ project(Homework C)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 
+add_definitions(-DSDL_MAIN_HANDLED)
+
 find_package(SDL2 REQUIRED)
 find_package(SDL2_TTF REQUIRED)
 find_package(SDL2_image REQUIRED)
