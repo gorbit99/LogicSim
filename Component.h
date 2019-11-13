@@ -191,4 +191,6 @@ ComponentData component_create_switch(float x, float y, float size, float thickn
  */
 void component_run(ComponentData *component, bool *in, bool *out);
 
+Point component_get_pin_position(ComponentData *componentData, int pin);
+
 #endif //HOMEWORK_COMPONENT_H

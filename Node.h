@@ -43,32 +43,15 @@ typedef struct Node {
 Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *renderer);
 
 /**
- * @brief Create an LED node
- * 
- * @param pos Position of the node
- * @param renderer Renderer associated with the node
- * @return Node Resulting node
- */
-Node node_create_LED(Point pos, SDL_Renderer *renderer);
-
-/**
- * @brief Create a switch node
- * 
- * @param pos Position of the node
- * @param renderer Renderer associated with the node
- * @return Node Resulting node
- */
-Node node_create_switch(Point pos, SDL_Renderer *renderer);
-
-/**
  * @brief Connect node to given node
  * 
  * @param node Output node
  * @param pinA Output pin
  * @param other Input node
  * @param pinB Input pin
+ * @param nodes Array of nodes
  */
-void node_add_connection(Node *node, int pinA, Node *other, int pinB);
+void node_add_connection(Node *node, int pinA, int other, int pinB, Node *nodes);
 
 /**
  * @brief Set the input value of the node for the next frame
@@ -90,8 +73,9 @@ void node_update_values(Node *node);
  * @brief Simulate node
  * 
  * @param node Node to simulate
+ * @param nodes Array of nodes
  */
-void node_run(Node *node);
+void node_run(Node *node, Node *nodes);
 
 /**
  * @brief Render node

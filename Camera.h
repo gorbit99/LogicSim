@@ -1,6 +1,8 @@
 #ifndef HOMEWORK_CAMERA_H
 #define HOMEWORK_CAMERA_H
 
+#include "Input.h"
+
 /**
  * @file Camera.h
  * @brief Structures and information related to the camera system
@@ -47,5 +49,7 @@ void camera_move(Camera *camera, Vec movement);
  * @return Point The resulting point in world space
  */
 Point camera_screen_to_view(Camera *camera, Point p);
+
+void camera_update(Camera *camera, Input *input, SDL_Renderer *renderer);
 
 #endif //HOMEWORK_CAMERA_H

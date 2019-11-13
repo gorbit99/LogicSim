@@ -18,7 +18,7 @@ void nodev_push_back(NodeVector *vector, Node node) {
 			return;
 		}
 		vector->nodes = newmem;
-		for (int i = 0; i < vector->count; i++)
+		for (size_t i = 0; i < vector->count; i++)
 			for (int j = 0; j < vector->nodes[i].component.funData.outC; j++)
 				vector->nodes[i].wires[j].origin = &vector->nodes[i];
 	}
@@ -40,7 +40,7 @@ Node *nodev_at(NodeVector *vector, int index) {
 }
 
 void nodev_connect(NodeVector *vector, int idA, int pinA, int idB, int pinB) {
-	node_add_connection(nodev_at(vector, idA), pinA, nodev_at(vector, idB), pinB);
+	node_add_connection(nodev_at(vector, idA), pinA, idB, pinB, vector->nodes);
 }
 
 void nodev_render(NodeVector *vector, Point camPos) {
@@ -51,7 +51,7 @@ void nodev_render(NodeVector *vector, Point camPos) {
 
 void nodev_update(NodeVector *vector) {
 	for (size_t i = 0; i < vector->count; i++) {
-		node_run(nodev_at(vector, i));
+		node_run(nodev_at(vector, i), vector->nodes);
 		node_update_values(nodev_at(vector, i));
 	}
 }
@@ -62,7 +62,7 @@ void nodev_check_clicks(NodeVector *vector, Point mousePos) {
 			if (node_is_over(nodev_at(vector, i), mousePos)) {
 				nodev_at(vector, i)->outValues[0] ^= 1u;
 				for (size_t w = 0; w < nodev_at(vector, i)->wires[0].conCount; w++)
-					node_set_inval(nodev_at(vector, i)->wires[0].connections[w].dest,
+					node_set_inval(nodev_at(vector,nodev_at(vector, i)->wires[0].connections[w].dest),
 						nodev_at(vector, i)->wires[0].connections[w].pin,
 						nodev_at(vector, i)->outValues[0]);
 			}

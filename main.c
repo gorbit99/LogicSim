@@ -18,7 +18,8 @@
 
 enum ProgramState {
 	VIEWING_CIRCUIT,
-	CHOOSING_COMPONENT
+	CHOOSING_COMPONENT,
+	MOVING_COMPONENT
 } state;
 
 int main(int argc, char **argv) {
@@ -68,26 +69,10 @@ int main(int argc, char **argv) {
 	);
 
 	SearchData search = search_create();
+	Node *moved = NULL;
 
 	NodeVector vec = nodev_create(0);
-	nodev_push_back(&vec, node_create_switch((Point) {0, 0}, mainWindow.renderer));
-	nodev_push_back(&vec, node_create_switch((Point) {0, 300}, mainWindow.renderer));
-	nodev_push_back(&vec, node_create_switch((Point) {0, 600}, mainWindow.renderer));
-	nodev_push_back(&vec, node_create_switch((Point) {0, 900}, mainWindow.renderer));
-	nodev_push_back(&vec, node_create("TEST", (Point) {300, 450}, font, mainWindow.renderer));
-	nodev_push_back(&vec, node_create_LED((Point) {700, 0}, mainWindow.renderer));
-	nodev_push_back(&vec, node_create_LED((Point) {700, 300}, mainWindow.renderer));
-	nodev_push_back(&vec, node_create_LED((Point) {700, 600}, mainWindow.renderer));
 
-	nodev_connect(&vec, 0, 0, 4, 0);
-	nodev_connect(&vec, 1, 0, 4, 1);
-	nodev_connect(&vec, 2, 0, 4, 2);
-	nodev_connect(&vec, 3, 0, 4, 3);
-	nodev_connect(&vec, 4, 0, 5, 0);
-	nodev_connect(&vec, 4, 1, 6, 0);
-	nodev_connect(&vec, 4, 2, 7, 0);
-
-	SDL_Cursor *cursor = SDL_GetCursor();
 	Camera camera;
 	camera.position = (Point) {0, 0};
 	camera.zoom = 1;
@@ -105,34 +90,14 @@ int main(int argc, char **argv) {
 		SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
 		SDL_RenderClear(mainWindow.renderer);
 
+		Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos(&mainWindow.input));
+
 		switch (state) {
 			case VIEWING_CIRCUIT: {
 				//Update
-				Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos(&mainWindow.input));
-
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_MIDDLE).isHeld)
-					camera_move(&camera, (Vec) {(float) input_get_mouse_delta_x(&mainWindow.input),
-					                            (float) input_get_mouse_delta_y(&mainWindow.input)});
-
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
 					nodev_check_clicks(&vec, mouseWS);
-
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_MIDDLE).isPressed) {
-					SDL_FreeCursor(cursor);
-					cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
-					SDL_SetCursor(cursor);
-					SDL_CaptureMouse(true);
-				}
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_MIDDLE).isReleased) {
-					SDL_FreeCursor(cursor);
-					cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-					SDL_SetCursor(cursor);
-					SDL_CaptureMouse(false);
-				}
-
-				camera_zoom(&camera, (float) input_get_mouse_wheel_y(&mainWindow.input),
-				            input_get_mouse_pos(&mainWindow.input));
-				SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 
 				//Transitions
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
@@ -172,9 +137,22 @@ int main(int argc, char **argv) {
 				if (search.searchOver) {
 					SearchResult result = search_end(&search);
 					nodev_push_back(&vec, node_create(result.selectedModule, (Point){0, 0}, font, mainWindow.renderer));
+					moved = nodev_at(&vec, (int)vec.count - 1);
 					search_free_result(&result);
 					window_hide(&searchWindow);
 					window_get_focus(&mainWindow);
+					state = MOVING_COMPONENT;
+				}
+				break;
+			}
+			case MOVING_COMPONENT: {
+				//Update
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				moved->component.x = mouseWS.x;
+				moved->component.y = mouseWS.y;
+
+				//Transitions
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
 					state = VIEWING_CIRCUIT;
 				}
 				break;
@@ -182,6 +160,8 @@ int main(int argc, char **argv) {
 			default:
 				break;
 		}
+
+		nodev_update(&vec);
 
 		nodev_render(&vec, camera.position);
 

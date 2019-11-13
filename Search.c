@@ -102,7 +102,7 @@ void search_handle_event(SearchData *searchData, SDL_Event *e) {
 	if (e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_RETURN) {
 		searchData->searchOver = true;
 	} else if (e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_DOWN) {
-		for (int i = searchData->selected + 1; i < searchData->modules.num; i++) {
+		for (size_t i = searchData->selected + 1; i < searchData->modules.num; i++) {
 			if (strstr(searchData->modules.modules[i].name, searchData->textInput.text)) {
 				searchData->selected = i;
 				break;
@@ -118,7 +118,7 @@ void search_handle_event(SearchData *searchData, SDL_Event *e) {
 	} else {
 		if (textinput_handle_event(&searchData->textInput, e)) {
 			searchData->selected = -1;
-			for (int i = 0; i < searchData->modules.num; i++) {
+			for (size_t i = 0; i < searchData->modules.num; i++) {
 				if (strstr(searchData->modules.modules[i].name, searchData->textInput.text)) {
 					searchData->selected = i;
 					break;
