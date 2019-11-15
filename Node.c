@@ -24,7 +24,8 @@ Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *render
 }
 
 void node_add_connection(Node *node, int pinA, int other, int pinB, Node *nodes) {
-    wire_add(&node->wires[pinA], other, pinB, nodes);
+    nodes[other].component.pinData.pins[pinB].occupied = true;
+	wire_add(&node->wires[pinA], other, pinB, nodes);
 }
 
 void node_set_inval(Node *node, int pinIn, bool value) {
@@ -94,6 +95,7 @@ void node_render(Node *node, Point camPos) {
 			SDL_RenderCopy(node->renderer, unconnected, NULL, &dst);
 		}
 	}
+	SDL_DestroyTexture(unconnected);
 }
 
 bool node_is_over(Node *node, Point p) {

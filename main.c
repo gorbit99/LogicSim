@@ -15,7 +15,8 @@
 enum ProgramState {
 	VIEWING_CIRCUIT,
 	CHOOSING_COMPONENT,
-	MOVING_COMPONENT
+	MOVING_COMPONENT,
+	DRAWING_WIRE
 } state;
 
 int main(int argc, char **argv) {
@@ -66,16 +67,9 @@ int main(int argc, char **argv) {
 
 	SearchData search = search_create();
 	Node *moved = NULL;
+	WireDrawing wireDrawing = {};
 
 	NodeVector vec = nodev_create(0);
-
-	nodev_push_back(&vec, node_create("switch", (Point){0, 0}, font, mainWindow.renderer));
-	nodev_push_back(&vec, node_create("led", (Point){600, 300}, font, mainWindow.renderer));
-	nodev_push_back(&vec, node_create("led", (Point){1200, 300}, font, mainWindow.renderer));
-	nodev_push_back(&vec, node_create("led", (Point){300, 700}, font, mainWindow.renderer));
-	nodev_connect(&vec, 0, 0, 1, 0);
-	nodev_connect(&vec, 0, 0, 2, 0);
-	nodev_connect(&vec, 0, 0, 3, 0);
 
 	Camera camera;
 	camera.position = (Point) {0, 0};
@@ -110,6 +104,9 @@ int main(int argc, char **argv) {
 					window_get_focus(&searchWindow);
 					search_start(&search, "res/Modules", searchbarFont, searchWindow.renderer);
 				}
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed &&
+					wiredrawing_start(&vec, mouseWS, &wireDrawing))
+					state = DRAWING_WIRE;
 				break;
 			}
 			case CHOOSING_COMPONENT: {
@@ -161,6 +158,19 @@ int main(int argc, char **argv) {
 				}
 				break;
 			}
+			case DRAWING_WIRE: {
+				//Update
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+
+				wiredrawing_update(&wireDrawing, &vec, mouseWS, camera.position, mainWindow.renderer);
+
+				//Transitions
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isReleased) {
+					wiredrawing_end(&wireDrawing, &vec, mouseWS);
+					state = VIEWING_CIRCUIT;
+				}
+				break;
+			}
 			default:
 				break;
 		}
@@ -169,19 +179,6 @@ int main(int argc, char **argv) {
 
 		nodev_render(&vec, camera.position);
 
-		//Test
-		float dist;
-		Point p = closest_point_on_wires(&vec, &dist, mouseWS);
-		SDL_Rect rect = {
-				p.x - camera.position.x - 3,
-				p.y - camera.position.y - 3,
-				6,
-				6
-		};
-		SDL_SetRenderDrawColor(mainWindow.renderer, 255, 255, 255, 255);
-		SDL_RenderFillRect(mainWindow.renderer, &rect);
-		//
-
 		SDL_RenderPresent(mainWindow.renderer);
 
 		if (mainWindow.requestClose)
@@ -189,7 +186,6 @@ int main(int argc, char **argv) {
 	}
 	window_free(&mainWindow);
 	window_free(&searchWindow);
-
 	search_free(&search);
 
 	window_quit_SDL();

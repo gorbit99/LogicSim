@@ -191,6 +191,7 @@ PinData component_load_pin_data(const char *path, float size) {
 		data.pins[i].pos.y *= size;
 		if (strcmp(type, "in") == 0) data.pins[i].type = PIN_IN;
 		if (strcmp(type, "out") == 0) data.pins[i].type = PIN_OUT;
+		data.pins[i].occupied = false;
 	}
 	fclose(f);
 	return data;

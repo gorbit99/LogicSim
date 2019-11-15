@@ -51,6 +51,7 @@ typedef struct Pin {
 	PinType type; /**< Type of the pin */
 	float angle; /**< Angle of the wire coming out of the pin */
 	Point pos; /**< Position of the pin relative to the component */
+	bool occupied /**< Is the pin (if input) already occupied */
 } Pin;
 
 /**

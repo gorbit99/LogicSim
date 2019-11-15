@@ -36,7 +36,7 @@ void wire_add(Wire *wire, int other, int otherPin, Node *nodes) {
 }
 
 void wire_erase(Wire *wire, int id) {
-    for (size_t i = id + 1; id < wire->conCount; i++)
+    for (size_t i = id + 1; i < wire->conCount; i++)
         wire->connections[i - 1] = wire->connections[i];
     wire->conCount--;
 }
