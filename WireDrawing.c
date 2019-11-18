@@ -101,7 +101,7 @@ bool wiredrawing_start(NodeVector *vec, Point mousePos, WireDrawing *wireDrawing
 	} else {
 		wireDrawing->origin = wire->origin;
 		wireDrawing->originPin = wire->originPin;
-		wireDrawing->origin->component.pinData.pins[wireDrawing->originPin].occupied = false;
+		nodev_at(vec, wire->connections[connection].dest)->component.pinData.pins[wire->connections[connection].pin].occupied = false;
 		wire_erase(wire, connection);
 	}
 	return true;
@@ -133,6 +133,8 @@ void wiredrawing_update(WireDrawing *wireDrawing, NodeVector *vec, Point mousePo
 		Node *node = nodev_at(vec, n);
 		for (int p = 0; p < node->component.funData.inC; p++)
 		{
+			if (node->component.pinData.pins[p].occupied)
+				continue;
 			Point pos = component_get_pin_position(&node->component, p);
 			SDL_Rect dst = {
 					(int)(pos.x - COMPSIZE * 0.1f - cameraPos.x),

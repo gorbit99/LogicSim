@@ -92,11 +92,6 @@ int main(int argc, char **argv) {
 
 		switch (state) {
 			case VIEWING_CIRCUIT: {
-				//Update
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
-					nodev_check_clicks(&vec, mouseWS);
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
-
 				//Transitions
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
 					state = CHOOSING_COMPONENT;
@@ -105,8 +100,14 @@ int main(int argc, char **argv) {
 					search_start(&search, "res/Modules", searchbarFont, searchWindow.renderer);
 				}
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed &&
-					wiredrawing_start(&vec, mouseWS, &wireDrawing))
+					wiredrawing_start(&vec, mouseWS, &wireDrawing)) {
 					state = DRAWING_WIRE;
+					break;
+				}
+
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
+					nodev_check_clicks(&vec, mouseWS);
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 				break;
 			}
 			case CHOOSING_COMPONENT: {
@@ -121,7 +122,6 @@ int main(int argc, char **argv) {
 				SDL_RenderClear(searchWindow.renderer);
 				guigfx_render_nslice(&textBoxTexture, (SDL_Rect){275, 100, 200, 40}, searchWindow.renderer);
 				guigfx_render_nslice(&panelTexture, (SDL_Rect){10, 10, 230, 480}, searchWindow.renderer);
-
 				search_render(&search, (SDL_Rect){15, 15, 220, 470}, searchbarFont, 280, 105, searchWindow.renderer);
 				
 				SDL_RenderPresent(searchWindow.renderer);
