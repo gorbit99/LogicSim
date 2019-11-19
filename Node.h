@@ -102,4 +102,12 @@ void node_free(Node *node);
  */
 bool node_is_over(Node *node, Point p);
 
+/**
+ * @brief Repositions the wires of the node after moving it
+ *
+ * @param node Node to repositions the wire for
+ * @param nodes Array of the nodes
+ */
+void node_reposition_wires(Node *node, Node *nodes);
+
 #endif //HOMEWORK_NODE_H

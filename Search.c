@@ -88,8 +88,10 @@ void search_start(SearchData *searchData, char *moduleDir, TTF_Font *font, SDL_R
 SearchResult search_end(SearchData *searchData) {
 	SearchResult result;
 	result.selectedModule = NULL;
-	if (searchData->selected < 0 || searchData->selected >= searchData->modules.num)
+	if (searchData->selected < 0 || searchData->selected >= searchData->modules.num) {
+		search_free_modules(&searchData->modules);
 		return result;
+	}
 	result.selectedModule = (char *)malloc(sizeof(char) * (strlen(searchData->modules.modules[searchData->selected].name) + 1));
 	strcpy(result.selectedModule, searchData->modules.modules[searchData->selected].name);
 	search_free_modules(&searchData->modules);

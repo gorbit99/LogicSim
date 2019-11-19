@@ -16,7 +16,8 @@ enum ProgramState {
 	VIEWING_CIRCUIT,
 	CHOOSING_COMPONENT,
 	MOVING_COMPONENT,
-	DRAWING_WIRE
+	DRAWING_WIRE,
+	SIMULATION
 } state;
 
 int main(int argc, char **argv) {
@@ -92,6 +93,7 @@ int main(int argc, char **argv) {
 
 		switch (state) {
 			case VIEWING_CIRCUIT: {
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 				//Transitions
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
 					state = CHOOSING_COMPONENT;
@@ -104,10 +106,22 @@ int main(int argc, char **argv) {
 					state = DRAWING_WIRE;
 					break;
 				}
-
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
-					nodev_check_clicks(&vec, mouseWS);
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					moved = NULL;
+					for (size_t i = 0; i < vec.count; i++) {
+						if (node_is_over(nodev_at(&vec, i), mouseWS)) {
+							state = MOVING_COMPONENT;
+							moved = nodev_at(&vec, i);
+							break;
+						}
+					}
+					if (moved != NULL)
+						break;
+				}
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
+					state = SIMULATION;
+					break;
+				}
 				break;
 			}
 			case CHOOSING_COMPONENT: {
@@ -151,6 +165,7 @@ int main(int argc, char **argv) {
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 				moved->component.x = mouseWS.x;
 				moved->component.y = mouseWS.y;
+				node_reposition_wires(moved, vec.nodes);
 
 				//Transitions
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
@@ -168,6 +183,18 @@ int main(int argc, char **argv) {
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isReleased) {
 					wiredrawing_end(&wireDrawing, &vec, mouseWS);
 					state = VIEWING_CIRCUIT;
+				}
+				break;
+			}
+			case SIMULATION: {
+				//Update
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
+					nodev_check_clicks(&vec, mouseWS);
+				//Transitions
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
+					state = VIEWING_CIRCUIT;
+					break;
 				}
 				break;
 			}

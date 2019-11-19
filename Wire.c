@@ -49,3 +49,18 @@ void wire_send_value(Wire *wire, bool value, Node *nodes) {
 void wire_free(Wire *wire) {
     free(wire->connections);
 }
+
+void wire_reposition(Wire *wire, Node *nodes) {
+	for (size_t i = 0; i < wire->conCount; i++) {
+		component_free_data(&wire->connections[i].wireComp);
+		wire->connections[i].wireComp = component_create_wire_between(
+				&wire->origin->component,
+				&nodes[wire->connections[i].dest].component,
+				wire->originPin + wire->origin->component.funData.inC,
+				wire->connections[i].pin,
+				COMPSIZE,
+				COMPTHICKNESS,
+				wire->origin->renderer
+		);
+	}
+}

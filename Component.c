@@ -226,6 +226,9 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 
 	data.funData.assignC = 0;
 	data.funData.assigns = NULL;
+	data.funData.inC = 0;
+	data.funData.outC = 0;
+	data.funData.wires = NULL;
 
 	data.type = CT_WIRE;
 

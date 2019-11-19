@@ -103,3 +103,8 @@ bool node_is_over(Node *node, Point p) {
 	SDL_Rect rect = {(int)node->component.x - (int)node->component.w / 2,(int)node->component.y - node->component.h / 2, node->component.w, node->component.h};
 	return SDL_PointInRect(&sp, &rect);
 }
+
+void node_reposition_wires(Node *node, Node *nodes) {
+	for (int i = 0; i < node->component.funData.outC; i++)
+		wire_reposition(&node->wires[i], nodes);
+}

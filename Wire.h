@@ -79,4 +79,12 @@ void wire_send_value(Wire *wire, bool value, Node *nodes);
  */
 void wire_free(Wire *wire);
 
+/**
+ * @brief Repositions the connections of the wire
+ *
+ * @param wire Wire to reposition
+ * @param nodes Array of the nodes
+ */
+void wire_reposition(Wire *wire, Node *nodes);
+
 #endif //HOMEWORK_WIRE_H
