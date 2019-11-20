@@ -50,17 +50,24 @@ void wire_free(Wire *wire) {
     free(wire->connections);
 }
 
+void connection_reposition(Connection *conn, Node *origin, int originPin, Node *dest) {
+    component_free_data(&conn->wireComp);
+    conn->wireComp = component_create_wire_between(
+            &origin->component,
+            &dest->component,
+            originPin + origin->component.funData.inC,
+            conn->pin,
+            COMPSIZE,
+            COMPTHICKNESS,
+            origin->renderer
+    );
+}
+
 void wire_reposition(Wire *wire, Node *nodes) {
 	for (size_t i = 0; i < wire->conCount; i++) {
-		component_free_data(&wire->connections[i].wireComp);
-		wire->connections[i].wireComp = component_create_wire_between(
-				&wire->origin->component,
-				&nodes[wire->connections[i].dest].component,
-				wire->originPin + wire->origin->component.funData.inC,
-				wire->connections[i].pin,
-				COMPSIZE,
-				COMPTHICKNESS,
-				wire->origin->renderer
-		);
+        connection_reposition(&wire->connections[i],
+            wire->origin,
+            wire->originPin,
+            &nodes[wire->connections[i].dest]);
 	}
 }

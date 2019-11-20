@@ -74,3 +74,23 @@ void nodev_free(NodeVector *vector) {
 		node_free(&vector->nodes[i]);
 	free(vector->nodes);
 }
+
+void nodev_reposition(NodeVector *vector, Node *node, Point position) {
+	if (node->component.x != position.x || node->component.y != position.y) {
+		node->component.x = position.x;
+		node->component.y = position.y;
+		node_reposition_wires(node, vector->nodes);
+		for (size_t i = 0; i < vector->count; i++) {
+			Node *origin = nodev_at(vector, i);
+			for (int w = 0; w < origin->component.funData.outC; w++) {
+				Wire *wire = &origin->wires[w];
+				for (size_t c = 0; c < wire->conCount; c++) {
+					Connection *con = &wire->connections[c];
+					if (nodev_at(vector, con->dest) == node) {
+						connection_reposition(con, origin, c, node);
+					}
+				}
+			}
+		}
+	}
+}

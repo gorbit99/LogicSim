@@ -80,6 +80,16 @@ void wire_send_value(Wire *wire, bool value, Node *nodes);
 void wire_free(Wire *wire);
 
 /**
+ * @brief Repositions a connection
+ * 
+ * @param conn Connection to reposition
+ * @param origin Origin node
+ * @param originPon Origin pin
+ * @param dest Destination node
+ */
+void connection_reposition(Connection *conn, Node *origin, int originPin, Node *dest);
+
+/**
  * @brief Repositions the connections of the wire
  *
  * @param wire Wire to reposition

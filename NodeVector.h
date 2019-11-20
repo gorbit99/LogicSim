@@ -98,4 +98,13 @@ void nodev_check_clicks(NodeVector *vector, Point mousePos);
  */
 void nodev_free(NodeVector *vector);
 
+/**
+ * @brief Repositions a node in the vector
+ * 
+ * @param vector Vector to get the node from
+ * @param node Node to reposition
+ * @param position New position
+ */
+void nodev_reposition(NodeVector *vector, Node *node, Point position);
+
 #endif //HOMEWORK_NODEVECTOR_H

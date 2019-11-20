@@ -163,9 +163,7 @@ int main(int argc, char **argv) {
 			case MOVING_COMPONENT: {
 				//Update
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
-				moved->component.x = mouseWS.x;
-				moved->component.y = mouseWS.y;
-				node_reposition_wires(moved, vec.nodes);
+				nodev_reposition(&vec, moved, mouseWS);
 
 				//Transitions
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {

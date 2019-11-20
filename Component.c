@@ -117,6 +117,7 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 
 void component_free_data(ComponentData *dat) {
 	free(dat->pinData.pins);
+	SDL_DestroyTexture(dat->texture);
 	parser_free_function(&dat->funData);
 }
 
