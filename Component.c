@@ -112,6 +112,9 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 
 	data.type = CT_MODULE;
 
+	data.name = (char *)malloc(strlen(name) + 1);
+	strcpy(data.name, name);
+
 	return data;
 }
 
@@ -119,6 +122,7 @@ void component_free_data(ComponentData *dat) {
 	free(dat->pinData.pins);
 	SDL_DestroyTexture(dat->texture);
 	parser_free_function(&dat->funData);
+	free(dat->name);
 }
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color) {
@@ -232,6 +236,8 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	data.funData.wires = NULL;
 
 	data.type = CT_WIRE;
+
+	data.name = NULL;
 
 	return data;
 }

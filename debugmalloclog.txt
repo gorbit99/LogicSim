@@ -1,0 +1,1 @@
+debugmalloc: free @ C:\Users\gorbi\Documents\Projects\School\LogicSim\LogicSim\Component.c:125: olyan teruletet akarsz felszabaditani, ami nincs lefoglalva!

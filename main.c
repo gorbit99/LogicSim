@@ -11,6 +11,7 @@
 #include "Windowing.h"
 #include "Search.h"
 #include "WireDrawing.h"
+#include "Save.h"
 
 enum ProgramState {
 	VIEWING_CIRCUIT,
@@ -165,8 +166,13 @@ int main(int argc, char **argv) {
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 				nodev_reposition(&vec, moved, mouseWS);
 
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_DELETE).isPressed) {
+					nodev_delete(&vec, moved);
+					moved = NULL;
+				}
+
 				//Transitions
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed || moved == NULL) {
 					state = VIEWING_CIRCUIT;
 				}
 				break;
@@ -214,6 +220,8 @@ int main(int argc, char **argv) {
 	search_free(&search);
 
 	window_quit_SDL();
+
+	save_vector(&vec, "test.sav");
 
 	nodev_free(&vec);
 

@@ -29,8 +29,11 @@ void nodev_push_back(NodeVector *vector, Node node) {
 }
 
 void nodev_erase(NodeVector *vector, int index) {
+	node_free(nodev_at(vector, index));
 	for (size_t i = index + 1; i < vector->count; i++) {
 		vector->nodes[i - 1] = vector->nodes[i];
+		for (int j = 0; j < vector->nodes[i].component.funData.outC; j++)
+				vector->nodes[i - 1].wires[j].origin = &vector->nodes[i - 1];
 	}
 	vector->count--;
 }
@@ -91,6 +94,35 @@ void nodev_reposition(NodeVector *vector, Node *node, Point position) {
 					}
 				}
 			}
+		}
+	}
+}
+
+void nodev_delete(NodeVector *vector, Node *node) {
+	for (int w = 0; w < node->component.funData.outC; w++) {
+		Wire *wire = &node->wires[w];
+		for (size_t c = 0; c < wire->conCount; c++) {
+			Connection *conn = &wire->connections[c];
+			nodev_at(vector, conn->dest)->component.pinData.pins[conn->pin].occupied = false;
+		}
+	}
+	for (size_t i = 0; i < vector->count; i++) {
+		if (nodev_at(vector, i) == node) {
+			nodev_erase(vector, i);
+
+			for (size_t n = 0; n < vector->count; n++) {
+				Node *other = nodev_at(vector, n);
+				for (int w = 0; w < other->component.funData.outC; w++) {
+					Wire *wire = &other->wires[w];
+					for (size_t c = 0; c < wire->conCount; c++) {
+						Connection *conn = &wire->connections[c];
+						if (conn->dest == i) {
+							wire_erase(wire, c);
+						}
+					}
+				}
+			}
+			break;
 		}
 	}
 }

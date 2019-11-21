@@ -76,6 +76,7 @@ typedef struct ComponentData {
 	PinData pinData; /**< Pins of the component */
 	FunctionData funData; /**< Function of the component */
 	ComponentType type; /**< Type of the component */
+	char *name; /**< Name of the component */
 } ComponentData;
 
 /**

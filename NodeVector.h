@@ -107,4 +107,12 @@ void nodev_free(NodeVector *vector);
  */
 void nodev_reposition(NodeVector *vector, Node *node, Point position);
 
+/**
+ * @brief Delete a node and erase the connections
+ * 
+ * @param vector Vector to delete node from
+ * @param node Node to delete
+ */
+void nodev_delete(NodeVector *vector, Node *node);
+
 #endif //HOMEWORK_NODEVECTOR_H
