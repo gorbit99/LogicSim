@@ -90,7 +90,7 @@ void nodev_reposition(NodeVector *vector, Node *node, Point position) {
 				for (size_t c = 0; c < wire->conCount; c++) {
 					Connection *con = &wire->connections[c];
 					if (nodev_at(vector, con->dest) == node) {
-						connection_reposition(con, origin, c, node);
+						connection_reposition(con, origin, w, node);
 					}
 				}
 			}
@@ -108,9 +108,9 @@ void nodev_delete(NodeVector *vector, Node *node) {
 	}
 	for (size_t i = 0; i < vector->count; i++) {
 		if (nodev_at(vector, i) == node) {
-			nodev_erase(vector, i);
-
 			for (size_t n = 0; n < vector->count; n++) {
+				if (n == i)
+					continue;
 				Node *other = nodev_at(vector, n);
 				for (int w = 0; w < other->component.funData.outC; w++) {
 					Wire *wire = &other->wires[w];
@@ -118,10 +118,12 @@ void nodev_delete(NodeVector *vector, Node *node) {
 						Connection *conn = &wire->connections[c];
 						if (conn->dest == i) {
 							wire_erase(wire, c);
+							c--;
 						}
 					}
 				}
 			}
+			nodev_erase(vector, i);
 			break;
 		}
 	}

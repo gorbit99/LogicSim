@@ -12,4 +12,8 @@ void save_connections(FILE *file, Node *node);
 
 bool save_vector(NodeVector *vector, char *fileName);
 
+NodeVector load_vector(char *fileName, TTF_Font *font, SDL_Renderer *renderer);
+
+bool save_as_module(NodeVector *vector, char *fileName);
+
 #endif

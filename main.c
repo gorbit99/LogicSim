@@ -71,11 +71,11 @@ int main(int argc, char **argv) {
 	Node *moved = NULL;
 	WireDrawing wireDrawing = {};
 
-	NodeVector vec = nodev_create(0);
+	NodeVector vec = load_vector("test.sav", font, mainWindow.renderer);
 
 	Camera camera;
 	camera.position = (Point) {0, 0};
-	camera.zoom = 1;
+	camera.zoom = 0.25f;
 
 	bool quit = false;
 	SDL_Event e;

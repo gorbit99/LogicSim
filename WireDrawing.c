@@ -48,7 +48,7 @@ Wire *closest_wire(NodeVector *vec, Point P, float *dist, Point *point, size_t *
 				Connection *conn = &wire->connections[c];
 				Node *dest = nodev_at(vec, conn->dest);
 				float curDist;
-				Point curPoint = closest_on_wire(node, wire->originPin, dest, conn->pin, P, &curDist);
+				Point curPoint = closest_on_wire(node, wire->originPin + node->component.funData.inC, dest, conn->pin, P, &curDist);
 				if (curDist < *dist) {
 					*point = curPoint;
 					*dist = curDist;
@@ -100,7 +100,7 @@ bool wiredrawing_start(NodeVector *vec, Point mousePos, WireDrawing *wireDrawing
 		wireDrawing->originPin = pin;
 	} else {
 		wireDrawing->origin = wire->origin;
-		wireDrawing->originPin = wire->originPin;
+		wireDrawing->originPin = wire->originPin + wire->origin->component.funData.inC;
 		nodev_at(vec, wire->connections[connection].dest)->component.pinData.pins[wire->connections[connection].pin].occupied = false;
 		wire_erase(wire, connection);
 	}
