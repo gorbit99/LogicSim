@@ -222,6 +222,7 @@ int main(int argc, char **argv) {
 	window_quit_SDL();
 
 	save_vector(&vec, "test.sav");
+	save_as_module(&vec, "SAVETEST");
 
 	nodev_free(&vec);
 
