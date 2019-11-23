@@ -185,13 +185,13 @@ bool save_as_module(NodeVector *vector, char *name) {
         return false;
     }
     int maxPin = max(inC, outC);
-    float w = 1, h = maxPin * 0.2f;
+    float w = (float)strlen(name) * 0.2f, h = (float)(maxPin + 1) * 0.5f;
 
     char *upperName = (char *)malloc(sizeof(char) * (strlen(name) + 1));
     int i;
-    for (i = 0; upperName[i] != '\0'; i++)
-        upperName[i] = toupper(name[i]);
-    upperName[i + 1] = '\0';
+    for (i = 0; name[i] != '\0'; i++)
+        upperName[i] = (char)toupper(name[i]);
+    upperName[i] = '\0';
 
     fprintf(cmpFile, "%f %f\n", w, h);
     fprintf(cmpFile, "L %f,%f %f,%f\n", 0.05f, 0.05f, w - 0.1f, 0.05f);
@@ -200,5 +200,26 @@ bool save_as_module(NodeVector *vector, char *name) {
     fprintf(cmpFile, "L %f,%f %f,%f\n", w - 0.1f, 0.05f, w - 0.1f, h - 0.1f);
     fprintf(cmpFile, "TXT %f,%f %s\n", w / 2, h / 2, upperName);
 
+    free(upperName);
+
     fclose(cmpFile);
+
+    char datPath[256];
+    sprintf(datPath, "res/Modules/%s.dat", name);
+
+    FILE *datFile = fopen(datPath, "wt");
+    if (datFile == NULL) {
+    	log_error("Couldn't open file %s!\n", datPath);
+    	return false;
+    }
+
+    fprintf(datFile, "%d\n", inC + outC);
+    for (int in = 0; in < inC; in++) {
+    	fprintf(datFile, "in I%d %f,%f 3.1415\n", in, 0.05f, (h - 1) / (float)(inC - 1) * (float)in + 0.5f);
+    }
+    for (int out = 0; out < outC; out++) {
+		fprintf(datFile, "out O%d %f,%f 0\n", out, w - 0.1f, (h - 1) / (float)(outC - 1) * (float)out + 0.5f);
+	}
+
+    fclose(datFile);
 }

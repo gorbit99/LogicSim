@@ -12,6 +12,7 @@
 #include "Search.h"
 #include "WireDrawing.h"
 #include "Save.h"
+#include "FileDialog.h"
 
 enum ProgramState {
 	VIEWING_CIRCUIT,
@@ -92,9 +93,31 @@ int main(int argc, char **argv) {
 
 		Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos(&mainWindow.input));
 
+		if (input_get_key(&mainWindow.input, SDL_SCANCODE_RETURN).isPressed)
+			open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic", DT_SAVE);
+
 		switch (state) {
 			case VIEWING_CIRCUIT: {
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_RCTRL).isHeld ||
+				    input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) {
+					if (input_get_key(&mainWindow.input, SDL_SCANCODE_S).isPressed) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
+						                              DT_SAVE);
+						save_vector(&vec, path);
+						free(path);
+					}
+					if (input_get_key(&mainWindow.input, SDL_SCANCODE_O).isPressed) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
+						                              DT_OPEN);
+						nodev_free(&vec);
+						vec = load_vector(path, font, mainWindow.renderer);
+						free(path);
+					}
+				}
+
+
 				//Transitions
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
 					state = CHOOSING_COMPONENT;
@@ -103,7 +126,7 @@ int main(int argc, char **argv) {
 					search_start(&search, "res/Modules", searchbarFont, searchWindow.renderer);
 				}
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed &&
-					wiredrawing_start(&vec, mouseWS, &wireDrawing)) {
+				    wiredrawing_start(&vec, mouseWS, &wireDrawing)) {
 					state = DRAWING_WIRE;
 					break;
 				}
@@ -135,10 +158,10 @@ int main(int argc, char **argv) {
 				//Graphics
 				SDL_SetRenderDrawColor(searchWindow.renderer, 50, 50, 50, 255);
 				SDL_RenderClear(searchWindow.renderer);
-				guigfx_render_nslice(&textBoxTexture, (SDL_Rect){275, 100, 200, 40}, searchWindow.renderer);
-				guigfx_render_nslice(&panelTexture, (SDL_Rect){10, 10, 230, 480}, searchWindow.renderer);
-				search_render(&search, (SDL_Rect){15, 15, 220, 470}, searchbarFont, 280, 105, searchWindow.renderer);
-				
+				guigfx_render_nslice(&textBoxTexture, (SDL_Rect) {275, 100, 200, 40}, searchWindow.renderer);
+				guigfx_render_nslice(&panelTexture, (SDL_Rect) {10, 10, 230, 480}, searchWindow.renderer);
+				search_render(&search, (SDL_Rect) {15, 15, 220, 470}, searchbarFont, 280, 105, searchWindow.renderer);
+
 				SDL_RenderPresent(searchWindow.renderer);
 
 				//Transitions
@@ -152,8 +175,9 @@ int main(int argc, char **argv) {
 				}
 				if (search.searchOver) {
 					SearchResult result = search_end(&search);
-					nodev_push_back(&vec, node_create(result.selectedModule, (Point){0, 0}, font, mainWindow.renderer));
-					moved = nodev_at(&vec, (int)vec.count - 1);
+					nodev_push_back(&vec,
+					                node_create(result.selectedModule, (Point) {0, 0}, font, mainWindow.renderer));
+					moved = nodev_at(&vec, (int) vec.count - 1);
 					search_free_result(&result);
 					window_hide(&searchWindow);
 					window_get_focus(&mainWindow);
@@ -222,7 +246,6 @@ int main(int argc, char **argv) {
 	window_quit_SDL();
 
 	save_vector(&vec, "test.sav");
-	save_as_module(&vec, "SAVETEST");
 
 	nodev_free(&vec);
 
