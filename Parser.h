@@ -27,6 +27,7 @@ typedef enum OperationType {
     OP_XOR, /**< XOR gate */
     OP_NOT, /**< NOT gate */
     OP_PIN, /**< Pin */
+    OP_WIRE, /**< Inner wire */
     OP_CONST, /**< Constant value */
     OP_MODULE, /**< Module */
     OP_LPAREN /**< Left paren (only used in parsing) */
@@ -54,11 +55,29 @@ typedef struct Operation {
 } Operation;
 
 /**
+ * @brief Represents the type of a pin in an assignment
+ */
+typedef enum APType {
+	AP_PIN, /**< Pin */
+	AP_DONTCARE, /**< Disconnected */
+	AP_WIRE /**< Inner wire */
+} APType;
+
+/**
+ * @brief Struct holding information about a pin in an assignment
+ */
+typedef struct AssignPin {
+	APType type; /**< Type of the pin */
+	int pinId; /**< Input pin id, if exists */
+} AssignPin;
+
+/**
  * @brief Struct holding assignment data
  * 
  */
 typedef struct Assign {
-    int *outPins; /**< Ids of the output pins */
+    AssignPin *pins; /**< Data about pins */
+    int pinNum; /**< Number of pins */
     Operation *op; /**< Operation */
 } Assign;
 
@@ -71,7 +90,26 @@ typedef struct FunctionData {
     int outC; /**< Number of outputs */
     int assignC; /**< Number of assignments */
     Assign *assigns; /**< Array of assignments */
+    bool *wires; /**< Inner wire values */
 } FunctionData;
+
+/**
+ * @brief Type of a module pin
+ */
+typedef enum MPType {
+	MP_PIN, /**< Pin */
+	MP_WIRE, /**< Wire */
+	MP_PULLUP, /**< Pulled to 1 */
+	MP_PULLDOWN /**< Pulled to 0 */
+} MPType;
+
+/**
+ * @brief Struct holding information about a module pin
+ */
+typedef struct ModulePin {
+	MPType type; /**< Type of the pin */
+	int pinId; /**< Id of the pin, if exists */
+} ModulePin;
 
 /**
  * @brief Structure holding data for a module
@@ -79,6 +117,7 @@ typedef struct FunctionData {
  */
 typedef struct Module {
     FunctionData function;
+    ModulePin *inPins;
 } Module;
 
 /**
@@ -94,18 +133,21 @@ FunctionData parser_load_function(char *path);
  * 
  * @param op Operation to handle
  * @param in Input values
+ * @param wires State of the inner wires
  * @param out Output values
+ * @param pins The pins used in the assignment
  */
-void parser_handle_operation(Operation *op, bool *in, bool *out);
+void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *out, AssignPin *pins);
 
 /**
  * @brief Run a single assignment
  * 
  * @param assign Assignment to run
- * @param in Input values
+ * @param  in Input values
+ * @param wires State of the inner wires
  * @param out Output values
  */
-void parser_run_assign(Assign *assign, bool *in, bool *out);
+void parser_run_assign(Assign *assign, bool *in, bool *wires, bool *out);
 
 /**
  * @brief Run function
@@ -123,6 +165,14 @@ void parser_run_function(FunctionData *function, bool *in, bool *out);
  * @return Operation* Resulting operation
  */
 Operation *parser_string_to_op(char *str);
+
+/**
+ * @brief Convert C string to module
+ * 
+ * @param str String to convert
+ * @return Operation* Resulting operation
+ */
+Operation *parser_string_to_module(char *str);
 
 /**
  * @brief Free operation

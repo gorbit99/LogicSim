@@ -96,7 +96,7 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	data.x = x;
 	data.y = y;
 	char path[256];
-	sprintf(path, "res/%s.cmp", name);
+	sprintf(path, "res/Modules/%s.cmp", name);
 	SDL_Surface *surf = component_load_graphic(path, size, thickness, font);
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
 	data.texture = texture;
@@ -104,20 +104,25 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	data.h = surf->h;
 	SDL_FreeSurface(surf);
 
-	sprintf(path, "res/%s.dat", name);
+	sprintf(path, "res/Modules/%s.dat", name);
 	data.pinData = component_load_pin_data(path, size);
 
-	sprintf(path, "res/%s.fun", name);
+	sprintf(path, "res/Modules/%s.fun", name);
 	data.funData = parser_load_function(path);
 
 	data.type = CT_MODULE;
+
+	data.name = (char *)malloc(strlen(name) + 1);
+	strcpy(data.name, name);
 
 	return data;
 }
 
 void component_free_data(ComponentData *dat) {
 	free(dat->pinData.pins);
+	SDL_DestroyTexture(dat->texture);
 	parser_free_function(&dat->funData);
+	free(dat->name);
 }
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color) {
@@ -191,6 +196,7 @@ PinData component_load_pin_data(const char *path, float size) {
 		data.pins[i].pos.y *= size;
 		if (strcmp(type, "in") == 0) data.pins[i].type = PIN_IN;
 		if (strcmp(type, "out") == 0) data.pins[i].type = PIN_OUT;
+		data.pins[i].occupied = false;
 	}
 	fclose(f);
 	return data;
@@ -202,9 +208,11 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 
 	Point pin1Pos;
 
+	Point pinPos1 = component_get_pin_position(comp1, pin1);
+	Point pinPos2 = component_get_pin_position(comp2, pin2);
 	SDL_Surface *surf = component_create_wire_texture(
-		(Point){comp1->x + comp1->pinData.pins[pin1].pos.x - (float)comp1->w / 2, comp1->y + comp1->pinData.pins[pin1].pos.y - (float)comp1->h / 2},
-		(Point){comp2->x + comp2->pinData.pins[pin2].pos.x - (float)comp2->w / 2, comp2->y + comp2->pinData.pins[pin2].pos.y - (float)comp2->h / 2},
+		pinPos1,
+		pinPos2,
 		comp1->pinData.pins[pin1].angle, 
 		comp2->pinData.pins[pin2].angle, 
 		size, 
@@ -215,15 +223,21 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	data.w = surf->w;
 	data.h = surf->h;
 	SDL_FreeSurface(surf);
-	data.x = comp1->x + comp1->pinData.pins[pin1].pos.x - pin1Pos.x + (float)data.w / 2 - (float)comp1->w / 2;
-	data.y = comp1->y + comp1->pinData.pins[pin1].pos.y - pin1Pos.y + (float)data.h / 2 - (float)comp1->h / 2;
+	data.x = pinPos1.x - pin1Pos.x + (float)data.w / 2;
+	data.y = pinPos1.y - pin1Pos.y + (float)data.h / 2;
+
 	data.pinData.pinCount = 2;
 	data.pinData.pins = NULL;
 
 	data.funData.assignC = 0;
 	data.funData.assigns = NULL;
+	data.funData.inC = 0;
+	data.funData.outC = 0;
+	data.funData.wires = NULL;
 
 	data.type = CT_WIRE;
+
+	data.name = NULL;
 
 	return data;
 }
@@ -242,4 +256,10 @@ ComponentData component_create_switch(float x, float y, float size, float thickn
 
 void component_run(ComponentData *component, bool *in, bool *out) {
 	parser_run_function(&component->funData, in, out);
+}
+
+Point component_get_pin_position(ComponentData *componentData, int pin) {
+	Point result = {componentData->x + componentData->pinData.pins[pin].pos.x - (float)componentData->w / 2,
+	                componentData->y + componentData->pinData.pins[pin].pos.y - (float)componentData->h / 2};
+	return result;
 }

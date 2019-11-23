@@ -67,6 +67,6 @@ NSliceTexture guigfx_create_nslice(char *path, SliceType type, int x1, int y1, i
  * @param rect Rect to render to
  * @param renderer Renderer to render with
  */
-void guigfx_render_9slice(NSliceTexture *data, SDL_Rect rect, SDL_Renderer *renderer);
+void guigfx_render_nslice(NSliceTexture *data, SDL_Rect rect, SDL_Renderer *renderer);
 
 #endif //HOMEWORK_GUIGRAPHICS_H

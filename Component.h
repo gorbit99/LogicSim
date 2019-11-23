@@ -51,6 +51,7 @@ typedef struct Pin {
 	PinType type; /**< Type of the pin */
 	float angle; /**< Angle of the wire coming out of the pin */
 	Point pos; /**< Position of the pin relative to the component */
+	bool occupied; /**< Is the pin (if input) already occupied */
 } Pin;
 
 /**
@@ -75,6 +76,7 @@ typedef struct ComponentData {
 	PinData pinData; /**< Pins of the component */
 	FunctionData funData; /**< Function of the component */
 	ComponentType type; /**< Type of the component */
+	char *name; /**< Name of the component */
 } ComponentData;
 
 /**
@@ -190,5 +192,7 @@ ComponentData component_create_switch(float x, float y, float size, float thickn
  * @param out Where to write output
  */
 void component_run(ComponentData *component, bool *in, bool *out);
+
+Point component_get_pin_position(ComponentData *componentData, int pin);
 
 #endif //HOMEWORK_COMPONENT_H

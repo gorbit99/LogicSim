@@ -1,140 +1,132 @@
 #include "Input.h"
 #include "debugmalloc.h"
 
-static ButtonState buttons[SDL_NUM_SCANCODES];
-static ButtonState mouseButtons[5];
-static uint8_t mouseClicks[5];
-
-static int mouseDeltaX = 0, mouseDeltaY = 0;
-static int mouseX = 0, mouseY = 0;
-static int mouseWheelX = 0, mouseWheelY = 0;
-
-void input_reset_events() {
+void input_reset_events(Input *input) {
 	for (int i = 0; i < SDL_NUM_SCANCODES; i++) {
-		buttons[i].isPressed = false;
-		buttons[i].isReleased = false;
+		input->buttons[i].isPressed = false;
+		input->buttons[i].isReleased = false;
 	}
 
 	for (int i = 0; i < 5; i++) {
-		mouseButtons[i].isReleased = false;
-		mouseButtons[i].isPressed = false;
-		mouseClicks[i] = 0;
+		input->mouseButtons[i].isReleased = false;
+		input->mouseButtons[i].isPressed = false;
+		input->mouseClicks[i] = 0;
 	}
-	mouseDeltaX = 0;
-	mouseDeltaY = 0;
-	mouseWheelX = 0;
-	mouseWheelY = 0;
+	input->mouseDeltaX = 0;
+	input->mouseDeltaY = 0;
+	input->mouseWheelX = 0;
+	input->mouseWheelY = 0;
 }
 
-void input_handle_event(SDL_Event *e) {
+void input_handle_event(Input *input, SDL_Event *e) {
     if (e->type == SDL_KEYDOWN) {
-		if (!buttons[e->key.keysym.scancode].isHeld) {
-			buttons[e->key.keysym.scancode].isHeld = true;
-			buttons[e->key.keysym.scancode].isPressed = true;
+		if (!input->buttons[e->key.keysym.scancode].isHeld) {
+			input->buttons[e->key.keysym.scancode].isHeld = true;
+			input->buttons[e->key.keysym.scancode].isPressed = true;
 		}
     } else if (e->type == SDL_KEYUP) {
-		if (buttons[e->key.keysym.scancode].isHeld) {
-			buttons[e->key.keysym.scancode].isHeld = false;
-			buttons[e->key.keysym.scancode].isReleased = true;
+		if (input->buttons[e->key.keysym.scancode].isHeld) {
+			input->buttons[e->key.keysym.scancode].isHeld = false;
+			input->buttons[e->key.keysym.scancode].isReleased = true;
 		}
     }
     switch (e->type) {
     	case SDL_KEYDOWN:
-			if (!buttons[e->key.keysym.scancode].isHeld) {
-				buttons[e->key.keysym.scancode].isHeld = true;
-				buttons[e->key.keysym.scancode].isPressed = true;
+			if (!input->buttons[e->key.keysym.scancode].isHeld) {
+				input->buttons[e->key.keysym.scancode].isHeld = true;
+				input->buttons[e->key.keysym.scancode].isPressed = true;
 			}
 			break;
     	case SDL_KEYUP:
-			if (buttons[e->key.keysym.scancode].isHeld) {
-				buttons[e->key.keysym.scancode].isHeld = false;
-				buttons[e->key.keysym.scancode].isReleased = true;
+			if (input->buttons[e->key.keysym.scancode].isHeld) {
+				input->buttons[e->key.keysym.scancode].isHeld = false;
+				input->buttons[e->key.keysym.scancode].isReleased = true;
 			}
 			break;
     	case SDL_MOUSEBUTTONDOWN:
-    		if (!mouseButtons[e->button.button].isHeld) {
-				mouseButtons[e->button.button].isHeld = true;
-				mouseButtons[e->button.button].isPressed = true;
-				mouseClicks[e->button.button] = e->button.clicks;
+    		if (!input->mouseButtons[e->button.button].isHeld) {
+			    input->mouseButtons[e->button.button].isHeld = true;
+			    input->mouseButtons[e->button.button].isPressed = true;
+			    input->mouseClicks[e->button.button] = e->button.clicks;
     		}
     		break;
     	case SDL_MOUSEBUTTONUP:
-			if (mouseButtons[e->button.button].isHeld) {
-				mouseButtons[e->button.button].isHeld = false;
-				mouseButtons[e->button.button].isReleased = true;
+			if (input->mouseButtons[e->button.button].isHeld) {
+				input->mouseButtons[e->button.button].isHeld = false;
+				input->mouseButtons[e->button.button].isReleased = true;
 			}
 			break;
     	case SDL_MOUSEMOTION:
-    		mouseDeltaX += e->motion.xrel;
-    		mouseDeltaY += e->motion.yrel;
-    		mouseX = e->motion.x;
-    		mouseY = e->motion.y;
+		    input->mouseDeltaX += e->motion.xrel;
+		    input->mouseDeltaY += e->motion.yrel;
+		    input->mouseX = e->motion.x;
+		    input->mouseY = e->motion.y;
     		break;
     	case SDL_MOUSEWHEEL:
-    		mouseWheelX += e->wheel.x;
-    		mouseWheelY += e->wheel.y;
+		    input->mouseWheelX += e->wheel.x;
+		    input->mouseWheelY += e->wheel.y;
     		if (e->wheel.direction == SDL_MOUSEWHEEL_FLIPPED) {
-    			mouseWheelX *= -1;
-    			mouseWheelY *= -1;
+			    input->mouseWheelX *= -1;
+			    input->mouseWheelY *= -1;
     		}
     		break;
     }
 }
 
-ButtonState input_get_key(SDL_Scancode code) {
-	return buttons[code];
+ButtonState input_get_key(Input *input, SDL_Scancode code) {
+	return input->buttons[code];
 }
 
-ButtonState input_get_mouse_button(int id) {
-	return mouseButtons[id];
+ButtonState input_get_mouse_button(Input *input, int id) {
+	return input->mouseButtons[id];
 }
 
-int input_get_mouse_x() {
-	return mouseX;
+int input_get_mouse_x(Input *input) {
+	return input->mouseX;
 }
 
-int input_get_mouse_y() {
-	return mouseY;
+int input_get_mouse_y(Input *input) {
+	return input->mouseY;
 }
 
-int input_get_mouse_delta_x() {
-	return mouseDeltaX;
+int input_get_mouse_delta_x(Input *input) {
+	return input->mouseDeltaX;
 }
 
-int input_get_mouse_delta_y() {
-	return mouseDeltaY;
+int input_get_mouse_delta_y(Input *input) {
+	return input->mouseDeltaY;
 }
 
-int input_get_mouse_wheel_x() {
-	return mouseWheelX;
+int input_get_mouse_wheel_x(Input *input) {
+	return input->mouseWheelX;
 }
 
-int input_get_mouse_wheel_y() {
-	return mouseWheelY;
+int input_get_mouse_wheel_y(Input *input) {
+	return input->mouseWheelY;
 }
 
-Point input_get_mouse_pos() {
+Point input_get_mouse_pos(Input *input) {
 	return (Point) {
-		(float)input_get_mouse_x(),
-		(float)input_get_mouse_y()
+		(float)input_get_mouse_x(input),
+		(float)input_get_mouse_y(input)
 	};
 }
 
-Vec input_get_mouse_delta() {
+Vec input_get_mouse_delta(Input *input) {
 	return (Vec) {
-		(float)input_get_mouse_delta_x(),
-		(float)input_get_mouse_delta_y()
+		(float)input_get_mouse_delta_x(input),
+		(float)input_get_mouse_delta_y(input)
 	};
 }
 
-Vec input_get_mouse_wheel() {
+Vec input_get_mouse_wheel(Input *input) {
 	return (Vec) {
-		(float)input_get_mouse_wheel_x(),
-		(float)input_get_mouse_wheel_y()
+		(float)input_get_mouse_wheel_x(input),
+		(float)input_get_mouse_wheel_y(input)
 	};
 }
 
-bool input_mouse_over(SDL_Rect r) {
-	SDL_Point p = {input_get_mouse_x(), input_get_mouse_y()};
+bool input_mouse_over(Input *input, SDL_Rect r) {
+	SDL_Point p = {input_get_mouse_x(input), input_get_mouse_y(input)};
 	return SDL_PointInRect(&p, &r) == SDL_TRUE;
 }

@@ -1,17 +1,19 @@
 cmake_minimum_required(VERSION 3.3)
 
-project(Homework)
+project(Homework C)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
+
+add_definitions(-DSDL_MAIN_HANDLED)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_TTF REQUIRED)
 find_package(SDL2_image REQUIRED)
 
-add_executable(${PROJECT_NAME} main.c Graphics.c Graphics.h debugmalloc.h debugmalloc-impl.h Component.c Component.h
-                                Utility.c Utility.h Window.c Window.h Input.c Input.h Node.c Node.h Parser.c Parser.h
-                                NodeVector.c NodeVector.h Camera.c Camera.h GUIGraphics.c GUIGraphics.h Wire.c Wire.h)
+file(GLOB SRC *.c *.h)
+
+add_executable(${PROJECT_NAME} ${SRC})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES C_STANDARD 99)
 

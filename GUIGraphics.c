@@ -1,4 +1,5 @@
 #include "GUIGraphics.h"
+#include "debugmalloc.h"
 
 NSliceTexture guigfx_create_nslice(char *path, SliceType type, int x1, int y1, int x2, int y2, SDL_Renderer *renderer) {
 	SDL_Surface *surface = IMG_Load(path);
@@ -18,7 +19,7 @@ NSliceTexture guigfx_create_nslice(char *path, SliceType type, int x1, int y1, i
 	return result;
 }
 
-void guigfx_render_9slice(NSliceTexture *data, SDL_Rect rect, SDL_Renderer *renderer) {
+void guigfx_render_nslice(NSliceTexture *data, SDL_Rect rect, SDL_Renderer *renderer) {
 	SDL_Rect src, dst;
 
 	int x1, x2, x3;
@@ -72,62 +73,46 @@ void guigfx_render_9slice(NSliceTexture *data, SDL_Rect rect, SDL_Renderer *rend
 	}
 	case ST_REPEAT: {
 		//Top
+		SDL_Rect clipRect = {x2, y1, w2, rect.h};
+		SDL_RenderSetClipRect(renderer, &clipRect);
 		src = (SDL_Rect){data->x1, 0, data->w2, data->h1};
 		int x;
-		for (x = x2; x < x3 - data->w2; x += data->w2) {
+		for (x = x2; x < x3; x += data->w2) {
 			dst = (SDL_Rect){x, y1, data->w2, h1};
 			SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		}
-		src.w = x3 - x;
-		dst = (SDL_Rect){x, y1, x3 - x, h1};
-		SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		//Bottom
 		src = (SDL_Rect){data->x1, data->x2, data->w2, data->h3};
-		for (x = x2; x < x3 - data->w2; x += data->w2) {
+		for (x = x2; x < x3; x += data->w2) {
 			dst = (SDL_Rect){x, y3, data->w2, h3};
 			SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		}
-		src.w = x3 - x;
-		dst = (SDL_Rect){x, y3, x3 - x, h3};
-		SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		//Left
+		clipRect = (SDL_Rect){x1, y2, rect.w, h2};
+		SDL_RenderSetClipRect(renderer, &clipRect);
 		src = (SDL_Rect){0, data->y1, data->w1, data->h2};
 		int y;
-		for (y = y2; y < y3 - data->h2; y += data->h2) {
+		for (y = y2; y < y3; y += data->h2) {
 			dst = (SDL_Rect){x1, y, w1, data->h2};
 			SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		}
-		src.h = y3 - y;
-		dst = (SDL_Rect){x1, y, w1, y3 - y};
-		SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		//Right
 		src = (SDL_Rect){data->x2, data->y1, data->w3, data->h2};
-		for (y = y2; y < y3 - data->h2; y += data->h2) {
+		for (y = y2; y < y3; y += data->h2) {
 			dst = (SDL_Rect){x3, y, w3, data->h2};
 			SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		}
-		src.h = y3 - y;
-		dst = (SDL_Rect){x3, y, w3, y3 - y};
-		SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		//Center
-		for (x = x2; x < x3 - data->w2; x += data->w2) {
-			src = (SDL_Rect){data->x1, data->y1, data->w2, data->h2};
-			for (y = y2; y < y3 - data->h2; y += data->h2) {
+		clipRect = (SDL_Rect){x2, y2, w2, h2};
+		SDL_RenderSetClipRect(renderer, &clipRect);
+		src = (SDL_Rect){data->x1, data->y1, data->w2, data->h2};
+		for (x = x2; x < x3; x += data->w2) {
+			for (y = y2; y < y3; y += data->h2) {
 				dst = (SDL_Rect){x, y, data->w2, data->h2};
 				SDL_RenderCopy(renderer, data->texture, &src, &dst);
 			}
-			src.h = y3 - y;
-			dst = (SDL_Rect){x, y, data->w2, y3 - y};
-			SDL_RenderCopy(renderer, data->texture, &src, &dst);
 		}
-		src = (SDL_Rect){data->x1, data->y1, x3 - x, data->h2};
-		for (y = y2; y < y3 - data->h2; y += data->h2) {
-			dst = (SDL_Rect){x, y, x3 - x, data->h2};
-			SDL_RenderCopy(renderer, data->texture, &src, &dst);
-		}
-		src.h = y3 - y;
-		dst = (SDL_Rect){x, y, x3 - x, y3 - y};
-		SDL_RenderCopy(renderer, data->texture, &src, &dst);
+		SDL_RenderSetClipRect(renderer, NULL);
 		break;
 	}
 	default:

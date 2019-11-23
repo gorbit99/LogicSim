@@ -1,137 +1,251 @@
-#include <stdio.h>
-#define SDL_MAIN_HANDLED
-
 #include "debugmalloc.h"
 
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <stdbool.h>
 #include "Graphics.h"
-#include "Component.h"
-#include "Window.h"
 #include "Input.h"
 #include "NodeVector.h"
 #include "Camera.h"
 #include "GUIGraphics.h"
+#include "Windowing.h"
+#include "Search.h"
+#include "WireDrawing.h"
+#include "Save.h"
+#include "FileDialog.h"
+
+enum ProgramState {
+	VIEWING_CIRCUIT,
+	CHOOSING_COMPONENT,
+	MOVING_COMPONENT,
+	DRAWING_WIRE,
+	SIMULATION
+} state;
 
 int main(int argc, char **argv) {
 	debugmalloc_log_file("debugmalloclog.txt");
 
-	SDL_Window *window;
-	SDL_Renderer *renderer;
+	window_init_SDL();
 
-	window_init(&window, &renderer, "Logic Simulator", 640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+	Window mainWindow = window_create(
+			"Logic Simulator",
+			640,
+			480,
+			(unsigned) SDL_WINDOW_SHOWN | (unsigned) SDL_WINDOW_RESIZABLE,
+			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
+	);
+
+	Window searchWindow = window_create(
+			"Search for component",
+			500,
+			500,
+			SDL_WINDOW_HIDDEN,
+			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
+	);
+
+	state = VIEWING_CIRCUIT;
 
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 80);
+	TTF_Font *searchbarFont = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 20);
 
-	NodeVector vec = nodev_create(0);
-	nodev_push_back(&vec, node_create_switch((Point){0, 0}, renderer)); //0
-	nodev_push_back(&vec, node_create_switch((Point){0, 400}, renderer)); //1
-	nodev_push_back(&vec, node_create_switch((Point){0, 800}, renderer)); //2
-	nodev_push_back(&vec, node_create("NAND3", (Point){500, 100}, font, renderer)); //3
-	nodev_push_back(&vec, node_create("NAND3", (Point){500, 700}, font, renderer)); //4
-	nodev_push_back(&vec, node_create("NAND", (Point){1100, 0}, font, renderer)); //5
-	nodev_push_back(&vec, node_create("NAND", (Point){1100, 800}, font, renderer)); //6
-	nodev_push_back(&vec, node_create("NAND", (Point){1700, 100}, font, renderer)); //7
-	nodev_push_back(&vec, node_create("NAND", (Point){1700, 700}, font, renderer)); //8
-	nodev_push_back(&vec, node_create("NAND", (Point){2300, 0}, font, renderer)); //9
-	nodev_push_back(&vec, node_create("NAND", (Point){2300, 800}, font, renderer)); //10
-	nodev_push_back(&vec, node_create("NOT", (Point){1000, 1400}, font, renderer)); //11
-	nodev_push_back(&vec, node_create_LED((Point){2900, 100}, renderer)); //12
-	nodev_push_back(&vec, node_create_LED((Point){2900, 700}, renderer)); //13
+	NSliceTexture textBoxTexture = guigfx_create_nslice(
+			"res/GUI/Textbox.png",
+			ST_CLAMP,
+			9,
+			9,
+			181,
+			181,
+			searchWindow.renderer
+	);
 
-	nodev_connect(&vec, 0, 0, 3, 0);
-	nodev_connect(&vec, 2, 0, 4, 2);
-	nodev_connect(&vec, 1, 0, 3, 1);
-	nodev_connect(&vec, 1, 0, 4, 1);
-	nodev_connect(&vec, 1, 0, 11, 0);
-	nodev_connect(&vec, 3, 0, 5, 0);
-	nodev_connect(&vec, 4, 0, 6, 1);
-	nodev_connect(&vec, 6, 0, 5, 1);
-	nodev_connect(&vec, 5, 0, 6, 0);
-	nodev_connect(&vec, 5, 0, 7, 0);
-	nodev_connect(&vec, 6, 0, 8, 1);
-	nodev_connect(&vec, 11, 0, 7, 1);
-	nodev_connect(&vec, 11, 0, 8, 0);
-	nodev_connect(&vec, 7, 0, 9, 0);
-	nodev_connect(&vec, 10, 0, 9, 1);
-	nodev_connect(&vec, 8, 0, 10, 1);
-	nodev_connect(&vec, 9, 0, 10, 0);
-	nodev_connect(&vec, 9, 0, 4, 0);
-	nodev_connect(&vec, 10, 0, 3, 2);
-	nodev_connect(&vec, 9, 0, 12, 0);
-	nodev_connect(&vec, 10, 0, 13, 0);
+	NSliceTexture panelTexture = guigfx_create_nslice(
+			"res/GUI/PanelBG.png",
+			ST_CLAMP,
+			9,
+			9,
+			181,
+			181,
+			searchWindow.renderer
+	);
 
-	SDL_Cursor *cursor = SDL_GetCursor();
+	SearchData search = search_create();
+	Node *moved = NULL;
+	WireDrawing wireDrawing = {};
+
+	NodeVector vec = load_vector("test.sav", font, mainWindow.renderer);
+
 	Camera camera;
-	camera.position = (Point){0, 0};
-	camera.zoom = 1;
+	camera.position = (Point) {0, 0};
+	camera.zoom = 0.25f;
 
 	bool quit = false;
 	SDL_Event e;
 	while (!quit) {
-		input_reset_events();
+		window_begin_event_handling(&mainWindow);
 		while (SDL_PollEvent(&e)) {
-			switch (e.type) {
-				case SDL_QUIT:
-					quit = true;
-					break;
-				case SDL_WINDOWEVENT_FOCUS_GAINED:
-					SDL_CaptureMouse(true);
-					break;
-				case SDL_WINDOWEVENT_FOCUS_LOST:
-					SDL_CaptureMouse(false);
-					break;
-			}
-			input_handle_event(&e);
+			window_handle_event(&mainWindow, &e);
+			window_handle_event(&searchWindow, &e);
+			if (state == CHOOSING_COMPONENT)
+				search_handle_event(&search, &e);
 		}
+		SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
+		SDL_RenderClear(mainWindow.renderer);
 
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
+		Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos(&mainWindow.input));
 
-		Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos());
+		if (input_get_key(&mainWindow.input, SDL_SCANCODE_RETURN).isPressed)
+			open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic", DT_SAVE);
 
-		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isHeld)
-			camera_move(&camera, (Vec){(float)input_get_mouse_delta_x(), (float)input_get_mouse_delta_y()});
+		switch (state) {
+			case VIEWING_CIRCUIT: {
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 
-		if (input_get_mouse_button(SDL_BUTTON_LEFT).isPressed) {
-			for (int i = 0; i < vec.count; i++) {
-				if (nodev_at(&vec, i)->component.type == CT_SWITCH)
-					if (node_is_over(nodev_at(&vec, i), mouseWS)) {
-						//nodev_switch(&vec, i);
-						nodev_at(&vec, i)->outValues[0] ^= 1;
-						for (size_t w = 0; w < nodev_at(&vec, i)->wires[0].conCount; w++)
-							node_set_inval(nodev_at(&vec, i)->wires[0].connections[w].dest,
-								nodev_at(&vec, i)->wires[0].connections[w].pin,
-								nodev_at(&vec, i)->outValues[0]);
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_RCTRL).isHeld ||
+				    input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) {
+					if (input_get_key(&mainWindow.input, SDL_SCANCODE_S).isPressed) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
+						                              DT_SAVE);
+						save_vector(&vec, path);
+						free(path);
 					}
+					if (input_get_key(&mainWindow.input, SDL_SCANCODE_O).isPressed) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
+						                              DT_OPEN);
+						nodev_free(&vec);
+						vec = load_vector(path, font, mainWindow.renderer);
+						free(path);
+					}
+				}
+
+
+				//Transitions
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
+					state = CHOOSING_COMPONENT;
+					window_show(&searchWindow);
+					window_get_focus(&searchWindow);
+					search_start(&search, "res/Modules", searchbarFont, searchWindow.renderer);
+				}
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed &&
+				    wiredrawing_start(&vec, mouseWS, &wireDrawing)) {
+					state = DRAWING_WIRE;
+					break;
+				}
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					moved = NULL;
+					for (size_t i = 0; i < vec.count; i++) {
+						if (node_is_over(nodev_at(&vec, i), mouseWS)) {
+							state = MOVING_COMPONENT;
+							moved = nodev_at(&vec, i);
+							break;
+						}
+					}
+					if (moved != NULL)
+						break;
+				}
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
+					state = SIMULATION;
+					break;
+				}
+				break;
 			}
+			case CHOOSING_COMPONENT: {
+				//Update
+				if (mainWindow.keyboardFocus) {
+					mainWindow.keyboardFocus = false;
+					window_get_focus(&searchWindow);
+				}
+
+				//Graphics
+				SDL_SetRenderDrawColor(searchWindow.renderer, 50, 50, 50, 255);
+				SDL_RenderClear(searchWindow.renderer);
+				guigfx_render_nslice(&textBoxTexture, (SDL_Rect) {275, 100, 200, 40}, searchWindow.renderer);
+				guigfx_render_nslice(&panelTexture, (SDL_Rect) {10, 10, 230, 480}, searchWindow.renderer);
+				search_render(&search, (SDL_Rect) {15, 15, 220, 470}, searchbarFont, 280, 105, searchWindow.renderer);
+
+				SDL_RenderPresent(searchWindow.renderer);
+
+				//Transitions
+				if (searchWindow.requestClose) {
+					searchWindow.requestClose = false;
+					window_hide(&searchWindow);
+					state = VIEWING_CIRCUIT;
+					window_get_focus(&mainWindow);
+					SearchResult result = search_end(&search);
+					search_free_result(&result);
+				}
+				if (search.searchOver) {
+					SearchResult result = search_end(&search);
+					nodev_push_back(&vec,
+					                node_create(result.selectedModule, (Point) {0, 0}, font, mainWindow.renderer));
+					moved = nodev_at(&vec, (int) vec.count - 1);
+					search_free_result(&result);
+					window_hide(&searchWindow);
+					window_get_focus(&mainWindow);
+					state = MOVING_COMPONENT;
+				}
+				break;
+			}
+			case MOVING_COMPONENT: {
+				//Update
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				nodev_reposition(&vec, moved, mouseWS);
+
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_DELETE).isPressed) {
+					nodev_delete(&vec, moved);
+					moved = NULL;
+				}
+
+				//Transitions
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed || moved == NULL) {
+					state = VIEWING_CIRCUIT;
+				}
+				break;
+			}
+			case DRAWING_WIRE: {
+				//Update
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+
+				wiredrawing_update(&wireDrawing, &vec, mouseWS, camera.position, mainWindow.renderer);
+
+				//Transitions
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isReleased) {
+					wiredrawing_end(&wireDrawing, &vec, mouseWS);
+					state = VIEWING_CIRCUIT;
+				}
+				break;
+			}
+			case SIMULATION: {
+				//Update
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
+					nodev_check_clicks(&vec, mouseWS);
+				//Transitions
+				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
+					state = VIEWING_CIRCUIT;
+					break;
+				}
+				break;
+			}
+			default:
+				break;
 		}
-		//if (input_get_key(SDL_SCANCODE_SPACE).isPressed)
+
 		nodev_update(&vec);
 
-		for (size_t i = 0; i < vec.count; i++)
-			node_render(&vec.nodes[i], camera.position);
+		nodev_render(&vec, camera.position);
 
-		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isPressed) {
-			SDL_FreeCursor(cursor);
-			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
-			SDL_SetCursor(cursor);
-			SDL_CaptureMouse(true);
-		}
-		if (input_get_mouse_button(SDL_BUTTON_MIDDLE).isReleased) {
-			SDL_FreeCursor(cursor);
-			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-			SDL_SetCursor(cursor);
-			SDL_CaptureMouse(false);
-		}
+		SDL_RenderPresent(mainWindow.renderer);
 
-		camera_zoom(&camera, (float)input_get_mouse_wheel_y(), input_get_mouse_pos());
-		SDL_RenderSetScale(renderer, camera.zoom, camera.zoom);
-
-		SDL_RenderPresent(renderer);
+		if (mainWindow.requestClose)
+			quit = true;
 	}
-	window_cleanup(window, renderer);
+	window_free(&mainWindow);
+	window_free(&searchWindow);
+	search_free(&search);
+
+	window_quit_SDL();
+
+	save_vector(&vec, "test.sav");
 
 	nodev_free(&vec);
 

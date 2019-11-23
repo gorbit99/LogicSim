@@ -69,6 +69,14 @@ Node *nodev_at(NodeVector *vector, int index);
 void nodev_connect(NodeVector *vector, int idA, int pinA, int idB, int pinB);
 
 /**
+ * @brief Render the nodes inside a vector
+ * 
+ * @param vector Vector to render
+ * @param camPos Camera position to render at
+ */
+void nodev_render(NodeVector *vector, Point camPos);
+
+/**
  * @brief Run simulation
  * 
  * @param vector Vector to simulate
@@ -76,10 +84,35 @@ void nodev_connect(NodeVector *vector, int idA, int pinA, int idB, int pinB);
 void nodev_update(NodeVector *vector);
 
 /**
+ * @brief Check and handle mouse clicks
+ * 
+ * @param vector Vector to check
+ * @param mousePos Position of the mouse
+ */
+void nodev_check_clicks(NodeVector *vector, Point mousePos);
+
+/**
  * @brief Free vector
  * 
  * @param vector Vector to free
  */
 void nodev_free(NodeVector *vector);
+
+/**
+ * @brief Repositions a node in the vector
+ * 
+ * @param vector Vector to get the node from
+ * @param node Node to reposition
+ * @param position New position
+ */
+void nodev_reposition(NodeVector *vector, Node *node, Point position);
+
+/**
+ * @brief Delete a node and erase the connections
+ * 
+ * @param vector Vector to delete node from
+ * @param node Node to delete
+ */
+void nodev_delete(NodeVector *vector, Node *node);
 
 #endif //HOMEWORK_NODEVECTOR_H

@@ -20,7 +20,7 @@ typedef struct Node Node;
  * 
  */
 typedef struct Connection {
-    Node *dest; /**< Destination node */
+    int dest; /**< Destination node */
     int pin; /**< Destination pin */
     ComponentData wireComp; /**< Wire corresponding to the connection */
 } Connection;
@@ -52,8 +52,9 @@ Wire wire_create(Node *origin, int originPin);
  * @param wire Wire to add to
  * @param other Other node
  * @param otherPin Other pin
+ * @param nodes Array of the nodes
  */
-void wire_add(Wire *wire, Node *other, int otherPin);
+void wire_add(Wire *wire, int other, int otherPin, Node *nodes);
 
 /**
  * @brief Erase connection from wire
@@ -69,7 +70,7 @@ void wire_erase(Wire *wire, int id);
  * @param wire Wire to send through
  * @param value Value to send through
  */
-void wire_send_value(Wire *wire, bool value);
+void wire_send_value(Wire *wire, bool value, Node *nodes);
 
 /**
  * @brief Free wire
@@ -77,5 +78,23 @@ void wire_send_value(Wire *wire, bool value);
  * @param wire Wire to free
  */
 void wire_free(Wire *wire);
+
+/**
+ * @brief Repositions a connection
+ * 
+ * @param conn Connection to reposition
+ * @param origin Origin node
+ * @param originPon Origin pin
+ * @param dest Destination node
+ */
+void connection_reposition(Connection *conn, Node *origin, int originPin, Node *dest);
+
+/**
+ * @brief Repositions the connections of the wire
+ *
+ * @param wire Wire to reposition
+ * @param nodes Array of the nodes
+ */
+void wire_reposition(Wire *wire, Node *nodes);
 
 #endif //HOMEWORK_WIRE_H
