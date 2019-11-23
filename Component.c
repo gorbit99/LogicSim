@@ -9,6 +9,11 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 
 	FILE *f = fopen(path, "r");
 
+	if (f == NULL) {
+	    log_error("Couldn't open file %s!\n", path);
+	    return NULL;
+	}
+
 	float wf, hf;
 	fscanf(f, "%f %f", &wf, &hf);
 
@@ -96,7 +101,7 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	data.x = x;
 	data.y = y;
 	char path[256];
-	sprintf(path, "res/Modules/%s.cmp", name);
+	sprintf(path, "./res/Modules/%s.cmp", name);
 	SDL_Surface *surf = component_load_graphic(path, size, thickness, font);
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
 	data.texture = texture;
@@ -104,10 +109,10 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	data.h = surf->h;
 	SDL_FreeSurface(surf);
 
-	sprintf(path, "res/Modules/%s.dat", name);
+	sprintf(path, "./res/Modules/%s.dat", name);
 	data.pinData = component_load_pin_data(path, size);
 
-	sprintf(path, "res/Modules/%s.fun", name);
+	sprintf(path, "./res/Modules/%s.fun", name);
 	data.funData = parser_load_function(path);
 
 	data.type = CT_MODULE;
@@ -126,7 +131,7 @@ void component_free_data(ComponentData *dat) {
 }
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color) {
-	SDL_FRect r = {
+	SDL_Rect r = {
 			(dat->x - camPos.x - (float)dat->w / 2),
 			(dat->y - camPos.y - (float)dat->h / 2),
 			(float) dat->w,
@@ -134,7 +139,7 @@ void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, 
 	};
 
 	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000u) >> 24u, (color & 0x00ff0000u) >> 16u, (color & 0x0000ff00u) >> 8u);
-	SDL_RenderCopyF(renderer, dat->texture, NULL, &r);
+	SDL_RenderCopy(renderer, dat->texture, NULL, &r);
 }
 
 SDL_Surface *component_create_wire_texture(Point V1, Point V2, float ang1, float ang2, float size, float thickness, Point *pin1Pos) {

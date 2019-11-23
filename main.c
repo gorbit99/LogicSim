@@ -14,6 +14,10 @@
 #include "Save.h"
 #include "FileDialog.h"
 
+#ifdef __LINUX__
+#include <gtk-3.0/gtk/gtk.h>
+#endif
+
 enum ProgramState {
 	VIEWING_CIRCUIT,
 	CHOOSING_COMPONENT,
@@ -27,7 +31,11 @@ int main(int argc, char **argv) {
 
 	window_init_SDL();
 
-	Window mainWindow = window_create(
+#ifdef __LINUX__
+	gtk_init(&argc, &argv);
+#endif
+
+	SDLWindow mainWindow = window_create(
 			"Logic Simulator",
 			640,
 			480,
@@ -35,7 +43,7 @@ int main(int argc, char **argv) {
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
-	Window searchWindow = window_create(
+	SDLWindow searchWindow = window_create(
 			"Search for component",
 			500,
 			500,
@@ -105,15 +113,19 @@ int main(int argc, char **argv) {
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_S).isPressed) {
 						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
 						                              DT_SAVE);
-						save_vector(&vec, path);
-						free(path);
+						if (path != NULL) {
+                            save_vector(&vec, path);
+                            free(path);
+                        }
 					}
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_O).isPressed) {
 						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
 						                              DT_OPEN);
-						nodev_free(&vec);
-						vec = load_vector(path, font, mainWindow.renderer);
-						free(path);
+						if (path != NULL) {
+                            nodev_free(&vec);
+                            vec = load_vector(path, font, mainWindow.renderer);
+                            free(path);
+                        }
 					}
 				}
 

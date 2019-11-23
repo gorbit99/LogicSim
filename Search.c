@@ -6,20 +6,24 @@ ModuleList search_load_modules(char *moduleDir, TTF_Font *font, SDL_Renderer *re
 	ModuleList result;
 	result.num = files.num / 3;
 	result.modules = (struct ModuleData *) malloc(sizeof(struct ModuleData) * result.num);
-	for (size_t i = 0; i < result.num; i++) {
-		dir_remove_extension(files.files[i * 3]);
-		result.modules[i].name = (char *) malloc(sizeof(char) * (strlen(files.files[i * 3]) + 1));
-		strcpy(result.modules[i].name, files.files[i * 3]);
+	int index = 0;
+	for (size_t i = 0; i < files.num; i++) {
+	    if (strcmp(dir_get_extension(files.files[i]), ".cmp") != 0)
+            continue;
+		dir_remove_extension(files.files[i]);
+		result.modules[index].name = (char *) malloc(sizeof(char) * (strlen(files.files[i]) + 1));
+		strcpy(result.modules[index].name, files.files[i]);
 		SDL_Surface *surface = TTF_RenderText_Blended(
 				font,
-				result.modules[i].name,
+				result.modules[index].name,
 				(SDL_Color) {255, 255, 255, 255});
-		result.modules[i].text = SDL_CreateTextureFromSurface(renderer, surface);
-		result.modules[i].w = surface->w;
-		result.modules[i].h = surface->h;
-		for (int j = 0; result.modules[i].name[j] != '\0'; j++)
-			result.modules[i].name[j] = (char) tolower(result.modules[i].name[j]);
+		result.modules[index].text = SDL_CreateTextureFromSurface(renderer, surface);
+		result.modules[index].w = surface->w;
+		result.modules[index].h = surface->h;
+		for (int j = 0; result.modules[index].name[j] != '\0'; j++)
+			result.modules[index].name[j] = (char) tolower(result.modules[index].name[j]);
 		SDL_FreeSurface(surface);
+		index++;
 	}
 	dir_free_filelist(&files);
 	return result;
@@ -51,15 +55,9 @@ void search_render_modulelist(ModuleList *modules, SDL_Rect clipRect, char *sear
 		SDL_RenderSetClipRect(renderer, NULL);
 		return;
 	}
-
-	char *lowerSearch = (char *) malloc(sizeof(char) * (strlen(search) + 1));
-	strcpy(lowerSearch, search);
-
-	for (int i = 0; lowerSearch[i] != '\0'; i++)
-		lowerSearch[i] = (char) tolower(lowerSearch[i]);
 	int found = 0;
 	for (size_t i = 0; i < modules->num; i++) {
-		if (strstr(modules->modules[i].name, lowerSearch)) {
+		if (strstr(modules->modules[i].name, search)) {
 			search_render_module(&modules->modules[i],
 			                     clipRect.x,
 			                     clipRect.y - yOffset + found * modules->modules[i].h,
@@ -67,7 +65,6 @@ void search_render_modulelist(ModuleList *modules, SDL_Rect clipRect, char *sear
 			found++;
 		}
 	}
-	free(lowerSearch);
 	SDL_RenderSetClipRect(renderer, NULL);
 }
 
