@@ -30,6 +30,19 @@ void nodev_push_back(NodeVector *vector, Node node) {
 
 void nodev_erase(NodeVector *vector, int index) {
 	node_free(nodev_at(vector, index));
+	for (size_t i = 0; i < vector->count; i++) {
+		if (i == index)
+			continue;
+		Node *node = nodev_at(vector, i);
+		for (int w = 0; w < node->component.funData.outC; w++) {
+			Wire *wire = &node->wires[w];
+			for (size_t c = 0; c < wire->conCount; c++) {
+				Connection *conn = &wire->connections[c];
+				if (conn->dest > index)
+					conn->dest--;
+			}
+		}
+	}
 	for (size_t i = index + 1; i < vector->count; i++) {
 		vector->nodes[i - 1] = vector->nodes[i];
 		for (int j = 0; j < vector->nodes[i].component.funData.outC; j++)

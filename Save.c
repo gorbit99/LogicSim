@@ -60,57 +60,145 @@ typedef struct Modules {
 } Modules;
 
 bool save_as_module(NodeVector *vector, char *name) {
+
 	char funPath[256];
-	sprintf(funPath, "res/%s.fun", name);
+	sprintf(funPath, "res/Modules/%s.fun", name);
 	FILE *funFile = fopen(funPath, "wt");
 	if (funFile == NULL) {
 		log_error("Couldn't open file %s!\n", funPath);
 		return false;
 	}
 
+    Modules *modules = (Modules *)malloc(sizeof(Module) * vector->count);
+    for (size_t n = 0; n < vector->count; n++) {
+        modules[n].connections = NULL;
+    }
+
 	int inC = 0, outC = 0, assignC = 0, wireC = 0;
-	for (size_t i = 0; i < vector->count; i++) {
-		Node *node = nodev_at(vector, i);
-		switch (node->component.type) {
-			case CT_SWITCH: {
-				inC++;
-				break;
-			}
-			case CT_LED: {
-				outC++;
-				break;
-			}
-			case CT_MODULE: {
-				assignC++;
-				for (int w = 0; w < node->component.funData.outC; w++) {
-					wireC += node->wires[w].conCount;
-				}
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-	}
+    for (size_t n = 0; n < vector->count; n++) {
+        Node *node = nodev_at(vector, n);
+        switch (node->component.type)
+        {
+        case CT_SWITCH:
+            inC++;
+            break;
+        case CT_LED:
+            outC++;
+            assignC++;
+            break;
+        case CT_MODULE:
+            assignC++;
+            wireC += node->component.funData.outC;
+            break;
+        default:
+            break;
+        }
+        modules[n].num = node->component.funData.inC;
+        modules[n].connections = (InnerConnection *)malloc(sizeof(InnerConnection) * modules[n].num);    
+    }
 
-	Modules *modules = (struct Modules *) malloc(sizeof(struct Modules) * assignC);
+    fprintf(funFile, "assigns %d\n", assignC);
+    fprintf(funFile, "in %d\n", inC);
+    fprintf(funFile, "out %d\n", outC);
+    fprintf(funFile, "wires %d\n", wireC);
 
-	int index = 0;
-	for (size_t i = 0; i < vector->count; i++) {
-		Node *node = nodev_at(vector, i);
-		if (node->component.type == CT_MODULE) {
-			modules[index].connections = (struct InnerConnection *) malloc(
-					sizeof(struct InnerConnection) * node->component.funData.inC);
-			index++;
-		}
-	}
+    int wireIndex = 0, inputIndex = 0;
+    for (size_t n = 0; n < vector->count; n++) {
+        Node *node = nodev_at(vector, n);
+        for (int w = 0; w < node->component.funData.outC; w++) {
+            Wire *wire = &node->wires[w];
+            for (size_t c = 0; c < wire->conCount; c++) {
+                Connection *conn = &wire->connections[c];
+                switch (node->component.type)
+                {
+                case CT_SWITCH:
+                    modules[conn->dest].connections[conn->pin].id = inputIndex;
+                    modules[conn->dest].connections[conn->pin].type = INPUT;
+                    break;
+                case CT_MODULE:
+                    modules[conn->dest].connections[conn->pin].id = wireIndex;
+                    modules[conn->dest].connections[conn->pin].type = WIRE;
+                    break;
+                default:
+                    break;
+                }
+            }
+            if (node->component.type == CT_MODULE)
+                wireIndex++;
+        }
+        if (node->component.type == CT_SWITCH)
+            inputIndex++;
+    }
+    
+    wireIndex = 0;
+    int outputIndex = 0;
+    for (size_t n = 0; n < vector->count; n++) {
+        Node *node = nodev_at(vector, n);
+        if (node->component.type == CT_MODULE) {
+            fprintf(funFile, "{");
+            bool first = true;
+            for (int w = 0; w < node->component.funData.outC; w++) {
+                if (!first)
+                    fprintf(funFile, ", ");
+                else
+                    first = false;
+                fprintf(funFile, "W%d", wireIndex);
+                wireIndex++;
+            }
+            fprintf(funFile, "} = %s(", node->component.name);
+            first = true;
+            for (int i = 0; i < modules[n].num; i++) {
+                if (!first)
+                    fprintf(funFile, ", ");
+                else
+                    first = false;
+                switch (modules[n].connections[i].type)
+                {
+                case WIRE:
+                    fprintf(funFile, "W");
+                    break;
+                case INPUT:
+                    fprintf(funFile, "$");
+                    break;
+                }
+                fprintf(funFile, "%d", modules[n].connections[i].id);
+            }
+            fprintf(funFile, ")\n");
+        } else if (node->component.type == CT_LED) {
+            fprintf(funFile, "%%%d = W%d\n", outputIndex, modules[n].connections[0].id);
+            outputIndex++;
+        }
+    }
 
-	for (size_t i = 0; i < vector->count; i++) {
-		Node *node = nodev_at(vector, i);
-		if (node->component.type == CT_MODULE) {
-	}
-
-	fprintf(funFile, "assigns %d\nin %d\nout %d\n", assignC + wireC, inC, outC);
+    for (size_t n = 0; n < vector->count; n++) {
+        free(modules[n].connections);
+    }
+    free(modules);
 
 	fclose(funFile);
+
+    char cmpPath[256];
+    sprintf(cmpPath, "res/Modules/%s.cmp", name);
+    FILE *cmpFile = fopen(cmpPath, "wt");
+    if (cmpFile == NULL) {
+        log_error("Couldn't open file %s!\n", cmpPath);
+        return false;
+    }
+    int maxPin = max(inC, outC);
+    float w = 1, h = maxPin * 0.2f;
+
+    char *upperName = (char *)malloc(sizeof(char) * (strlen(name) + 1));
+    int i;
+    for (i = 0; upperName[i] != '\0'; i++)
+        upperName[i] = toupper(name[i]);
+    upperName[i + 1] = '\0';
+
+    fprintf(cmpFile, "%f %f\n", w, h);
+    fprintf(cmpFile, "L %f,%f %f,%f\n", 0.05f, 0.05f, w - 0.1f, 0.05f);
+    fprintf(cmpFile, "L %f,%f %f,%f\n", 0.05f, 0.05f, 0.05f, h - 0.1f);
+    fprintf(cmpFile, "L %f,%f %f,%f\n", 0.05f, h - 0.1f, w - 0.1f, h - 0.1f);
+    fprintf(cmpFile, "L %f,%f %f,%f\n", w - 0.1f, 0.05f, w - 0.1f, h - 0.1f);
+    fprintf(cmpFile, "TXT %f,%f %s\n", w / 2, h / 2, upperName);
+
+    fclose(cmpFile);
 }
