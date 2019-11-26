@@ -13,6 +13,7 @@
 #include "WireDrawing.h"
 #include "Save.h"
 #include "FileDialog.h"
+#include "ConfigHandler.h"
 
 enum ProgramState {
 	VIEWING_CIRCUIT,
@@ -27,10 +28,16 @@ int main(int argc, char **argv) {
 
 	window_init_SDL();
 
+	config_init();
+
+	int w, h;
+	w = config_get_int("screen-width");
+	h = config_get_int("screen-height");
+
 	Window mainWindow = window_create(
 			"Logic Simulator",
-			640,
-			480,
+			w,
+			h,
 			(unsigned) SDL_WINDOW_SHOWN | (unsigned) SDL_WINDOW_RESIZABLE,
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
@@ -72,7 +79,12 @@ int main(int argc, char **argv) {
 	Node *moved = NULL;
 	WireDrawing wireDrawing = {};
 
-	NodeVector vec = load_vector("test.sav", font, mainWindow.renderer);
+	char *lastOpened = config_get_string("last-opened");
+	NodeVector vec;
+	if (strcmp(lastOpened, "-") != 0)
+		vec = load_vector(lastOpened, font, mainWindow.renderer);
+	else
+		vec = nodev_create(0);
 
 	Camera camera;
 	camera.position = (Point) {0, 0};
@@ -106,6 +118,7 @@ int main(int argc, char **argv) {
 						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
 						                              DT_SAVE);
 						save_vector(&vec, path);
+						config_set_string("last-opened", path);
 						free(path);
 					}
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_O).isPressed) {
@@ -113,6 +126,7 @@ int main(int argc, char **argv) {
 						                              DT_OPEN);
 						nodev_free(&vec);
 						vec = load_vector(path, font, mainWindow.renderer);
+						config_set_string("last-opened", path);
 						free(path);
 					}
 				}
@@ -239,13 +253,17 @@ int main(int argc, char **argv) {
 		if (mainWindow.requestClose)
 			quit = true;
 	}
+
+	config_set_int("screen-width", mainWindow.w);
+	config_set_int("screen-height", mainWindow.h);
+	config_save();
+	config_free();
+
 	window_free(&mainWindow);
 	window_free(&searchWindow);
 	search_free(&search);
 
 	window_quit_SDL();
-
-	save_vector(&vec, "test.sav");
 
 	nodev_free(&vec);
 
