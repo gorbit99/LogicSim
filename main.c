@@ -20,7 +20,8 @@ enum ProgramState {
 	CHOOSING_COMPONENT,
 	MOVING_COMPONENT,
 	DRAWING_WIRE,
-	SIMULATION
+	SIMULATION,
+	SAVE_AS_MODULE
 } state;
 
 int main(int argc, char **argv) {
@@ -43,10 +44,18 @@ int main(int argc, char **argv) {
 	);
 
 	Window searchWindow = window_create(
-			"Search for component",
+			"Search for Component",
 			500,
 			500,
 			SDL_WINDOW_HIDDEN,
+			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
+	);
+
+	Window modulizeWindow = window_create(
+			"Save as Module",
+			500,
+			50,
+			SDL_WINDOW_HIDDEN | SDL_WINDOW_BORDERLESS,
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
@@ -54,6 +63,7 @@ int main(int argc, char **argv) {
 
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 80);
 	TTF_Font *searchbarFont = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 20);
+	TTF_Font *modulizeFont = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 20);
 
 	NSliceTexture textBoxTexture = guigfx_create_nslice(
 			"res/GUI/Textbox.png",
@@ -63,6 +73,16 @@ int main(int argc, char **argv) {
 			181,
 			181,
 			searchWindow.renderer
+	);
+
+	NSliceTexture textBoxTextureModulize = guigfx_create_nslice(
+			"res/GUI/Textbox.png",
+			ST_CLAMP,
+			9,
+			9,
+			181,
+			181,
+			modulizeWindow.renderer
 	);
 
 	NSliceTexture panelTexture = guigfx_create_nslice(
@@ -90,15 +110,22 @@ int main(int argc, char **argv) {
 	camera.position = (Point) {0, 0};
 	camera.zoom = 0.25f;
 
+	TextInput modulizeTI = textinput_create();
+
 	bool quit = false;
 	SDL_Event e;
 	while (!quit) {
 		window_begin_event_handling(&mainWindow);
+		window_begin_event_handling(&searchWindow);
+		window_begin_event_handling(&modulizeWindow);
 		while (SDL_PollEvent(&e)) {
 			window_handle_event(&mainWindow, &e);
 			window_handle_event(&searchWindow, &e);
+			window_handle_event(&modulizeWindow, &e);
 			if (state == CHOOSING_COMPONENT)
 				search_handle_event(&search, &e);
+			if (state == SAVE_AS_MODULE)
+				textinput_handle_event(&modulizeTI, &e);
 		}
 		SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
 		SDL_RenderClear(mainWindow.renderer);
@@ -131,7 +158,6 @@ int main(int argc, char **argv) {
 					}
 				}
 
-
 				//Transitions
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
 					state = CHOOSING_COMPONENT;
@@ -158,6 +184,16 @@ int main(int argc, char **argv) {
 				}
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
 					state = SIMULATION;
+					break;
+				}
+				if ((input_get_key(&mainWindow.input, SDL_SCANCODE_RCTRL).isHeld ||
+				    input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) &&
+					input_get_key(&mainWindow.input, SDL_SCANCODE_M).isPressed) {
+					state = SAVE_AS_MODULE;
+					window_show(&modulizeWindow);
+					window_get_focus(&modulizeWindow);
+					textinput_start();
+					textinput_clear(&modulizeTI);
 					break;
 				}
 				break;
@@ -189,8 +225,7 @@ int main(int argc, char **argv) {
 				}
 				if (search.searchOver) {
 					SearchResult result = search_end(&search);
-					nodev_push_back(&vec,
-					                node_create(result.selectedModule, (Point) {0, 0}, font, mainWindow.renderer));
+					nodev_push_back(&vec, node_create(result.selectedModule, (Point) {0, 0}, font, mainWindow.renderer));
 					moved = nodev_at(&vec, (int) vec.count - 1);
 					search_free_result(&result);
 					window_hide(&searchWindow);
@@ -240,6 +275,40 @@ int main(int argc, char **argv) {
 				}
 				break;
 			}
+			case SAVE_AS_MODULE: {
+				//Update
+				if (mainWindow.keyboardFocus) {
+					mainWindow.keyboardFocus = false;
+					window_get_focus(&modulizeWindow);
+				}
+
+				//Graphics
+				SDL_SetRenderDrawColor(modulizeWindow.renderer, 50, 50, 50, 255);
+				SDL_RenderClear(modulizeWindow.renderer);
+				guigfx_render_nslice(&textBoxTextureModulize, (SDL_Rect) {0, 0, 500, 50}, modulizeWindow.renderer);
+				textinput_update_graphic(&modulizeTI, modulizeFont);
+				textinput_render(&modulizeTI, modulizeFont, 10, 10, modulizeWindow.renderer);
+				SDL_RenderPresent(modulizeWindow.renderer);
+
+				//Transitions
+				if (modulizeWindow.requestClose) {
+					modulizeWindow.requestClose = false;
+					window_hide(&modulizeWindow);
+					state = VIEWING_CIRCUIT;
+					window_get_focus(&mainWindow);
+					textinput_end();
+					break;
+				}
+				if (input_get_key(&modulizeWindow.input, SDL_SCANCODE_RETURN).isPressed) {
+					save_as_module(&vec, modulizeTI.text);
+					window_hide(&modulizeWindow);
+					state = VIEWING_CIRCUIT;
+					window_get_focus(&mainWindow);
+					textinput_end();
+					break;
+				}
+				break;
+			}
 			default:
 				break;
 		}
@@ -258,6 +327,8 @@ int main(int argc, char **argv) {
 	config_set_int("screen-height", mainWindow.h);
 	config_save();
 	config_free();
+
+	textinput_free(&modulizeTI);
 
 	window_free(&mainWindow);
 	window_free(&searchWindow);
