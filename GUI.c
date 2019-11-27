@@ -3,14 +3,10 @@
 
 
 void button_render(Button *button, SDL_Renderer *renderer, Point mousePos) {
-    if (button_is_over(button, mousePos)) {
-        SDL_SetTextureColorMod(button->bg->texture, 255, 128, 255);
+    if (button_is_over(button, mousePos)) 
         SDL_SetTextureColorMod(button->buttonImage, 255, 128, 255);
-    } else {
-        SDL_SetTextureColorMod(button->bg->texture, 255, 255, 255);
+    else
         SDL_SetTextureColorMod(button->buttonImage, 255, 255, 255);
-    }
-    guigfx_render_nslice(button->bg, button->rect, renderer);
     SDL_Rect symbolRect;
     SDL_QueryTexture(button->buttonImage, NULL, NULL, &symbolRect.w, &symbolRect.h);
     symbolRect.x = button->rect.x + (button->rect.w - symbolRect.w) / 2;

@@ -15,6 +15,7 @@ static void __create_config() {
     FILE *file = fopen("config.txt", "wt");
     fprintf(file, "screen-width: 640\n");
     fprintf(file, "screen-height: 480\n");
+    fprintf(file, "maximized: false\n");
     fprintf(file, "last-opened: -\n");
     fclose(file);
 }

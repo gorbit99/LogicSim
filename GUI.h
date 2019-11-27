@@ -6,7 +6,6 @@
 
 typedef struct Button {
     SDL_Rect rect;
-    NSliceTexture *bg;
     SDL_Texture *buttonImage;
 } Button;
 

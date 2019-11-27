@@ -49,5 +49,4 @@ void camera_update(Camera *camera, Input *input, SDL_Renderer *renderer) {
 
 	camera_zoom(camera, (float) input_get_mouse_wheel_y(input),
 	            input_get_mouse_pos(input));
-	SDL_RenderSetScale(renderer, camera->zoom, camera->zoom);
 }

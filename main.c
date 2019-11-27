@@ -29,12 +29,18 @@ int main(int argc, char **argv) {
 	int w, h;
 	w = config_get_int("screen-width");
 	h = config_get_int("screen-height");
+	bool maximized = config_get_bool("maximized");
+
+	unsigned int windowFlags = (unsigned) SDL_WINDOW_SHOWN | 
+							   (unsigned) SDL_WINDOW_RESIZABLE;
+	if (maximized)
+		windowFlags |= (unsigned) SDL_WINDOW_MAXIMIZED;
 
 	Window mainWindow = window_create(
 			"Logic Simulator",
 			w,
 			h,
-			(unsigned) SDL_WINDOW_SHOWN | (unsigned) SDL_WINDOW_RESIZABLE,
+			windowFlags,
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
@@ -101,13 +107,22 @@ int main(int argc, char **argv) {
 	else
 		vec = nodev_create(0);
 
-	Camera camera;
-	camera.position = (Point) {0, 0};
-	camera.zoom = 0.25f;
+	Camera camera = {(Point){0, 0}, 0.25f};
 
 	TextInput modulizeTI = textinput_create();
 
-	
+	SDL_Surface *testSurf = IMG_Load("res/GUI/Test.png");
+	SDL_Texture *test = SDL_CreateTextureFromSurface(mainWindow.renderer, testSurf);
+	SDL_FreeSurface(testSurf);
+
+	Button newFileB = {(SDL_Rect){8, 28, 32, 32}, test};
+	Button openFileB = {(SDL_Rect){8, 88, 32, 32}, test};
+	Button saveFileB = {(SDL_Rect){8, 148, 32, 32}, test};
+	Button modulizeB = {(SDL_Rect){8, 208, 32, 32}, test};
+
+	Button addModuleB = {(SDL_Rect){-8, 28, 32, 32}, test};
+	Button simulateB = {(SDL_Rect){-8, 88, 32, 32}, test};
+	Button drawB = {(SDL_Rect){-8, 88, 32, 32}, test};
 
 	bool quit = false;
 	SDL_Event e;
@@ -124,10 +139,15 @@ int main(int argc, char **argv) {
 			if (state == SAVE_AS_MODULE)
 				textinput_handle_event(&modulizeTI, &e);
 		}
-		SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
+		if (state != SIMULATION)
+			SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
+		else
+			SDL_SetRenderDrawColor(mainWindow.renderer, 40, 0, 25, 255);
+
 		SDL_RenderClear(mainWindow.renderer);
 
-		Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos(&mainWindow.input));
+		Point mousePos = input_get_mouse_pos(&mainWindow.input);
+		Point mouseWS = camera_screen_to_view(&camera, mousePos);
 
 		if (input_get_key(&mainWindow.input, SDL_SCANCODE_RETURN).isPressed)
 			open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic", DT_SAVE);
@@ -155,7 +175,53 @@ int main(int argc, char **argv) {
 					}
 				}
 
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					if (button_is_over(&newFileB, mousePos)) {
+						nodev_free(&vec);
+						vec = nodev_create(0);
+						break;
+					}
+					if (button_is_over(&saveFileB, mousePos)) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
+						                              DT_SAVE);
+						save_vector(&vec, path);
+						config_set_string("last-opened", path);
+						free(path);
+						break;
+					}
+					if (button_is_over(&openFileB, mousePos)) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
+						                              DT_OPEN);
+						nodev_free(&vec);
+						vec = load_vector(path, font, mainWindow.renderer);
+						config_set_string("last-opened", path);
+						free(path);
+						break;
+					}
+				}
+
 				//Transitions
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					if (button_is_over(&addModuleB, mousePos)) {
+						state = CHOOSING_COMPONENT;
+						window_show(&searchWindow);
+						window_get_focus(&searchWindow);
+						search_start(&search, "res/Modules", searchbarFont, searchWindow.renderer);
+						break;
+					}
+					if (button_is_over(&simulateB, mousePos)) {
+						state = SIMULATION;
+						break;
+					}
+					if (button_is_over(&modulizeB, mousePos)) {
+						state = SAVE_AS_MODULE;
+						window_show(&modulizeWindow);
+						window_get_focus(&modulizeWindow);
+						textinput_start();
+						textinput_clear(&modulizeTI);
+						break;
+					}
+				}
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
 					state = CHOOSING_COMPONENT;
 					window_show(&searchWindow);
@@ -251,6 +317,7 @@ int main(int argc, char **argv) {
 				//Update
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 
+				SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
 				wiredrawing_update(&wireDrawing, &vec, mouseWS, camera.position, mainWindow.renderer);
 
 				//Transitions
@@ -263,6 +330,10 @@ int main(int argc, char **argv) {
 			case SIMULATION: {
 				//Update
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				if (button_is_over(&drawB, mousePos)) {
+					state = VIEWING_CIRCUIT;
+					break;
+				}
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
 					nodev_check_clicks(&vec, mouseWS);
 				//Transitions
@@ -312,7 +383,35 @@ int main(int argc, char **argv) {
 
 		nodev_update(&vec);
 
+		SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
 		nodev_render(&vec, camera.position);
+
+		SDL_RenderSetScale(mainWindow.renderer, 1, 1);
+		SDL_RenderDrawPoint(mainWindow.renderer, -1, -1);
+		SDL_SetRenderDrawColor(mainWindow.renderer, 25, 25, 25, 255);
+		SDL_Rect rect = {
+			0, 
+			0,
+			50,
+			mainWindow.h 
+		};
+		SDL_RenderFillRect(mainWindow.renderer, &rect);
+		rect.x = mainWindow.w - 50;
+		SDL_RenderFillRect(mainWindow.renderer, &rect);
+		button_render(&newFileB, mainWindow.renderer, mousePos);
+		button_render(&openFileB, mainWindow.renderer, mousePos);
+		button_render(&saveFileB, mainWindow.renderer, mousePos);
+		button_render(&modulizeB, mainWindow.renderer, mousePos);
+
+		addModuleB.rect.x = mainWindow.w - 8 - addModuleB.rect.w;
+		simulateB.rect.x = mainWindow.w - 8 - simulateB.rect.w;
+		drawB.rect.x = mainWindow.w - 8 - drawB.rect.w;
+		button_render(&addModuleB, mainWindow.renderer, mousePos);
+		if (state != SIMULATION)
+			button_render(&simulateB, mainWindow.renderer, mousePos);
+		else
+			button_render(&drawB, mainWindow.renderer, mousePos);
+
 
 		SDL_RenderPresent(mainWindow.renderer);
 
@@ -322,6 +421,7 @@ int main(int argc, char **argv) {
 
 	config_set_int("screen-width", mainWindow.w);
 	config_set_int("screen-height", mainWindow.h);
+	config_set_bool("maximized", mainWindow.maximized);
 	config_save();
 	config_free();
 

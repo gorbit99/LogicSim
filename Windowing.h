@@ -19,6 +19,7 @@ typedef struct Window {
     bool mouseFocus;
     bool keyboardFocus;
     bool requestClose;
+    bool maximized;
 	Input input;
 } Window;
 
@@ -33,6 +34,8 @@ void window_show(Window *window);
 void window_hide(Window *window);
 
 void window_get_focus(Window *window);
+
+void window_maximize(Window *window);
 
 void window_begin_event_handling(Window *window);
 
