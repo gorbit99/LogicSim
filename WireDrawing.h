@@ -5,8 +5,8 @@
 #include "NodeVector.h"
 
 typedef struct WireDrawing {
-    Node *origin;
-    int originPin;
+	Node *origin;
+	int originPin;
 } WireDrawing;
 
 Point closest_on_wire(Node *nodeA, int pinA, Node *nodeB, int pinB, Point P, float *dist);

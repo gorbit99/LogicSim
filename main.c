@@ -1,18 +1,14 @@
 #include "debugmalloc.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <stdbool.h>
-#include "Graphics.h"
-#include "Input.h"
 #include "NodeVector.h"
 #include "Camera.h"
-#include "GUIGraphics.h"
 #include "Windowing.h"
 #include "Search.h"
 #include "WireDrawing.h"
 #include "Save.h"
 #include "FileDialog.h"
+#include "ConfigHandler.h"
+#include "GUI.h"
 
 #ifdef __LINUX__
 #include <gtk-3.0/gtk/gtk.h>
@@ -23,23 +19,32 @@ enum ProgramState {
 	CHOOSING_COMPONENT,
 	MOVING_COMPONENT,
 	DRAWING_WIRE,
-	SIMULATION
+	SIMULATION,
+	SAVE_AS_MODULE
 } state;
 
 int main(int argc, char **argv) {
 	debugmalloc_log_file("debugmalloclog.txt");
 
 	window_init_SDL();
+	config_init();
 
-#ifdef __LINUX__
-	gtk_init(&argc, &argv);
-#endif
+	int w, h;
+	w = config_get_int("screen-width");
+	h = config_get_int("screen-height");
+	bool maximized = config_get_bool("maximized");
+
+	unsigned int windowFlags = (unsigned) SDL_WINDOW_SHOWN |
+	                           (unsigned) SDL_WINDOW_RESIZABLE;
+	if (maximized)
+		windowFlags |= (unsigned) SDL_WINDOW_MAXIMIZED;
+
 
 	SDLWindow mainWindow = window_create(
 			"Logic Simulator",
-			640,
-			480,
-			(unsigned) SDL_WINDOW_SHOWN | (unsigned) SDL_WINDOW_RESIZABLE,
+			w,
+			h,
+			windowFlags,
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
@@ -51,10 +56,19 @@ int main(int argc, char **argv) {
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
+	SDLWindow modulizeWindow = window_create(
+			"Save as Module",
+			500,
+			50,
+			SDL_WINDOW_HIDDEN | SDL_WINDOW_BORDERLESS,
+			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
+	);
+
 	state = VIEWING_CIRCUIT;
 
 	TTF_Font *font = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 80);
 	TTF_Font *searchbarFont = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 20);
+	TTF_Font *modulizeFont = TTF_OpenFont("res/SourceCodePro-Regular.ttf", 20);
 
 	NSliceTexture textBoxTexture = guigfx_create_nslice(
 			"res/GUI/Textbox.png",
@@ -64,6 +78,16 @@ int main(int argc, char **argv) {
 			181,
 			181,
 			searchWindow.renderer
+	);
+
+	NSliceTexture textBoxTextureModulize = guigfx_create_nslice(
+			"res/GUI/Textbox.png",
+			ST_CLAMP,
+			9,
+			9,
+			181,
+			181,
+			modulizeWindow.renderer
 	);
 
 	NSliceTexture panelTexture = guigfx_create_nslice(
@@ -80,26 +104,50 @@ int main(int argc, char **argv) {
 	Node *moved = NULL;
 	WireDrawing wireDrawing = {};
 
-	NodeVector vec = load_vector("test.sav", font, mainWindow.renderer);
+	char *lastOpened = config_get_string("last-opened");
+	NodeVector vec;
+	if (strcmp(lastOpened, "-") != 0)
+		vec = load_vector(lastOpened, font, mainWindow.renderer);
+	else
+		vec = nodev_create(0);
 
-	Camera camera;
-	camera.position = (Point) {0, 0};
-	camera.zoom = 0.25f;
+	Camera camera = {(Point) {0, 0}, 0.25f};
+
+	TextInput modulizeTI = textinput_create();
+
+	Button newFileB = button_create((SDL_Rect) {8, 28, 32, 32}, "res/GUI/NewFile.png", mainWindow.renderer);
+	Button openFileB = button_create((SDL_Rect) {8, 88, 32, 32}, "res/GUI/OpenFile.png", mainWindow.renderer);
+	Button saveFileB = button_create((SDL_Rect) {8, 148, 32, 32}, "res/GUI/SaveFile.png", mainWindow.renderer);
+	Button modulizeB = button_create((SDL_Rect) {8, 208, 32, 32}, "res/GUI/Modulize.png", mainWindow.renderer);
+
+	Button addModuleB = button_create((SDL_Rect) {-8, 28, 32, 32}, "res/GUI/AddModule.png", mainWindow.renderer);
+	Button simulateB = button_create((SDL_Rect) {-8, 88, 32, 32}, "res/GUI/Simulate.png", mainWindow.renderer);
+	Button drawB = button_create((SDL_Rect) {-8, 88, 32, 32}, "res/GUI/Build.png", mainWindow.renderer);
 
 	bool quit = false;
 	SDL_Event e;
 	while (!quit) {
 		window_begin_event_handling(&mainWindow);
+		window_begin_event_handling(&searchWindow);
+		window_begin_event_handling(&modulizeWindow);
 		while (SDL_PollEvent(&e)) {
 			window_handle_event(&mainWindow, &e);
 			window_handle_event(&searchWindow, &e);
+			window_handle_event(&modulizeWindow, &e);
 			if (state == CHOOSING_COMPONENT)
 				search_handle_event(&search, &e);
+			if (state == SAVE_AS_MODULE)
+				textinput_handle_event(&modulizeTI, &e);
 		}
-		SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
+		if (state != SIMULATION)
+			SDL_SetRenderDrawColor(mainWindow.renderer, 0, 0, 0, 255);
+		else
+			SDL_SetRenderDrawColor(mainWindow.renderer, 40, 0, 25, 255);
+
 		SDL_RenderClear(mainWindow.renderer);
 
-		Point mouseWS = camera_screen_to_view(&camera, input_get_mouse_pos(&mainWindow.input));
+		Point mousePos = input_get_mouse_pos(&mainWindow.input);
+		Point mouseWS = camera_screen_to_view(&camera, mousePos);
 
 		if (input_get_key(&mainWindow.input, SDL_SCANCODE_RETURN).isPressed)
 			open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic", DT_SAVE);
@@ -114,23 +162,69 @@ int main(int argc, char **argv) {
 						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
 						                              DT_SAVE);
 						if (path != NULL) {
-                            save_vector(&vec, path);
-                            free(path);
-                        }
+              save_vector(&vec, path);
+              config_set_string("last-opened", path);
+              free(path);
+            }
 					}
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_O).isPressed) {
 						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
 						                              DT_OPEN);
-						if (path != NULL) {
-                            nodev_free(&vec);
-                            vec = load_vector(path, font, mainWindow.renderer);
-                            free(path);
-                        }
+						nodev_free(&vec);
+						vec = load_vector(path, font, mainWindow.renderer);
+						config_set_string("last-opened", path);
+						free(path);
+					}
+				}
+
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					if (button_is_over(&newFileB, mousePos)) {
+						nodev_free(&vec);
+						vec = nodev_create(0);
+						break;
+					}
+					if (button_is_over(&saveFileB, mousePos)) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
+						                              DT_SAVE);
+						save_vector(&vec, path);
+						config_set_string("last-opened", path);
+						free(path);
+						break;
+					}
+					if (button_is_over(&openFileB, mousePos)) {
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
+						                              DT_OPEN);
+						nodev_free(&vec);
+						vec = load_vector(path, font, mainWindow.renderer);
+						config_set_string("last-opened", path);
+						free(path);
+						break;
 					}
 				}
 
 
 				//Transitions
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					if (button_is_over(&addModuleB, mousePos)) {
+						state = CHOOSING_COMPONENT;
+						window_show(&searchWindow);
+						window_get_focus(&searchWindow);
+						search_start(&search, "res/Modules", searchbarFont, searchWindow.renderer);
+						break;
+					}
+					if (button_is_over(&simulateB, mousePos)) {
+						state = SIMULATION;
+						break;
+					}
+					if (button_is_over(&modulizeB, mousePos)) {
+						state = SAVE_AS_MODULE;
+						window_show(&modulizeWindow);
+						window_get_focus(&modulizeWindow);
+						textinput_start();
+						textinput_clear(&modulizeTI);
+						break;
+					}
+				}
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_SPACE).isPressed) {
 					state = CHOOSING_COMPONENT;
 					window_show(&searchWindow);
@@ -156,6 +250,16 @@ int main(int argc, char **argv) {
 				}
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
 					state = SIMULATION;
+					break;
+				}
+				if ((input_get_key(&mainWindow.input, SDL_SCANCODE_RCTRL).isHeld ||
+				     input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) &&
+				    input_get_key(&mainWindow.input, SDL_SCANCODE_M).isPressed) {
+					state = SAVE_AS_MODULE;
+					window_show(&modulizeWindow);
+					window_get_focus(&modulizeWindow);
+					textinput_start();
+					textinput_clear(&modulizeTI);
 					break;
 				}
 				break;
@@ -217,6 +321,7 @@ int main(int argc, char **argv) {
 				//Update
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 
+				SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
 				wiredrawing_update(&wireDrawing, &vec, mouseWS, camera.position, mainWindow.renderer);
 
 				//Transitions
@@ -228,12 +333,58 @@ int main(int argc, char **argv) {
 			}
 			case SIMULATION: {
 				//Update
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+					if (button_is_over(&drawB, mousePos)) {
+						state = VIEWING_CIRCUIT;
+						break;
+					}
 					nodev_check_clicks(&vec, mouseWS);
+				}
 				//Transitions
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
 					state = VIEWING_CIRCUIT;
+					break;
+				}
+				break;
+			}
+			case SAVE_AS_MODULE: {
+				//Update
+				if (mainWindow.keyboardFocus) {
+					mainWindow.keyboardFocus = false;
+					window_get_focus(&modulizeWindow);
+				}
+
+				//Graphics
+				SDL_SetRenderDrawColor(modulizeWindow.renderer, 50, 50, 50, 255);
+				SDL_RenderClear(modulizeWindow.renderer);
+				guigfx_render_nslice(&textBoxTextureModulize, (SDL_Rect) {0, 0, 500, 50}, modulizeWindow.renderer);
+				textinput_update_graphic(&modulizeTI, modulizeFont);
+				textinput_render(&modulizeTI, modulizeFont, 10, 10, modulizeWindow.renderer);
+				SDL_RenderPresent(modulizeWindow.renderer);
+
+				//Transitions
+				if (modulizeWindow.requestClose) {
+					modulizeWindow.requestClose = false;
+					window_hide(&modulizeWindow);
+					state = VIEWING_CIRCUIT;
+					window_get_focus(&mainWindow);
+					textinput_end();
+					break;
+				}
+				if (input_get_key(&modulizeWindow.input, SDL_SCANCODE_RETURN).isPressed) {
+					save_as_module(&vec, modulizeTI.text);
+					window_hide(&modulizeWindow);
+					state = VIEWING_CIRCUIT;
+					window_get_focus(&mainWindow);
+					textinput_end();
+					break;
+				}
+				if (input_get_key(&modulizeWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
+					window_hide(&modulizeWindow);
+					state = VIEWING_CIRCUIT;
+					window_get_focus(&mainWindow);
+					textinput_end();
 					break;
 				}
 				break;
@@ -244,20 +395,71 @@ int main(int argc, char **argv) {
 
 		nodev_update(&vec);
 
+		SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
 		nodev_render(&vec, camera.position);
+
+		SDL_RenderSetScale(mainWindow.renderer, 1, 1);
+		SDL_RenderDrawPoint(mainWindow.renderer, -1, -1);
+		SDL_SetRenderDrawColor(mainWindow.renderer, 25, 25, 25, 255);
+		SDL_Rect rect = {
+				0,
+				0,
+				50,
+				mainWindow.h
+		};
+		SDL_RenderFillRect(mainWindow.renderer, &rect);
+		rect.x = mainWindow.w - 50;
+		SDL_RenderFillRect(mainWindow.renderer, &rect);
+		button_render(&newFileB, mainWindow.renderer, mousePos);
+		button_render(&openFileB, mainWindow.renderer, mousePos);
+		button_render(&saveFileB, mainWindow.renderer, mousePos);
+		button_render(&modulizeB, mainWindow.renderer, mousePos);
+
+		addModuleB.rect.x = mainWindow.w - 8 - addModuleB.rect.w;
+		simulateB.rect.x = mainWindow.w - 8 - simulateB.rect.w;
+		drawB.rect.x = mainWindow.w - 8 - drawB.rect.w;
+		button_render(&addModuleB, mainWindow.renderer, mousePos);
+		if (state != SIMULATION)
+			button_render(&simulateB, mainWindow.renderer, mousePos);
+		else
+			button_render(&drawB, mainWindow.renderer, mousePos);
+
 
 		SDL_RenderPresent(mainWindow.renderer);
 
 		if (mainWindow.requestClose)
 			quit = true;
 	}
+
+	config_set_int("screen-width", mainWindow.w);
+	config_set_int("screen-height", mainWindow.h);
+	config_set_bool("maximized", mainWindow.maximized);
+	config_save();
+	config_free();
+
+	textinput_free(&modulizeTI);
+
 	window_free(&mainWindow);
 	window_free(&searchWindow);
 	search_free(&search);
 
-	window_quit_SDL();
+	TTF_CloseFont(font);
+	TTF_CloseFont(searchbarFont);
+	TTF_CloseFont(modulizeFont);
 
-	save_vector(&vec, "test.sav");
+	guigfx_free_nslice(&textBoxTexture);
+	guigfx_free_nslice(&textBoxTextureModulize);
+	guigfx_free_nslice(&panelTexture);
+
+	button_free(&newFileB);
+	button_free(&openFileB);
+	button_free(&saveFileB);
+	button_free(&modulizeB);
+	button_free(&addModuleB);
+	button_free(&simulateB);
+	button_free(&drawB);
+
+	window_quit_SDL();
 
 	nodev_free(&vec);
 

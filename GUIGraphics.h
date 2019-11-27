@@ -69,4 +69,12 @@ NSliceTexture guigfx_create_nslice(char *path, SliceType type, int x1, int y1, i
  */
 void guigfx_render_nslice(NSliceTexture *data, SDL_Rect rect, SDL_Renderer *renderer);
 
+/**
+ * @brief Frees a 9-slice texture
+ *
+ * @param data Texture to free
+ */
+
+void guigfx_free_nslice(NSliceTexture *data);
+
 #endif //HOMEWORK_GUIGRAPHICS_H

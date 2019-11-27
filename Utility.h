@@ -1,6 +1,8 @@
 #ifndef HOMEWORK_UTILITY_H
 #define HOMEWORK_UTILITY_H
 
+#include <SDL_image.h>
+
 /**
  * @file Utility.h
  * @brief Utility functions for other header files
@@ -58,5 +60,14 @@ char *file_from_path(char *path);
  * @param ... Input
  */
 void log_error_base(const char *file, int line, const char *fmt, ...);
+
+/**
+ * @brief Loads a file into a texture
+ *
+ * @param path Path to the file
+ * @param renderer Renderer to bind the texture to
+ * @return Resulting texture
+ */
+SDL_Texture *load_texture(const char *path, SDL_Renderer *renderer);
 
 #endif //HOMEWORK_UTILITY_H

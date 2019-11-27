@@ -71,7 +71,7 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 		} else if (strcmp(identifier, "TXT") == 0) {
 			float xf, yf;
 			char txt[17];
-			fscanf(f, "%f,%f %s", &xf, &yf, txt);
+			fscanf(f, "%f,%f %[^\n]", &xf, &yf, txt);
 			int x = (int) (xf * size), y = (int) (yf * size);
 			if (font != NULL) {
 				SDL_Surface *text = TTF_RenderText_Blended(font, txt, (SDL_Color) {255, 255, 255, 255});
@@ -132,10 +132,10 @@ void component_free_data(ComponentData *dat) {
 
 void component_render(ComponentData *dat, SDL_Renderer *renderer, Point camPos, Color color) {
 	SDL_Rect r = {
-			(dat->x - camPos.x - (float)dat->w / 2),
-			(dat->y - camPos.y - (float)dat->h / 2),
-			(float) dat->w,
-			(float) dat->h
+			(int)(dat->x - camPos.x - (float)dat->w / 2),
+			(int)(dat->y - camPos.y - (float)dat->h / 2),
+			dat->w,
+			dat->h
 	};
 
 	SDL_SetTextureColorMod(dat->texture, (color & 0xff000000u) >> 24u, (color & 0x00ff0000u) >> 16u, (color & 0x0000ff00u) >> 8u);

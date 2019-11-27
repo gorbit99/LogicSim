@@ -111,8 +111,10 @@ void window_handle_event(SDLWindow *window, SDL_Event *e) {
 			case SDL_WINDOWEVENT_MINIMIZED:
 				break;
 			case SDL_WINDOWEVENT_MAXIMIZED:
+				window->maximized = true;
 				break;
 			case SDL_WINDOWEVENT_RESTORED:
+				window->maximized = false;
 				break;
 			case SDL_WINDOWEVENT_ENTER:
 				window->mouseFocus = true;
@@ -143,4 +145,9 @@ void window_get_focus(SDLWindow *window) {
 
 int window_get_width(SDLWindow *window) {
 	return 0;
+}
+
+void window_maximize(SDLWindow *window) {
+	window->maximized = true;
+	SDL_MaximizeWindow(window->window);
 }

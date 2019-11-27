@@ -19,6 +19,7 @@ typedef struct SDLWindow {
     bool mouseFocus;
     bool keyboardFocus;
     bool requestClose;
+    bool maximized;
 	Input input;
 } SDLWindow;
 
@@ -34,6 +35,9 @@ void window_hide(SDLWindow *window);
 
 void window_get_focus(SDLWindow *window);
 
+void window_maximize(SDLWindow *window);
+
+void window_begin_event_handling(SDLWindow *window);
 void window_begin_event_handling(SDLWindow *window);
 
 void window_handle_event(SDLWindow *window, SDL_Event *e);

@@ -7,7 +7,11 @@ char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title,
 	char file[MAX_PATH];
 
 	SDL_SysWMinfo wMinfo;
-	SDL_GetWindowWMInfo(owner, &wMinfo);
+	SDL_VERSION(&wMinfo.version);
+	if (!SDL_GetWindowWMInfo(owner, &wMinfo)) {
+		const char *error = SDL_GetError();
+		error = SDL_GetError();
+	}
 	OPENFILENAMEA ofn;
 	ZeroMemory(&file, sizeof(file));
 	ZeroMemory(&ofn, sizeof(ofn));
