@@ -20,7 +20,7 @@ bool save_vector(NodeVector *vector, char *fileName) {
 			Wire *wire = &node->wires[w];
 			for (size_t c = 0; c < wire->conCount; c++) {
 				Connection *conn = &wire->connections[c];
-				fprintf(file, "C %d %d %d %d\n", n, w, conn->dest, conn->pin);
+				fprintf(file, "C %ld %d %d %d\n", n, w, conn->dest, conn->pin);
 			}
 		}
 	}
@@ -61,8 +61,14 @@ typedef struct Modules {
 
 bool save_as_module(NodeVector *vector, char *name) {
 
+    size_t len = strlen(name);
+    char *lowername = (char *)malloc(sizeof(char) * (len + 1));
+    for (int i = 0; name[i] != '\0'; i++)
+        lowername[i] = (char)(tolower(name[i]));
+    lowername[len] = '\0';
+
 	char funPath[256];
-	sprintf(funPath, "res/Modules/%s.fun", name);
+	sprintf(funPath, "res/Modules/%s.fun", lowername);
 	FILE *funFile = fopen(funPath, "wt");
 	if (funFile == NULL) {
 		log_error("Couldn't open file %s!\n", funPath);
@@ -178,7 +184,7 @@ bool save_as_module(NodeVector *vector, char *name) {
 	fclose(funFile);
 
     char cmpPath[256];
-    sprintf(cmpPath, "res/Modules/%s.cmp", name);
+    sprintf(cmpPath, "res/Modules/%s.cmp", lowername);
     FILE *cmpFile = fopen(cmpPath, "wt");
     if (cmpFile == NULL) {
         log_error("Couldn't open file %s!\n", cmpPath);
@@ -205,7 +211,7 @@ bool save_as_module(NodeVector *vector, char *name) {
     fclose(cmpFile);
 
     char datPath[256];
-    sprintf(datPath, "res/Modules/%s.dat", name);
+    sprintf(datPath, "res/Modules/%s.dat", lowername);
 
     FILE *datFile = fopen(datPath, "wt");
     if (datFile == NULL) {

@@ -55,7 +55,7 @@ FunctionData parser_load_function(char *path) {
 		return (FunctionData) {};
 	}
 
-	int inC, outC, assignC, wireC;
+	int inC, outC, assignC, wireC = 0;
 	fscanf(f, "assigns %d\nin %d\nout %d\n wires %d\n", &assignC, &inC, &outC, &wireC);
 
 	FunctionData function;
