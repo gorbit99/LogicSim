@@ -18,3 +18,14 @@ bool button_is_over(Button *button, Point mousePos) {
     SDL_Point point = {(int)mousePos.x, (int)mousePos.y};
     return SDL_PointInRect(&point, &button->rect);
 }
+
+Button button_create(SDL_Rect rect, char *path, SDL_Renderer *renderer) {
+	Button result;
+	result.rect = rect;
+	result.buttonImage = load_texture(path, renderer);
+	return result;
+}
+
+void button_free(Button *button) {
+	SDL_DestroyTexture(button->buttonImage);
+}

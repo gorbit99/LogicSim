@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include "Input.h"
 
-typedef struct Window {
+typedef struct SDLWindow {
     SDL_Window *window;
     SDL_Renderer *renderer;
     int id;
@@ -21,26 +21,27 @@ typedef struct Window {
     bool requestClose;
     bool maximized;
 	Input input;
-} Window;
+} SDLWindow;
 
 bool window_init_SDL();
 
 void window_quit_SDL();
 
-Window window_create(char *title, int w, int h, unsigned int windowFlags, unsigned int rendererFlags);
+SDLWindow window_create(char *title, int w, int h, unsigned int windowFlags, unsigned int rendererFlags);
 
-void window_show(Window *window);
+void window_show(SDLWindow *window);
 
-void window_hide(Window *window);
+void window_hide(SDLWindow *window);
 
-void window_get_focus(Window *window);
+void window_get_focus(SDLWindow *window);
 
-void window_maximize(Window *window);
+void window_maximize(SDLWindow *window);
 
-void window_begin_event_handling(Window *window);
+void window_begin_event_handling(SDLWindow *window);
+void window_begin_event_handling(SDLWindow *window);
 
-void window_handle_event(Window *window, SDL_Event *e);
+void window_handle_event(SDLWindow *window, SDL_Event *e);
 
-void window_free(Window *window);
+void window_free(SDLWindow *window);
 
 #endif //HOMEWORK_WINDOWING_H

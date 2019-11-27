@@ -22,3 +22,10 @@ void log_error_base(const char *file, int line, const char *fmt, ...) {
 	SDL_LogMessageV(SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_CRITICAL, fmt, valist);
 	va_end(valist);
 }
+
+SDL_Texture *load_texture(const char *path, SDL_Renderer *renderer) {
+	SDL_Surface *surf = IMG_Load(path);
+	SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+	SDL_FreeSurface(surf);
+	return tex;
+}

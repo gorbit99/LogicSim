@@ -119,3 +119,7 @@ void guigfx_render_nslice(NSliceTexture *data, SDL_Rect rect, SDL_Renderer *rend
 		break;
 	}
 }
+
+void guigfx_free_nslice(NSliceTexture *data) {
+	SDL_DestroyTexture(data->texture);
+}

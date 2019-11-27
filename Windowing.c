@@ -36,8 +36,8 @@ void window_quit_SDL() {
 	SDL_Quit();
 }
 
-Window window_create(char *title, int w, int h, unsigned int windowFlags, unsigned int rendererFlags) {
-	Window result;
+SDLWindow window_create(char *title, int w, int h, unsigned int windowFlags, unsigned int rendererFlags) {
+	SDLWindow result;
 	result.window = SDL_CreateWindow(title,
 	                                 SDL_WINDOWPOS_UNDEFINED,
 	                                 SDL_WINDOWPOS_UNDEFINED,
@@ -46,14 +46,14 @@ Window window_create(char *title, int w, int h, unsigned int windowFlags, unsign
 	                                 windowFlags);
 	if (!result.window) {
 		log_error("Couldn't create window!\n Error: %s", SDL_GetError());
-		return (Window) {};
+		return (SDLWindow) {};
 	}
 	result.renderer = SDL_CreateRenderer(result.window,
 	                                     -1,
 	                                     rendererFlags);
 	if (!result.renderer) {
 		log_error("Couldn't create renderer!\n Error: %s", SDL_GetError());
-		return (Window) {};
+		return (SDLWindow) {};
 	}
 
 	result.w = w;
@@ -68,24 +68,24 @@ Window window_create(char *title, int w, int h, unsigned int windowFlags, unsign
 	return result;
 }
 
-void window_show(Window *window) {
+void window_show(SDLWindow *window) {
 	SDL_ShowWindow(window->window);
 }
 
-void window_hide(Window *window) {
+void window_hide(SDLWindow *window) {
 	SDL_HideWindow(window->window);
 }
 
-void window_free(Window *window) {
+void window_free(SDLWindow *window) {
 	SDL_DestroyRenderer(window->renderer);
 	SDL_DestroyWindow(window->window);
 }
 
-void window_begin_event_handling(Window *window) {
+void window_begin_event_handling(SDLWindow *window) {
 	input_reset_events(&window->input);
 }
 
-void window_handle_event(Window *window, SDL_Event *e) {
+void window_handle_event(SDLWindow *window, SDL_Event *e) {
 	if (e->window.windowID != window->id)
 		return;
 
@@ -139,15 +139,15 @@ void window_handle_event(Window *window, SDL_Event *e) {
 	input_handle_event(&window->input, e);
 }
 
-void window_get_focus(Window *window) {
+void window_get_focus(SDLWindow *window) {
 	SDL_RaiseWindow(window->window);
 }
 
-int window_get_width(Window *window) {
+int window_get_width(SDLWindow *window) {
 	return 0;
 }
 
-void window_maximize(Window *window) {
+void window_maximize(SDLWindow *window) {
 	window->maximized = true;
 	SDL_MaximizeWindow(window->window);
 }

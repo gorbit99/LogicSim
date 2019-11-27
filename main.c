@@ -23,7 +23,6 @@ int main(int argc, char **argv) {
 	debugmalloc_log_file("debugmalloclog.txt");
 
 	window_init_SDL();
-
 	config_init();
 
 	int w, h;
@@ -31,12 +30,12 @@ int main(int argc, char **argv) {
 	h = config_get_int("screen-height");
 	bool maximized = config_get_bool("maximized");
 
-	unsigned int windowFlags = (unsigned) SDL_WINDOW_SHOWN | 
-							   (unsigned) SDL_WINDOW_RESIZABLE;
+	unsigned int windowFlags = (unsigned) SDL_WINDOW_SHOWN |
+	                           (unsigned) SDL_WINDOW_RESIZABLE;
 	if (maximized)
 		windowFlags |= (unsigned) SDL_WINDOW_MAXIMIZED;
 
-	Window mainWindow = window_create(
+	SDLWindow mainWindow = window_create(
 			"Logic Simulator",
 			w,
 			h,
@@ -44,15 +43,15 @@ int main(int argc, char **argv) {
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
-	Window searchWindow = window_create(
-			"Search for Component",
+	SDLWindow searchWindow = window_create(
+			"Search for component",
 			500,
 			500,
 			SDL_WINDOW_HIDDEN,
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
-	Window modulizeWindow = window_create(
+	SDLWindow modulizeWindow = window_create(
 			"Save as Module",
 			500,
 			50,
@@ -107,22 +106,18 @@ int main(int argc, char **argv) {
 	else
 		vec = nodev_create(0);
 
-	Camera camera = {(Point){0, 0}, 0.25f};
+	Camera camera = {(Point) {0, 0}, 0.25f};
 
 	TextInput modulizeTI = textinput_create();
 
-	SDL_Surface *testSurf = IMG_Load("res/GUI/Test.png");
-	SDL_Texture *test = SDL_CreateTextureFromSurface(mainWindow.renderer, testSurf);
-	SDL_FreeSurface(testSurf);
+	Button newFileB = button_create((SDL_Rect) {8, 28, 32, 32}, "res/GUI/NewFile.png", mainWindow.renderer);
+	Button openFileB = button_create((SDL_Rect) {8, 88, 32, 32}, "res/GUI/OpenFile.png", mainWindow.renderer);
+	Button saveFileB = button_create((SDL_Rect) {8, 148, 32, 32}, "res/GUI/SaveFile.png", mainWindow.renderer);
+	Button modulizeB = button_create((SDL_Rect) {8, 208, 32, 32}, "res/GUI/Modulize.png", mainWindow.renderer);
 
-	Button newFileB = {(SDL_Rect){8, 28, 32, 32}, test};
-	Button openFileB = {(SDL_Rect){8, 88, 32, 32}, test};
-	Button saveFileB = {(SDL_Rect){8, 148, 32, 32}, test};
-	Button modulizeB = {(SDL_Rect){8, 208, 32, 32}, test};
-
-	Button addModuleB = {(SDL_Rect){-8, 28, 32, 32}, test};
-	Button simulateB = {(SDL_Rect){-8, 88, 32, 32}, test};
-	Button drawB = {(SDL_Rect){-8, 88, 32, 32}, test};
+	Button addModuleB = button_create((SDL_Rect) {-8, 28, 32, 32}, "res/GUI/AddModule.png", mainWindow.renderer);
+	Button simulateB = button_create((SDL_Rect) {-8, 88, 32, 32}, "res/GUI/Simulate.png", mainWindow.renderer);
+	Button drawB = button_create((SDL_Rect) {-8, 88, 32, 32}, "res/GUI/Build.png", mainWindow.renderer);
 
 	bool quit = false;
 	SDL_Event e;
@@ -200,6 +195,7 @@ int main(int argc, char **argv) {
 					}
 				}
 
+
 				//Transitions
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
 					if (button_is_over(&addModuleB, mousePos)) {
@@ -250,8 +246,8 @@ int main(int argc, char **argv) {
 					break;
 				}
 				if ((input_get_key(&mainWindow.input, SDL_SCANCODE_RCTRL).isHeld ||
-				    input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) &&
-					input_get_key(&mainWindow.input, SDL_SCANCODE_M).isPressed) {
+				     input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) &&
+				    input_get_key(&mainWindow.input, SDL_SCANCODE_M).isPressed) {
 					state = SAVE_AS_MODULE;
 					window_show(&modulizeWindow);
 					window_get_focus(&modulizeWindow);
@@ -288,7 +284,8 @@ int main(int argc, char **argv) {
 				}
 				if (search.searchOver) {
 					SearchResult result = search_end(&search);
-					nodev_push_back(&vec, node_create(result.selectedModule, (Point) {0, 0}, font, mainWindow.renderer));
+					nodev_push_back(&vec,
+					                node_create(result.selectedModule, (Point) {0, 0}, font, mainWindow.renderer));
 					moved = nodev_at(&vec, (int) vec.count - 1);
 					search_free_result(&result);
 					window_hide(&searchWindow);
@@ -329,13 +326,14 @@ int main(int argc, char **argv) {
 			}
 			case SIMULATION: {
 				//Update
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
-				if (button_is_over(&drawB, mousePos)) {
-					state = VIEWING_CIRCUIT;
-					break;
-				}
-				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed)
+				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
+					camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+					if (button_is_over(&drawB, mousePos)) {
+						state = VIEWING_CIRCUIT;
+						break;
+					}
 					nodev_check_clicks(&vec, mouseWS);
+				}
 				//Transitions
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
 					state = VIEWING_CIRCUIT;
@@ -375,6 +373,13 @@ int main(int argc, char **argv) {
 					textinput_end();
 					break;
 				}
+				if (input_get_key(&modulizeWindow.input, SDL_SCANCODE_ESCAPE).isPressed) {
+					window_hide(&modulizeWindow);
+					state = VIEWING_CIRCUIT;
+					window_get_focus(&mainWindow);
+					textinput_end();
+					break;
+				}
 				break;
 			}
 			default:
@@ -390,10 +395,10 @@ int main(int argc, char **argv) {
 		SDL_RenderDrawPoint(mainWindow.renderer, -1, -1);
 		SDL_SetRenderDrawColor(mainWindow.renderer, 25, 25, 25, 255);
 		SDL_Rect rect = {
-			0, 
-			0,
-			50,
-			mainWindow.h 
+				0,
+				0,
+				50,
+				mainWindow.h
 		};
 		SDL_RenderFillRect(mainWindow.renderer, &rect);
 		rect.x = mainWindow.w - 50;
@@ -430,6 +435,22 @@ int main(int argc, char **argv) {
 	window_free(&mainWindow);
 	window_free(&searchWindow);
 	search_free(&search);
+
+	TTF_CloseFont(font);
+	TTF_CloseFont(searchbarFont);
+	TTF_CloseFont(modulizeFont);
+
+	guigfx_free_nslice(&textBoxTexture);
+	guigfx_free_nslice(&textBoxTextureModulize);
+	guigfx_free_nslice(&panelTexture);
+
+	button_free(&newFileB);
+	button_free(&openFileB);
+	button_free(&saveFileB);
+	button_free(&modulizeB);
+	button_free(&addModuleB);
+	button_free(&simulateB);
+	button_free(&drawB);
 
 	window_quit_SDL();
 
