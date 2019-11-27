@@ -1,19 +1,14 @@
 #include "debugmalloc.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <stdbool.h>
-#include "Graphics.h"
-#include "Input.h"
 #include "NodeVector.h"
 #include "Camera.h"
-#include "GUIGraphics.h"
 #include "Windowing.h"
 #include "Search.h"
 #include "WireDrawing.h"
 #include "Save.h"
 #include "FileDialog.h"
 #include "ConfigHandler.h"
+#include "GUI.h"
 
 enum ProgramState {
 	VIEWING_CIRCUIT,
@@ -111,6 +106,8 @@ int main(int argc, char **argv) {
 	camera.zoom = 0.25f;
 
 	TextInput modulizeTI = textinput_create();
+
+	
 
 	bool quit = false;
 	SDL_Event e;
