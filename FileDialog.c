@@ -22,16 +22,20 @@ char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title,
 	ofn.nMaxFile = MAX_PATH;
 	ofn.lpstrTitle = title;
 	ofn.Flags = OFN_DONTADDTORECENT;
-	ofn.lpstrDefExt = ".sav";
+	ofn.lpstrDefExt = ".sch";
 	if (type == DT_OPEN)
 		ofn.Flags |= OFN_PATHMUSTEXIST;
 	else if (type == DT_SAVE)
 		ofn.Flags |= OFN_OVERWRITEPROMPT;
 
+	bool successful;
 	if (type == DT_OPEN)
-		GetOpenFileNameA(&ofn);
+		successful = GetOpenFileNameA(&ofn);
 	else if (type == DT_SAVE)
-		GetSaveFileNameA(&ofn);
+		successful = GetSaveFileNameA(&ofn);
+
+	if (successful == false)
+		return NULL;
 
 	char *result = (char *) malloc(sizeof(char) * (strlen(file) + 1));
 	strcpy(result, file);

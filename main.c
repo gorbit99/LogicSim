@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
 		Point mouseWS = camera_screen_to_view(&camera, mousePos);
 
 		if (input_get_key(&mainWindow.input, SDL_SCANCODE_RETURN).isPressed)
-			open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic", DT_SAVE);
+			open_file_dialog(mainWindow.window, "Schematic Files\0*.sch\0\0", "Open Schematic", DT_SAVE);
 
 		switch (state) {
 			case VIEWING_CIRCUIT: {
@@ -153,19 +153,23 @@ int main(int argc, char **argv) {
 
 				if (input_get_mod(&mainWindow.input, MOD_CTRL).isHeld) {
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_S).isPressed) {
-						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sch\0\0", "Save Schematic",
 						                              DT_SAVE);
-						save_vector(&vec, path);
-						config_set_string("last-opened", path);
-						free(path);
+						if (path != NULL) {
+							save_vector(&vec, path);
+							config_set_string("last-opened", path);
+							free(path);
+						}
 					}
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_O).isPressed) {
-						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sch\0\0", "Open Schematic",
 						                              DT_OPEN);
-						nodev_free(&vec);
-						vec = load_vector(path, font, mainWindow.renderer);
-						config_set_string("last-opened", path);
-						free(path);
+						if (path != NULL) {
+							nodev_free(&vec);
+							vec = load_vector(path, font, mainWindow.renderer);
+							config_set_string("last-opened", path);
+							free(path);
+						}
 					}
 				}
 
@@ -176,24 +180,27 @@ int main(int argc, char **argv) {
 						break;
 					}
 					if (button_is_over(&saveFileB, mousePos)) {
-						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sch\0\0", "Save Schematic",
 						                              DT_SAVE);
-						save_vector(&vec, path);
-						config_set_string("last-opened", path);
-						free(path);
+						if (path != NULL) {
+							save_vector(&vec, path);
+							config_set_string("last-opened", path);
+							free(path);
+						}
 						break;
 					}
 					if (button_is_over(&openFileB, mousePos)) {
-						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
+						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sch\0\0", "Open Schematic",
 						                              DT_OPEN);
-						nodev_free(&vec);
-						vec = load_vector(path, font, mainWindow.renderer);
-						config_set_string("last-opened", path);
-						free(path);
+						if (path != NULL) {
+							nodev_free(&vec);
+							vec = load_vector(path, font, mainWindow.renderer);
+							config_set_string("last-opened", path);
+							free(path);
+						}
 						break;
 					}
 				}
-
 
 				//Transitions
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
