@@ -39,7 +39,7 @@ bool textinput_handle_event(TextInput *textinput, SDL_Event *e) {
 		if (e->key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
 			if (textinput->cursorPosition > 0) {
 				int deleteCount = 1;
-				if (e->key.keysym.mod & KMOD_CTRL) {
+				if (e->key.keysym.mod & ((unsigned)KMOD_LCTRL | (unsigned)KMOD_RCTRL)) {
 					while (textinput->cursorPosition - deleteCount > 0 &&
 							!isspace(textinput->text[textinput->cursorPosition - deleteCount - 1]))
 						deleteCount++;
@@ -56,7 +56,7 @@ bool textinput_handle_event(TextInput *textinput, SDL_Event *e) {
 		if (e->key.keysym.scancode == SDL_SCANCODE_DELETE) {
 			if (textinput->cursorPosition < textinput->length - 1) {
 				int deleteCount = 1;
-				if (e->key.keysym.mod & KMOD_CTRL) {
+				if (e->key.keysym.mod & ((unsigned)KMOD_LCTRL | (unsigned)KMOD_RCTRL)) {
 					while (textinput->cursorPosition + deleteCount < textinput->length - 1 &&
 							!isspace(textinput->text[textinput->cursorPosition + deleteCount - 1]))
 						deleteCount++;
@@ -72,7 +72,7 @@ bool textinput_handle_event(TextInput *textinput, SDL_Event *e) {
 		if (e->key.keysym.scancode == SDL_SCANCODE_LEFT) {
 			if (textinput->cursorPosition > 0) {
 				textinput->cursorPosition--;
-				if (e->key.keysym.mod & KMOD_CTRL) {
+				if (e->key.keysym.mod & ((unsigned)KMOD_LCTRL | (unsigned)KMOD_RCTRL)) {
 					while (textinput->cursorPosition > 0 &&
 					       !isspace(textinput->text[textinput->cursorPosition - 1]))
 						textinput->cursorPosition--;
@@ -84,7 +84,7 @@ bool textinput_handle_event(TextInput *textinput, SDL_Event *e) {
 		if (e->key.keysym.scancode == SDL_SCANCODE_RIGHT) {
 			if (textinput->cursorPosition < textinput->length - 1) {
 				textinput->cursorPosition++;
-				if (e->key.keysym.mod & KMOD_CTRL) {
+				if (e->key.keysym.mod & ((unsigned)KMOD_LCTRL | (unsigned)KMOD_RCTRL)) {
 					while (textinput->cursorPosition < textinput->length - 1 &&
 							!isspace(textinput->text[textinput->cursorPosition - 1]))
 						textinput->cursorPosition++;

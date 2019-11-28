@@ -7,11 +7,8 @@ char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title,
 	char file[MAX_PATH];
 
 	SDL_SysWMinfo wMinfo;
-	SDL_VERSION(&wMinfo.version);
-	if (!SDL_GetWindowWMInfo(owner, &wMinfo)) {
-		const char *error = SDL_GetError();
-		error = SDL_GetError();
-	}
+	SDL_VERSION(&wMinfo.version)
+	SDL_GetWindowWMInfo(owner, &wMinfo);
 	OPENFILENAMEA ofn;
 	ZeroMemory(&file, sizeof(file));
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -24,17 +21,17 @@ char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title,
 	ofn.Flags = OFN_DONTADDTORECENT;
 	ofn.lpstrDefExt = ".sch";
 	if (type == DT_OPEN)
-		ofn.Flags |= OFN_PATHMUSTEXIST;
+		ofn.Flags |= (unsigned)OFN_PATHMUSTEXIST;
 	else if (type == DT_SAVE)
-		ofn.Flags |= OFN_OVERWRITEPROMPT;
+		ofn.Flags |= (unsigned)OFN_OVERWRITEPROMPT;
 
-	bool successful;
+	bool successful = true;
 	if (type == DT_OPEN)
 		successful = GetOpenFileNameA(&ofn);
 	else if (type == DT_SAVE)
 		successful = GetSaveFileNameA(&ofn);
 
-	if (successful == false)
+	if (!successful)
 		return NULL;
 
 	char *result = (char *) malloc(sizeof(char) * (strlen(file) + 1));

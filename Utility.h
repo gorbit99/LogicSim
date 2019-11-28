@@ -46,14 +46,6 @@
 SDL_Surface *get_rgba_surface(int w, int h);
 
 /**
- * @brief Get the file name from a path
- * 
- * @param path Path to parse
- * @return char* Resulting file name
- */
-char *file_from_path(char *path);
-
-/**
  * @brief Base function for logging errors
  * 
  * @param file File where log happens

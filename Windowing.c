@@ -1,20 +1,7 @@
 #include "Windowing.h"
 #include "debugmalloc.h"
 
-void __log_output_function(void *unused, int category, SDL_LogPriority priority, const char *message) {
-	FILE *file = fopen("log.txt", "a");
-	time_t t = time(NULL);
-	struct tm tm = *localtime(&t);
-	if (priority == SDL_LOG_PRIORITY_CRITICAL)
-		fprintf(file, "----------%d-%02d-%02d %02d:%02d:%02d----------\n", tm.tm_year + 1900,
-		        tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-	fprintf(file, "%s", message);
-	fprintf(file, "\n");
-}
-
 bool window_init_SDL() {
-	SDL_LogSetOutputFunction(__log_output_function, NULL);
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		log_error("Couldn't initialize SDL:\nError: %s\n", SDL_GetError());
 		return false;
@@ -39,8 +26,8 @@ void window_quit_SDL() {
 SDLWindow window_create(char *title, int w, int h, unsigned int windowFlags, unsigned int rendererFlags) {
 	SDLWindow result;
 	result.window = SDL_CreateWindow(title,
-	                                 SDL_WINDOWPOS_UNDEFINED,
-	                                 SDL_WINDOWPOS_UNDEFINED,
+	                                 SDL_WINDOWPOS_UNDEFINED_MASK,
+	                                 SDL_WINDOWPOS_UNDEFINED_MASK,
 	                                 w,
 	                                 h,
 	                                 windowFlags);

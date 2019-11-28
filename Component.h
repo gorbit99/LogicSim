@@ -161,30 +161,6 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 		float size, float thickness, SDL_Renderer *renderer);
 
 /**
- * @brief Create an LED component
- * 
- * @param x X position
- * @param y Y position
- * @param size Size of the component
- * @param thickness Thickness of the lines
- * @param renderer Renderer to send the texture to
- * @return ComponentData Resulting component
- */
-ComponentData component_create_LED(float x, float y, float size, float thickness, SDL_Renderer *renderer);
-
-/**
- * @brief Create a Switch component
- * 
- * @param x X position
- * @param y Y position
- * @param size Size of the component
- * @param thickness Thickness of the lines
- * @param renderer Renderer to send the texture to
- * @return ComponentData Resulting component
- */
-ComponentData component_create_switch(float x, float y, float size, float thickness, SDL_Renderer *renderer);
-
-/**
  * @brief Simulate component based on input
  * 
  * @param component Component to simulate

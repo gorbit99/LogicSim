@@ -6,20 +6,16 @@ SDL_Surface *get_rgba_surface(int w, int h) {
 	return surface;
 }
 
-char *file_from_path(char *path) {
-	size_t last = 0;
-	for (int i = 0; path[i] != '\0';  i++) {
-		if (path[i] == '\\' || path[i] == '/')
-			last = i;
-	}
-	return path + last + 1;
-}
-
 void log_error_base(const char *file, int line, const char *fmt, ...) {
 	va_list valist;
 	va_start(valist, fmt);
-	SDL_LogMessageV(SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_CRITICAL, fmt, valist);
+	FILE *log = fopen("log.txt", "a");
+	if (log == NULL)
+		return;
+	fprintf(log, "Error in file %s on line %d:\n", file, line);
+	vfprintf(log, fmt, valist);
 	va_end(valist);
+	fclose(log);
 }
 
 SDL_Texture *load_texture(const char *path, SDL_Renderer *renderer) {

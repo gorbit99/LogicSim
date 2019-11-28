@@ -38,7 +38,7 @@ float dist_from_pin(Node *node, int pinA, Point P) {
 }
 
 Wire *closest_wire(NodeVector *vec, Point P, float *dist, Point *point, size_t *connection) {
-	Wire *closest;
+	Wire *closest = NULL;
 	*dist = INFINITY;
 	for (size_t n = 0; n < vec->count; n++) {
 		Node *node = nodev_at(vec, n);
@@ -136,13 +136,13 @@ void wiredrawing_update(WireDrawing *wireDrawing, NodeVector *vec, Point mousePo
 			if (node->component.pinData.pins[p].occupied)
 				continue;
 			Point pos = component_get_pin_position(&node->component, p);
-			SDL_Rect dst = {
+			SDL_Rect dstRect = {
 					(int)(pos.x - COMPSIZE * 0.1f - cameraPos.x),
 					(int)(pos.y - COMPSIZE * 0.1f - cameraPos.y),
 					(int)(COMPSIZE * 0.2f),
 					(int)(COMPSIZE * 0.2f)
 			};
-			SDL_RenderCopy(renderer, unconnected, NULL, &dst);
+			SDL_RenderCopy(renderer, unconnected, NULL, &dstRect);
 		}	
 	}
 	SDL_DestroyTexture(unconnected);
@@ -150,9 +150,9 @@ void wiredrawing_update(WireDrawing *wireDrawing, NodeVector *vec, Point mousePo
 
 void wiredrawing_end(WireDrawing *wireDrawing, NodeVector *vec, Point mousePos) {
 	float minDist = INFINITY;
-	int minNode;
-	int minPin;
-	int curNode;
+	int minNode = 0;
+	int minPin = 0;
+	int curNode = 0;
 	for (size_t n = 0; n < vec->count; n++) {
 		Node *node = nodev_at(vec, n);
 		if (node == wireDrawing->origin)

@@ -29,7 +29,7 @@ FileList dir_getfiles(char *path) {
 	char **results = NULL;
 
 	do {
-		if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+		if (!(findData.dwFileAttributes & (unsigned)FILE_ATTRIBUTE_DIRECTORY)) {
 			num++;
 			char **newMem = (char **)realloc(results, sizeof(char *) * num);
 			if (newMem == NULL) {

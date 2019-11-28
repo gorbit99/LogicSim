@@ -168,11 +168,6 @@ Vec input_get_mouse_wheel(Input *input) {
 	};
 }
 
-bool input_mouse_over(Input *input, SDL_Rect r) {
-	SDL_Point p = {input_get_mouse_x(input), input_get_mouse_y(input)};
-	return SDL_PointInRect(&p, &r) == SDL_TRUE;
-}
-
 void input_init(Input *input) {
 	for (int i = 0; i < SDL_NUM_SCANCODES; i++) {
 		input->buttons[i].isPressed = false;

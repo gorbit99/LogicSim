@@ -242,18 +242,6 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	return data;
 }
 
-ComponentData component_create_LED(float x, float y, float size, float thickness, SDL_Renderer *renderer) {
-	ComponentData data = component_create(x, y, "LED", size, thickness, NULL, renderer);
-	data.type = CT_LED;
-	return data;
-}
-
-ComponentData component_create_switch(float x, float y, float size, float thickness, SDL_Renderer *renderer) {
-	ComponentData data = component_create(x, y, "SWITCH", size, thickness, NULL, renderer);
-	data.type = CT_SWITCH;
-	return data;
-}
-
 void component_run(ComponentData *component, bool *in, bool *out) {
 	parser_run_function(&component->funData, in, out);
 }

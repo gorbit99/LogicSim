@@ -172,13 +172,4 @@ int input_get_mouse_wheel_y(Input *input);
  */
 Vec input_get_mouse_wheel(Input *input);
 
-/**
- * @brief Check, if the mouse is over a rect in screen space
- *
- * @param input Input to get t
- * @param r Rect to check
- * @return If the mouse is over the rect or not
- */
-bool input_mouse_over(Input *input, SDL_Rect r);
-
 #endif //HOMEWORK_INPUT_H

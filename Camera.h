@@ -50,6 +50,6 @@ void camera_move(Camera *camera, Vec movement);
  */
 Point camera_screen_to_view(Camera *camera, Point p);
 
-void camera_update(Camera *camera, Input *input, SDL_Renderer *renderer);
+void camera_update(Camera *camera, Input *input);
 
 #endif //HOMEWORK_CAMERA_H

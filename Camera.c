@@ -27,13 +27,12 @@ Point camera_screen_to_view(Camera *camera, Point p) {
 		(p.y) / camera->zoom + camera->position.y};
 }
 
-void camera_update(Camera *camera, Input *input, SDL_Renderer *renderer) {
+void camera_update(Camera *camera, Input *input) {
 	if (input_get_mouse_button(input, SDL_BUTTON_MIDDLE).isHeld)
-		camera_move(camera, (Vec) {(float) input_get_mouse_delta_x(input),
-		                            (float) input_get_mouse_delta_y(input)});
+		camera_move(camera, input_get_mouse_delta(input));
 
 
-	SDL_Cursor *cursor = SDL_GetCursor();
+	SDL_Cursor *cursor;
 	if (input_get_mouse_button(input, SDL_BUTTON_MIDDLE).isPressed) {
 		cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
 		SDL_SetCursor(cursor);

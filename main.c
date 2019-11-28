@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 			"Save as Module",
 			500,
 			50,
-			SDL_WINDOW_HIDDEN | SDL_WINDOW_BORDERLESS,
+			(unsigned)SDL_WINDOW_HIDDEN | (unsigned)SDL_WINDOW_BORDERLESS,
 			(unsigned) SDL_RENDERER_ACCELERATED | (unsigned) SDL_RENDERER_PRESENTVSYNC
 	);
 
@@ -157,7 +157,7 @@ int main(int argc, char **argv) {
 
 		switch (state) {
 			case VIEWING_CIRCUIT: {
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				camera_update(&camera, &mainWindow.input);
 
 				if (input_get_mod(&mainWindow.input, MOD_CTRL).isHeld) {
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_S).isPressed) {
@@ -309,7 +309,7 @@ int main(int argc, char **argv) {
 			}
 			case MOVING_COMPONENT: {
 				//Update
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				camera_update(&camera, &mainWindow.input);
 				nodev_reposition(&vec, moved, mouseWS);
 
 				if (input_get_key(&mainWindow.input, SDL_SCANCODE_DELETE).isPressed) {
@@ -331,7 +331,7 @@ int main(int argc, char **argv) {
 			}
 			case DRAWING_WIRE: {
 				//Update
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				camera_update(&camera, &mainWindow.input);
 
 				SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
 				wiredrawing_update(&wireDrawing, &vec, mouseWS, camera.position, mainWindow.renderer);
@@ -345,7 +345,7 @@ int main(int argc, char **argv) {
 			}
 			case SIMULATION: {
 				//Update
-				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
+				camera_update(&camera, &mainWindow.input);
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
 					if (button_is_over(&drawB, mousePos)) {
 						state = VIEWING_CIRCUIT;
