@@ -140,6 +140,14 @@ int main(int argc, char **argv) {
 			SDL_SetRenderDrawColor(mainWindow.renderer, 40, 0, 25, 255);
 
 		SDL_RenderClear(mainWindow.renderer);
+		const SDL_Rect clipRect = {
+				50,
+				0,
+				mainWindow.w - 100,
+				mainWindow.h
+		};
+		SDL_RenderSetScale(mainWindow.renderer, 1, 1);
+		SDL_RenderSetClipRect(mainWindow.renderer, &clipRect);
 
 		Point mousePos = input_get_mouse_pos(&mainWindow.input);
 		Point mouseWS = camera_screen_to_view(&camera, mousePos);
@@ -313,7 +321,8 @@ int main(int argc, char **argv) {
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed || moved == NULL) {
 					if (input_get_mod(&mainWindow.input, MOD_CTRL).isHeld && moved != NULL) {
 						nodev_push_back(&vec, node_create(moved->component.name,
-									(Point) {moved->component.x, moved->component.y}, font, mainWindow.renderer));
+						                                  (Point) {moved->component.x, moved->component.y}, font,
+						                                  mainWindow.renderer));
 						moved = nodev_at(&vec, (int) vec.count - 1);
 					} else
 						state = VIEWING_CIRCUIT;
@@ -376,7 +385,39 @@ int main(int argc, char **argv) {
 					break;
 				}
 				if (input_get_key(&modulizeWindow.input, SDL_SCANCODE_RETURN).isPressed) {
-					save_as_module(&vec, modulizeTI.text);
+					bool found = false;
+					for (size_t i = 0; i < vec.count; i++) {
+						if (strcmp_nocase(nodev_at(&vec, i)->component.name, modulizeTI.text)) {
+							const SDL_MessageBoxButtonData buttons[] = {
+									{SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "OK"}
+							};
+							const SDL_MessageBoxColorScheme colorScheme = {
+									{
+											{0, 0, 0},
+											{255, 255, 255},
+											{128, 128, 128},
+											{40, 40, 40},
+											{80, 40, 80}
+									}
+							};
+							const SDL_MessageBoxData messageBoxData = {
+									SDL_MESSAGEBOX_ERROR,
+									mainWindow.window,
+									"Error",
+									"The schematics contains the module\n you want to save to!",
+									SDL_arraysize(buttons),
+									buttons,
+									&colorScheme
+							};
+							int buttonId = -1;
+							SDL_ShowMessageBox(&messageBoxData, &buttonId);
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						save_as_module(&vec, modulizeTI.text);
+					}
 					window_hide(&modulizeWindow);
 					state = VIEWING_CIRCUIT;
 					window_get_focus(&mainWindow);
@@ -398,21 +439,19 @@ int main(int argc, char **argv) {
 
 		nodev_update(&vec);
 
-		SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
-		nodev_render(&vec, camera.position);
+		SDL_RenderSetClipRect(mainWindow.renderer, NULL);
 
 		SDL_RenderSetScale(mainWindow.renderer, 1, 1);
-		SDL_RenderDrawPoint(mainWindow.renderer, -1, -1);
 		SDL_SetRenderDrawColor(mainWindow.renderer, 25, 25, 25, 255);
-		SDL_Rect rect = {
+		SDL_Rect sidebarRect = {
 				0,
 				0,
 				50,
 				mainWindow.h
 		};
-		SDL_RenderFillRect(mainWindow.renderer, &rect);
-		rect.x = mainWindow.w - 50;
-		SDL_RenderFillRect(mainWindow.renderer, &rect);
+		SDL_RenderFillRect(mainWindow.renderer, &sidebarRect);
+		sidebarRect.x = mainWindow.w - 50;
+		SDL_RenderFillRect(mainWindow.renderer, &sidebarRect);
 		button_render(&newFileB, mainWindow.renderer, mousePos);
 		button_render(&openFileB, mainWindow.renderer, mousePos);
 		button_render(&saveFileB, mainWindow.renderer, mousePos);
@@ -427,6 +466,10 @@ int main(int argc, char **argv) {
 		else
 			button_render(&drawB, mainWindow.renderer, mousePos);
 
+		SDL_RenderSetClipRect(mainWindow.renderer, &clipRect);
+		SDL_RenderSetScale(mainWindow.renderer, camera.zoom, camera.zoom);
+		nodev_render(&vec, camera.position);
+		SDL_RenderSetClipRect(mainWindow.renderer, NULL);
 
 		SDL_RenderPresent(mainWindow.renderer);
 

@@ -2,6 +2,8 @@
 #define HOMEWORK_UTILITY_H
 
 #include <SDL_image.h>
+#include <stdbool.h>
+#include <ctype.h>
 
 /**
  * @file Utility.h
@@ -69,5 +71,14 @@ void log_error_base(const char *file, int line, const char *fmt, ...);
  * @return Resulting texture
  */
 SDL_Texture *load_texture(const char *path, SDL_Renderer *renderer);
+
+/**
+ * @brief Compares to strings ignoring case
+ *
+ * @param A First string
+ * @param B Second string
+ * @return Are the strings equal
+ */
+bool strcmp_nocase(char *A, char *B);
 
 #endif //HOMEWORK_UTILITY_H

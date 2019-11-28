@@ -1,10 +1,6 @@
 #include "Node.h"
 #include "debugmalloc.h"
 
-static void __setup_node(Node *node, SDL_Renderer *renderer) {
-
-}
-
 Node node_create(char *compName, Point pos, TTF_Font *font, SDL_Renderer *renderer) {
     Node node;
 	node.component = component_create(pos.x, pos.y, compName, COMPSIZE, COMPTHICKNESS, font, renderer);

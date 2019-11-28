@@ -63,6 +63,7 @@ SDLWindow window_create(char *title, int w, int h, unsigned int windowFlags, uns
 	result.keyboardFocus = (windowFlags & (unsigned) SDL_WINDOW_INPUT_FOCUS);
 	result.mouseFocus = (windowFlags & (unsigned) SDL_WINDOW_MOUSE_FOCUS);
 	result.requestClose = false;
+	result.maximized = (windowFlags & (unsigned)SDL_WINDOW_MAXIMIZED) != 0;
     SDL_SetRenderDrawBlendMode(result.renderer, SDL_BLENDMODE_BLEND);
     input_init(&result.input);
 
@@ -142,13 +143,4 @@ void window_handle_event(SDLWindow *window, SDL_Event *e) {
 
 void window_get_focus(SDLWindow *window) {
 	SDL_RaiseWindow(window->window);
-}
-
-int window_get_width(SDLWindow *window) {
-	return 0;
-}
-
-void window_maximize(SDLWindow *window) {
-	window->maximized = true;
-	SDL_MaximizeWindow(window->window);
 }

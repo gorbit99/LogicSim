@@ -28,3 +28,12 @@ SDL_Texture *load_texture(const char *path, SDL_Renderer *renderer) {
 	SDL_FreeSurface(surf);
 	return tex;
 }
+
+bool strcmp_nocase(char *A, char *B) {
+	int i;
+	for (i = 0; A[i] != '\0'; i++) {
+		if (tolower(A[i]) != tolower(B[i]))
+			return false;
+	}
+	return B[i] == '\0';
+}
