@@ -55,15 +55,17 @@ FunctionData parser_load_function(char *path) {
 		return (FunctionData) {};
 	}
 
-	int inC, outC, assignC, wireC = 0;
+	int inC, outC, assignC, wireC;
 	fscanf(f, "assigns %d\nin %d\nout %d\n wires %d\n", &assignC, &inC, &outC, &wireC);
 
 	FunctionData function;
 	function.assigns = (Assign *) malloc(sizeof(Assign) * assignC);
 	function.wires = (bool *) calloc(wireC, sizeof(bool));
+	function.newWires = (bool *) calloc(wireC, sizeof(bool));
 	function.inC = inC;
 	function.outC = outC;
 	function.assignC = assignC;
+	function.wireC = wireC;
 
 	for (int i = 0; i < assignC; i++) {
 		char assign[512];
@@ -75,7 +77,7 @@ FunctionData parser_load_function(char *path) {
 	return function;
 }
 
-void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *out, AssignPin *pins) {
+void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *newWires, bool *out, AssignPin *pins) {
 	switch (op->type) {
 		case OP_AND: {
 			bool params[2];
@@ -83,8 +85,8 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
 					(AssignPin) {AP_PIN, 0},
 					(AssignPin) {AP_PIN, 1}
 			};
-			parser_handle_operation(op->A.op, in, wires, params, paramPins);
-			parser_handle_operation(op->B, in, wires, params, paramPins + 1);
+			parser_handle_operation(op->A.op, in, wires, newWires, params, paramPins);
+			parser_handle_operation(op->B, in, wires, newWires, params, paramPins + 1);
 			out[pins[0].pinId] = params[0] && params[1];
 			break;
 		}
@@ -94,8 +96,8 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
 					(AssignPin) {AP_PIN, 0},
 					(AssignPin) {AP_PIN, 1}
 			};
-			parser_handle_operation(op->A.op, in, wires, params, paramPins);
-			parser_handle_operation(op->B, in, wires, params, paramPins + 1);
+			parser_handle_operation(op->A.op, in, wires, newWires, params, paramPins);
+			parser_handle_operation(op->B, in, wires, newWires, params, paramPins + 1);
 			out[pins[0].pinId] = params[0] || params[1];
 			break;
 		}
@@ -105,15 +107,15 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
 					(AssignPin) {AP_PIN, 0},
 					(AssignPin) {AP_PIN, 1}
 			};
-			parser_handle_operation(op->A.op, in, wires, params, paramPins);
-			parser_handle_operation(op->B, in, wires, params, paramPins + 1);
+			parser_handle_operation(op->A.op, in, wires, newWires, params, paramPins);
+			parser_handle_operation(op->B, in, wires, newWires, params, paramPins + 1);
 			out[pins[0].pinId] = params[0] != params[1];
 			break;
 		}
 		case OP_NOT: {
 			bool param;
 			AssignPin paramPin = {AP_PIN, 0};
-			parser_handle_operation(op->A.op, in, wires, &param, &paramPin);
+			parser_handle_operation(op->A.op, in, wires, newWires, &param, &paramPin);
 			out[pins[0].pinId] = !param;
 			break;
 		}
@@ -144,7 +146,7 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
 				if (pins[i].type == AP_PIN)
 					out[pins[i].pinId] = moduleOut[i];
 				if (pins[i].type == AP_WIRE)
-					wires[pins[i].pinId] = moduleOut[i];
+					newWires[pins[i].pinId] = moduleOut[i];
 			}
 			free(moduleIn);
 			free(moduleOut);
@@ -155,13 +157,14 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
 	}
 }
 
-void parser_run_assign(Assign *assign, bool *in, bool *wires, bool *out) {
-	parser_handle_operation(assign->op, in, wires, out, assign->pins);
+void parser_run_assign(Assign *assign, bool *in, bool *wires, bool *newWires, bool *out) {
+	parser_handle_operation(assign->op, in, wires, newWires, out, assign->pins);
 }
 
 void parser_run_function(FunctionData *function, bool *in, bool *out) {
 	for (int i = 0; i < function->assignC; i++)
-		parser_run_assign(&function->assigns[i], in, function->wires, out);
+		parser_run_assign(&function->assigns[i], in, function->wires, function->newWires, out);
+	memcpy(function->wires, function->newWires, sizeof(bool) * function->wireC);
 }
 
 Operation *parser_string_to_op(char *str) {
@@ -350,4 +353,5 @@ void parser_free_function(FunctionData *functionData) {
 		parser_free_assign(&functionData->assigns[i]);
 	free(functionData->assigns);
 	free(functionData->wires);
+	free(functionData->newWires);
 }

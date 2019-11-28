@@ -26,12 +26,22 @@ typedef struct ButtonState {
 } ButtonState;
 
 /**
+ * @brief Enum containing the different modifier buttons
+ */
+typedef enum ModifierButton {
+	MOD_CTRL = 0, /**< Ctrl key */
+	MOD_SHIFT = 1, /**< Shift key */
+	MOD_ALT = 2 /**< Alt key */
+} ModifierButton;
+
+/**
  * @brief Struct holding input information
  */
 typedef struct Input {
 	ButtonState buttons[SDL_NUM_SCANCODES]; /**< Button states */
 	ButtonState mouseButtons[5]; /**< Mouse states */
 	uint8_t mouseClicks[5]; /**< Number of clicks on each button */
+	ButtonState modifierButtons[3]; /**< Modifier button states */
 
 	int mouseDeltaX, /**< Mouse delta in the X direction */
 		mouseDeltaY; /**< Mouse delta in the Y direction */
@@ -40,6 +50,13 @@ typedef struct Input {
 	int mouseWheelX, /**< Mouse wheel X movement */
 		mouseWheelY; /**< Mouse wheel Y movement */
 } Input;
+
+/**
+ * @brief Initialize input struct
+ *
+ * @param input Input to initialize
+ */
+void input_init(Input *input);
 
 /**
  * @brief Start a new event handling
@@ -61,16 +78,25 @@ void input_handle_event(Input *input, SDL_Event *e);
  *
  * @param input Input struct to get information from
  * @param code Scancode of the key
- * @return ButtonState Resulting state 
+ * @return Resulting state
  */
 ButtonState input_get_key(Input *input, SDL_Scancode code);
+
+/**
+ * @brief Get the state of the given modifier button
+ *
+ * @param input Input struct to get information from
+ * @param btn Code of the button
+ * @return Resulting state
+ */
+ButtonState input_get_mod(Input *input, ModifierButton btn);
 
 /**
  * @brief Get the state of the given mouse button
  *
  * @param input Input struct to get information from
  * @param id Id of the mouse button
- * @return ButtonState Resulting state
+ * @return Resulting state
  */
 ButtonState input_get_mouse_button(Input *input, int id);
 
@@ -94,7 +120,7 @@ int input_get_mouse_y(Input *input);
  * @brief Get the mouse position as a point
  *
  * @param input Input struct to get information from
- * @return Point Mouse position
+ * @return Mouse position
  */
 Point input_get_mouse_pos(Input *input);
 

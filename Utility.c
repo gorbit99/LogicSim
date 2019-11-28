@@ -1,5 +1,4 @@
 #include "Utility.h"
-
 #include "debugmalloc.h"
 
 SDL_Surface *get_rgba_surface(int w, int h) {

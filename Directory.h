@@ -17,6 +17,4 @@ void dir_free_filelist(FileList *fileList);
 
 void dir_remove_extension(char *file);
 
-char *dir_get_extension(char *file);
-
 #endif //HOMEWORK_DIRECTORY_H

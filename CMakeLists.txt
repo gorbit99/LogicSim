@@ -8,16 +8,8 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 add_definitions(-DSDL_MAIN_HANDLED)
 
 find_package(SDL2 REQUIRED)
-find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_TTF REQUIRED)
 find_package(SDL2_image REQUIRED)
-
-if (UNIX)
-    FIND_PACKAGE(PkgConfig REQUIRED)
-    PKG_CHECK_MODULES(GTK REQUIRED gtk+-3.0)
-    INCLUDE_DIRECTORIES(${GTK3_INCLUDE_DIRS})
-    LINK_DIRECTORIES(${GTK3_LIBRARY_DIRS})
-    ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
-endif (UNIX)
 
 file(GLOB SRC *.c *.h)
 
@@ -26,10 +18,6 @@ add_executable(${PROJECT_NAME} ${SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES C_STANDARD 99)
 
 target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image SDL2::TTF)
-
-if (UNIX)
-    target_link_libraries(${PROJECT_NAME} m ${GTK3_LIBRARIES})
-endif (UNIX)
 
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD

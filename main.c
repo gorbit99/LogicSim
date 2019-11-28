@@ -10,10 +10,6 @@
 #include "ConfigHandler.h"
 #include "GUI.h"
 
-#ifdef __LINUX__
-#include <gtk-3.0/gtk/gtk.h>
-#endif
-
 enum ProgramState {
 	VIEWING_CIRCUIT,
 	CHOOSING_COMPONENT,
@@ -38,7 +34,6 @@ int main(int argc, char **argv) {
 	                           (unsigned) SDL_WINDOW_RESIZABLE;
 	if (maximized)
 		windowFlags |= (unsigned) SDL_WINDOW_MAXIMIZED;
-
 
 	SDLWindow mainWindow = window_create(
 			"Logic Simulator",
@@ -156,16 +151,13 @@ int main(int argc, char **argv) {
 			case VIEWING_CIRCUIT: {
 				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 
-				if (input_get_key(&mainWindow.input, SDL_SCANCODE_RCTRL).isHeld ||
-				    input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) {
+				if (input_get_mod(&mainWindow.input, MOD_CTRL).isHeld) {
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_S).isPressed) {
 						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Save Schematic",
 						                              DT_SAVE);
-						if (path != NULL) {
-              save_vector(&vec, path);
-              config_set_string("last-opened", path);
-              free(path);
-            }
+						save_vector(&vec, path);
+						config_set_string("last-opened", path);
+						free(path);
 					}
 					if (input_get_key(&mainWindow.input, SDL_SCANCODE_O).isPressed) {
 						char *path = open_file_dialog(mainWindow.window, "Schematic Files\0*.sav\0\0", "Open Schematic",
@@ -252,8 +244,7 @@ int main(int argc, char **argv) {
 					state = SIMULATION;
 					break;
 				}
-				if ((input_get_key(&mainWindow.input, SDL_SCANCODE_RCTRL).isHeld ||
-				     input_get_key(&mainWindow.input, SDL_SCANCODE_LCTRL).isHeld) &&
+				if (input_get_mod(&mainWindow.input, MOD_CTRL).isHeld &&
 				    input_get_key(&mainWindow.input, SDL_SCANCODE_M).isPressed) {
 					state = SAVE_AS_MODULE;
 					window_show(&modulizeWindow);
@@ -313,7 +304,12 @@ int main(int argc, char **argv) {
 
 				//Transitions
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed || moved == NULL) {
-					state = VIEWING_CIRCUIT;
+					if (input_get_mod(&mainWindow.input, MOD_CTRL).isHeld && moved != NULL) {
+						nodev_push_back(&vec, node_create(moved->component.name,
+									(Point) {moved->component.x, moved->component.y}, font, mainWindow.renderer));
+						moved = nodev_at(&vec, (int) vec.count - 1);
+					} else
+						state = VIEWING_CIRCUIT;
 				}
 				break;
 			}
@@ -333,8 +329,8 @@ int main(int argc, char **argv) {
 			}
 			case SIMULATION: {
 				//Update
+				camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 				if (input_get_mouse_button(&mainWindow.input, SDL_BUTTON_LEFT).isPressed) {
-					camera_update(&camera, &mainWindow.input, mainWindow.renderer);
 					if (button_is_over(&drawB, mousePos)) {
 						state = VIEWING_CIRCUIT;
 						break;

@@ -1,5 +1,4 @@
 #include "Graphics.h"
-
 #include "debugmalloc.h"
 
 #define set_pixel(dest, x, y, c) (((x)>=0&&(x)<(dest)->w&&(y)>=0&&(y)<(dest)->h)?((uint32_t *)(dest)->pixels)[(y) * (dest)->w + (x)] = (c):0)

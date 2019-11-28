@@ -89,8 +89,10 @@ typedef struct FunctionData {
     int inC; /**< Number of inputs */
     int outC; /**< Number of outputs */
     int assignC; /**< Number of assignments */
+    int wireC; /**< Number of inner wires */
     Assign *assigns; /**< Array of assignments */
     bool *wires; /**< Inner wire values */
+    bool *newWires; /**< Inner wire values after an update */
 } FunctionData;
 
 /**
@@ -137,7 +139,7 @@ FunctionData parser_load_function(char *path);
  * @param out Output values
  * @param pins The pins used in the assignment
  */
-void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *out, AssignPin *pins);
+void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *newWires, bool *out, AssignPin *pins);
 
 /**
  * @brief Run a single assignment
@@ -147,7 +149,7 @@ void parser_handle_operation(Operation *op, const bool *in, bool *wires, bool *o
  * @param wires State of the inner wires
  * @param out Output values
  */
-void parser_run_assign(Assign *assign, bool *in, bool *wires, bool *out);
+void parser_run_assign(Assign *assign, bool *in, bool *wires, bool *newWires, bool *out);
 
 /**
  * @brief Run function

@@ -1,5 +1,4 @@
 #include "Component.h"
-
 #include "debugmalloc.h"
 
 const float COMPSIZE = 300;
@@ -8,11 +7,6 @@ const float COMPTHICKNESS = 15;
 SDL_Surface *component_load_graphic(const char *path, float size, float thickness, TTF_Font *font) {
 
 	FILE *f = fopen(path, "r");
-
-	if (f == NULL) {
-	    log_error("Couldn't open file %s!\n", path);
-	    return NULL;
-	}
 
 	float wf, hf;
 	fscanf(f, "%f %f", &wf, &hf);
@@ -101,7 +95,7 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	data.x = x;
 	data.y = y;
 	char path[256];
-	sprintf(path, "./res/Modules/%s.cmp", name);
+	sprintf(path, "res/Modules/%s.cmp", name);
 	SDL_Surface *surf = component_load_graphic(path, size, thickness, font);
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
 	data.texture = texture;
@@ -109,10 +103,10 @@ ComponentData component_create(float x, float y, char *name, float size, float t
 	data.h = surf->h;
 	SDL_FreeSurface(surf);
 
-	sprintf(path, "./res/Modules/%s.dat", name);
+	sprintf(path, "res/Modules/%s.dat", name);
 	data.pinData = component_load_pin_data(path, size);
 
-	sprintf(path, "./res/Modules/%s.fun", name);
+	sprintf(path, "res/Modules/%s.fun", name);
 	data.funData = parser_load_function(path);
 
 	data.type = CT_MODULE;
@@ -239,6 +233,7 @@ ComponentData component_create_wire_between(ComponentData *comp1, ComponentData 
 	data.funData.inC = 0;
 	data.funData.outC = 0;
 	data.funData.wires = NULL;
+	data.funData.newWires = NULL;
 
 	data.type = CT_WIRE;
 
