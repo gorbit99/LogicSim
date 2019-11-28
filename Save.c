@@ -2,7 +2,7 @@
 #include "debugmalloc.h"
 
 void save_node(FILE *file, Node *node) {
-	fprintf(file, "N %s %f,%f\n", node->component.name, node->component.x, node->component.y);
+	fprintf(file, "N %f,%f %s\n", node->component.x, node->component.y, node->component.name);
 }
 
 bool save_vector(NodeVector *vector, char *fileName) {
@@ -37,7 +37,7 @@ NodeVector load_vector(char *fileName, TTF_Font *font, SDL_Renderer *renderer) {
 	}
 	char name[256];
 	float x, y;
-	while (fscanf(file, "N %s %f,%f\n", name, &x, &y) == 3)
+	while (fscanf(file, "N %f,%f %[^\n]\n", &x, &y, name) == 3)
 		nodev_push_back(&result, node_create(name, (Point) {x, y}, font, renderer));
 	int n1, p1, n2, p2;
 	while (fscanf(file, "C %d %d %d %d\n", &n1, &p1, &n2, &p2) == 4)

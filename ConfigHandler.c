@@ -45,6 +45,8 @@ void config_init() {
         strcpy(config.fields[config.fieldCount - 1].name, name);
         strcpy(config.fields[config.fieldCount - 1].value, value);
     }
+
+    fclose(file);
 }
 
 static char *__get_value(char *field) {

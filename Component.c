@@ -64,7 +64,7 @@ SDL_Surface *component_load_graphic(const char *path, float size, float thicknes
 			gfx_draw_bezier_cubic(component, V1, V2, C1, C2, thickness, 0xffffffff);
 		} else if (strcmp(identifier, "TXT") == 0) {
 			float xf, yf;
-			char txt[17];
+			char txt[256];
 			fscanf(f, "%f,%f %[^\n]", &xf, &yf, txt);
 			int x = (int) (xf * size), y = (int) (yf * size);
 			if (font != NULL) {
