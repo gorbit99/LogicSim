@@ -115,9 +115,9 @@ int main(int argc, char **argv) {
 	Button saveFileB = button_create((SDL_Rect) {8, 148, 32, 32}, "res/GUI/SaveFile.png", mainWindow.renderer);
 	Button modulizeB = button_create((SDL_Rect) {8, 208, 32, 32}, "res/GUI/Modulize.png", mainWindow.renderer);
 
-	Button addModuleB = button_create((SDL_Rect) {-8, 28, 32, 32}, "res/GUI/AddModule.png", mainWindow.renderer);
-	Button simulateB = button_create((SDL_Rect) {-8, 88, 32, 32}, "res/GUI/Simulate.png", mainWindow.renderer);
-	Button drawB = button_create((SDL_Rect) {-8, 88, 32, 32}, "res/GUI/Build.png", mainWindow.renderer);
+	Button drawB = button_create((SDL_Rect) {-8, 28, 32, 32}, "res/GUI/Build.png", mainWindow.renderer);
+	Button addModuleB = button_create((SDL_Rect) {-8, 88, 32, 32}, "res/GUI/AddModule.png", mainWindow.renderer);
+	Button simulateB = button_create((SDL_Rect) {-8, 28, 32, 32}, "res/GUI/Simulate.png", mainWindow.renderer);
 
 	bool quit = false;
 	SDL_Event e;
@@ -455,18 +455,18 @@ int main(int argc, char **argv) {
 		SDL_RenderFillRect(mainWindow.renderer, &sidebarRect);
 		sidebarRect.x = mainWindow.w - 50;
 		SDL_RenderFillRect(mainWindow.renderer, &sidebarRect);
-		button_render(&newFileB, mainWindow.renderer, mousePos);
-		button_render(&openFileB, mainWindow.renderer, mousePos);
-		button_render(&saveFileB, mainWindow.renderer, mousePos);
-		button_render(&modulizeB, mainWindow.renderer, mousePos);
 
 		addModuleB.rect.x = mainWindow.w - 8 - addModuleB.rect.w;
 		simulateB.rect.x = mainWindow.w - 8 - simulateB.rect.w;
 		drawB.rect.x = mainWindow.w - 8 - drawB.rect.w;
-		button_render(&addModuleB, mainWindow.renderer, mousePos);
-		if (state != SIMULATION)
+		if (state != SIMULATION) {
 			button_render(&simulateB, mainWindow.renderer, mousePos);
-		else
+			button_render(&newFileB, mainWindow.renderer, mousePos);
+			button_render(&openFileB, mainWindow.renderer, mousePos);
+			button_render(&saveFileB, mainWindow.renderer, mousePos);
+			button_render(&modulizeB, mainWindow.renderer, mousePos);
+			button_render(&addModuleB, mainWindow.renderer, mousePos);
+		} else
 			button_render(&drawB, mainWindow.renderer, mousePos);
 
 		SDL_RenderSetClipRect(mainWindow.renderer, &clipRect);

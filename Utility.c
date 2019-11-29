@@ -33,3 +33,20 @@ bool strcmp_nocase(char *A, char *B) {
 	}
 	return B[i] == '\0';
 }
+
+bool strcontains_nocase(const char *A, const char *B) {
+	bool found = false;
+	for (int i = 0; A[i] != '\0'; i++) {
+		found = true;
+		for (int j = 0; B[j] != '\0'; j++) {
+			if (tolower(A[i + j]) != tolower(B[j])) {
+				found = false;
+				break;
+			}
+		}
+		if (found)
+			break;
+	}
+
+	return found;
+}

@@ -17,8 +17,6 @@ ModuleList search_load_modules(char *moduleDir, TTF_Font *font, SDL_Renderer *re
 		result.modules[i].text = SDL_CreateTextureFromSurface(renderer, surface);
 		result.modules[i].w = surface->w;
 		result.modules[i].h = surface->h;
-		for (int j = 0; result.modules[i].name[j] != '\0'; j++)
-			result.modules[i].name[j] = (char) tolower(result.modules[i].name[j]);
 		SDL_FreeSurface(surface);
 	}
 	dir_free_filelist(&files);
@@ -59,7 +57,7 @@ void search_render_modulelist(ModuleList *modules, SDL_Rect clipRect, char *sear
 		lowerSearch[i] = (char) tolower(lowerSearch[i]);
 	int found = 0;
 	for (size_t i = 0; i < modules->num; i++) {
-		if (strstr(modules->modules[i].name, lowerSearch)) {
+		if (strcontains_nocase(modules->modules[i].name, lowerSearch)) {
 			search_render_module(&modules->modules[i],
 			                     clipRect.x,
 			                     clipRect.y - yOffset + found * modules->modules[i].h,
@@ -105,14 +103,14 @@ void search_handle_event(SearchData *searchData, SDL_Event *e) {
 		searchData->searchOver = true;
 	} else if (e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_DOWN) {
 		for (size_t i = searchData->selected + 1; i < searchData->modules.num; i++) {
-			if (strstr(searchData->modules.modules[i].name, searchData->textInput.text)) {
+			if (strcontains_nocase(searchData->modules.modules[i].name, searchData->textInput.text)) {
 				searchData->selected = i;
 				break;
 			}
 		}
 	} else if (e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_UP) {
 		for (int i = searchData->selected - 1; i >= 0; i--) {
-			if (strstr(searchData->modules.modules[i].name, searchData->textInput.text)) {
+			if (strcontains_nocase(searchData->modules.modules[i].name, searchData->textInput.text)) {
 				searchData->selected = i;
 				break;
 			}
@@ -121,7 +119,7 @@ void search_handle_event(SearchData *searchData, SDL_Event *e) {
 		if (textinput_handle_event(&searchData->textInput, e)) {
 			searchData->selected = -1;
 			for (size_t i = 0; i < searchData->modules.num; i++) {
-				if (strstr(searchData->modules.modules[i].name, searchData->textInput.text)) {
+				if (strcontains_nocase(searchData->modules.modules[i].name, searchData->textInput.text)) {
 					searchData->selected = i;
 					break;
 				}
@@ -136,7 +134,7 @@ void search_render(SearchData *searchData, SDL_Rect moduleClipRect, TTF_Font *fo
 
 	int offset = 0;
 	for (int i = 0; i < searchData->selected; i++) {
-		if (strstr(searchData->modules.modules[i].name, searchData->textInput.text)) {
+		if (strcontains_nocase(searchData->modules.modules[i].name, searchData->textInput.text)) {
 			offset++;
 		}
 	}

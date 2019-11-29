@@ -73,4 +73,13 @@ SDL_Texture *load_texture(const char *path, SDL_Renderer *renderer);
  */
 bool strcmp_nocase(char *A, char *B);
 
+/**
+ * @brief Checks, if string A contains string B ignoring case
+ *
+ * @param A String to search in
+ * @param B String to search
+ * @return Does string A contain string B
+ */
+bool strcontains_nocase(const char *A, const char *B);
+
 #endif //HOMEWORK_UTILITY_H
