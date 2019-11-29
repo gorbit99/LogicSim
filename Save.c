@@ -214,11 +214,11 @@ bool save_as_module(NodeVector *vector, char *name) {
     }
 
     fprintf(datFile, "%d\n", inC + outC);
-    for (int in = 0; in < inC; in++) {
-    	fprintf(datFile, "in I%d %f,%f 3.1415\n", in, 0.05f, h / (float)(inC + 1) * (float)in + 0.5f);
-    }
-    for (int out = 0; out < outC; out++) {
-		fprintf(datFile, "out O%d %f,%f 0\n", out, w - 0.1f, h / (float)(outC + 1) * (float)out + 0.5f);
+	for (int in = 0; in < inC; in++) {
+		fprintf(datFile, "in I%d %f,%f 3.1415\n", in, 0.05f, h / (float)(inC + 1) * (float)(in + 1));
+	}
+	for (int out = 0; out < outC; out++) {
+		fprintf(datFile, "out O%d %f,%f 0\n", out, w - 0.1f, h / (float)(outC + 1) * (float)(out + 1));
 	}
 
     fclose(datFile);
