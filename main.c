@@ -297,13 +297,16 @@ int main(int argc, char **argv) {
 				}
 				if (search.searchOver) {
 					SearchResult result = search_end(&search);
-					nodev_push_back(&vec,
+					if (result.selectedModule != NULL) {
+						nodev_push_back(&vec,
 					                node_create(result.selectedModule, (Point) {0, 0}, font, mainWindow.renderer));
-					moved = nodev_at(&vec, (int) vec.count - 1);
-					search_free_result(&result);
+						moved = nodev_at(&vec, (int) vec.count - 1);
+						search_free_result(&result);
+						state = MOVING_COMPONENT;
+					} else
+						state = VIEWING_CIRCUIT;
 					window_hide(&searchWindow);
 					window_get_focus(&mainWindow);
-					state = MOVING_COMPONENT;
 				}
 				break;
 			}

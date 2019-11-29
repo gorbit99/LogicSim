@@ -87,6 +87,8 @@ void search_start(SearchData *searchData, char *moduleDir, TTF_Font *font, SDL_R
 
 SearchResult search_end(SearchData *searchData) {
 	SearchResult result;
+	textinput_end();
+	textinput_clear(&searchData->textInput);
 	result.selectedModule = NULL;
 	if (searchData->selected < 0 || searchData->selected >= searchData->modules.num) {
 		search_free_modules(&searchData->modules);
@@ -95,8 +97,6 @@ SearchResult search_end(SearchData *searchData) {
 	result.selectedModule = (char *)malloc(sizeof(char) * (strlen(searchData->modules.modules[searchData->selected].name) + 1));
 	strcpy(result.selectedModule, searchData->modules.modules[searchData->selected].name);
 	search_free_modules(&searchData->modules);
-	textinput_end();
-	textinput_clear(&searchData->textInput);
 	return result;
 }
 
