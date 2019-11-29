@@ -9,6 +9,7 @@
 #include "FileDialog.h"
 #include "ConfigHandler.h"
 #include "GUI.h"
+#include <SDL_platform.h>
 
 enum ProgramState {
 	VIEWING_CIRCUIT,
@@ -24,6 +25,10 @@ int main(int argc, char **argv) {
 
 	window_init_SDL();
 	config_init();
+
+#ifdef __LINUX__
+	gtk_init(&argc, &argv);
+#endif
 
 	int w, h;
 	w = config_get_int("screen-width");
@@ -151,9 +156,6 @@ int main(int argc, char **argv) {
 
 		Point mousePos = input_get_mouse_pos(&mainWindow.input);
 		Point mouseWS = camera_screen_to_view(&camera, mousePos);
-
-		if (input_get_key(&mainWindow.input, SDL_SCANCODE_RETURN).isPressed)
-			open_file_dialog(mainWindow.window, "Schematic Files\0*.sch\0\0", "Open Schematic", DT_SAVE);
 
 		switch (state) {
 			case VIEWING_CIRCUIT: {
@@ -388,7 +390,9 @@ int main(int argc, char **argv) {
 					break;
 				}
 				if (input_get_key(&modulizeWindow.input, SDL_SCANCODE_RETURN).isPressed) {
-					bool found = false;
+					if (modulizeTI.text[0] == '\0')
+					    break;
+				    bool found = false;
 					for (size_t i = 0; i < vec.count; i++) {
 						if (strcmp_nocase(nodev_at(&vec, i)->component.name, modulizeTI.text)) {
 							const SDL_MessageBoxButtonData buttons[] = {
@@ -396,7 +400,7 @@ int main(int argc, char **argv) {
 							};
 							const SDL_MessageBoxColorScheme colorScheme = {
 									{
-											{0, 0, 0},
+											{20, 20, 20},
 											{255, 255, 255},
 											{128, 128, 128},
 											{40, 40, 40},
@@ -405,7 +409,7 @@ int main(int argc, char **argv) {
 							};
 							const SDL_MessageBoxData messageBoxData = {
 									SDL_MESSAGEBOX_ERROR,
-									mainWindow.window,
+									modulizeWindow.window,
 									"Error",
 									"The schematics contains the module\n you want to save to!",
 									SDL_arraysize(buttons),

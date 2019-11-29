@@ -105,11 +105,17 @@ void dir_free_filelist(FileList *fileList) {
 }
 
 void dir_remove_extension(char *file) {
-	size_t len = strlen(file);
-	for (size_t i = len; i > 0; i--) {
-		if (file[i] == '.') {
-			file[i] = '\0';
-			return;
-		}
-	}
+	char *extension = dir_get_extension(file);
+	if (extension != NULL)
+	    *extension = '\0';
+}
+
+char *dir_get_extension(char *file) {
+    size_t len = strlen(file);
+    for (size_t i = len; i > 0; i--) {
+        if (file[i] == '.') {
+            return &file[i];
+        }
+    }
+    return NULL;
 }

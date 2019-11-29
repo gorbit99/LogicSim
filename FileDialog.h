@@ -6,6 +6,9 @@
 #ifdef __WINDOWS__
 #include <windows.h>
 #endif
+#ifdef __LINUX__
+#include <gtk-3.0/gtk/gtk.h>
+#endif
 #include <SDL_syswm.h>
 
 typedef enum DialogType {

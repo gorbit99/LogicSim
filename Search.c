@@ -6,18 +6,22 @@ ModuleList search_load_modules(char *moduleDir, TTF_Font *font, SDL_Renderer *re
 	ModuleList result;
 	result.num = files.num / 3;
 	result.modules = (struct ModuleData *) malloc(sizeof(struct ModuleData) * result.num);
-	for (size_t i = 0; i < result.num; i++) {
-		dir_remove_extension(files.files[i * 3]);
-		result.modules[i].name = (char *) malloc(sizeof(char) * (strlen(files.files[i * 3]) + 1));
-		strcpy(result.modules[i].name, files.files[i * 3]);
+	int index = 0;
+	for (size_t i = 0; i < files.num; i++) {
+	    if (!strcmp_nocase(dir_get_extension(files.files[i]), ".cmp"))
+            continue;
+		dir_remove_extension(files.files[i]);
+		result.modules[index].name = (char *) malloc(sizeof(char) * (strlen(files.files[i]) + 1));
+		strcpy(result.modules[index].name, files.files[i]);
 		SDL_Surface *surface = TTF_RenderText_Blended(
 				font,
-				result.modules[i].name,
+				result.modules[index].name,
 				(SDL_Color) {255, 255, 255, 255});
-		result.modules[i].text = SDL_CreateTextureFromSurface(renderer, surface);
-		result.modules[i].w = surface->w;
-		result.modules[i].h = surface->h;
+		result.modules[index].text = SDL_CreateTextureFromSurface(renderer, surface);
+		result.modules[index].w = surface->w;
+		result.modules[index].h = surface->h;
 		SDL_FreeSurface(surface);
+		index++;
 	}
 	dir_free_filelist(&files);
 	return result;

@@ -87,7 +87,8 @@ void config_set_bool(char *field, bool value) {
 
 void config_set_int(char *field, int value) {
     char temp[20];
-    __set_value(field, itoa(value, temp, 10));
+    sprintf(temp, "%d", value);
+    __set_value(field, temp);
 }
 
 void config_set_string(char *field, char *value) {

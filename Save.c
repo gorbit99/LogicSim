@@ -20,7 +20,7 @@ bool save_vector(NodeVector *vector, char *fileName) {
 			Wire *wire = &node->wires[w];
 			for (size_t c = 0; c < wire->conCount; c++) {
 				Connection *conn = &wire->connections[c];
-				fprintf(file, "C %d %d %d %d\n", n, w, conn->dest, conn->pin);
+				fprintf(file, "C %ld %d %d %d\n", n, w, conn->dest, conn->pin);
 			}
 		}
 	}

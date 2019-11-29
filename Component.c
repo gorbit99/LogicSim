@@ -6,15 +6,16 @@ const float COMPTHICKNESS = 15;
 
 SDL_Surface *component_load_graphic(const char *path, float size, float thickness, TTF_Font *font) {
 
-	FILE *f = fopen(path, "r");
+	FILE *f = fopen(path, "rt");
 
+	char temp[256];
 	float wf, hf;
-	fscanf(f, "%f %f", &wf, &hf);
+	fscanf(f, "%[^\n]\n", temp);
+	sscanf(temp, "%f %f", &wf, &hf);
 
 	int w = (int) ceilf(wf * size), h = (int) ceilf(hf * size);
 
 	SDL_Surface *component = get_rgba_surface(w, h);
-
 
 	char identifier[10];
 	while (fscanf(f, "%s", identifier) == 1) {

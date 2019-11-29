@@ -40,3 +40,43 @@ char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title,
 }
 
 #endif
+
+#ifdef __LINUX__
+
+char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title, DialogType type) {
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    char *firstButtonText = NULL;
+    if (type == DT_OPEN) {
+        action = GTK_FILE_CHOOSER_ACTION_OPEN;
+        firstButtonText = "Open";
+    }
+    else if (type == DT_SAVE) {
+        action = GTK_FILE_CHOOSER_ACTION_SAVE;
+        firstButtonText = "Save";
+    }
+
+    GtkWidget *dialog = gtk_file_chooser_dialog_new(
+                title,
+                NULL,
+                action,
+                firstButtonText,
+                GTK_RESPONSE_ACCEPT,
+                "Cancel",
+                GTK_RESPONSE_CANCEL,
+                NULL
+            );
+    char *result = NULL;
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        result = (char *)malloc(sizeof(char) * (strlen(filename) + 1));
+        strcpy(result, filename);
+        g_free(filename);
+    }
+    gtk_widget_destroy(dialog);
+    while (gtk_events_pending())
+        gtk_main_iteration();
+    return result;
+}
+
+#endif
