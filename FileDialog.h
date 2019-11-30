@@ -10,6 +10,7 @@
 #include <gtk-3.0/gtk/gtk.h>
 #endif
 #include <SDL_syswm.h>
+#include "Directory.h"
 
 typedef enum DialogType {
 	DT_SAVE,

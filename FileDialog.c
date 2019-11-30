@@ -1,3 +1,4 @@
+#include <SDL_syswm.h>
 #include "FileDialog.h"
 #include "debugmalloc.h"
 
@@ -65,6 +66,19 @@ char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title,
                 GTK_RESPONSE_CANCEL,
                 NULL
             );
+
+    GtkFileFilter *fileFilter = gtk_file_filter_new();
+    gtk_file_filter_set_name(fileFilter, filter);
+    while (*filter != '\0')
+        filter++;
+    filter++;
+    gtk_file_filter_add_pattern(fileFilter, filter);
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), fileFilter);
+
+    if (type == DT_SAVE) {
+        gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), true);
+    }
+
     char *result = NULL;
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
         char *filename;
@@ -72,6 +86,25 @@ char *open_file_dialog(SDL_Window *owner, const char *filter, const char *title,
         result = (char *)malloc(sizeof(char) * (strlen(filename) + 1));
         strcpy(result, filename);
         g_free(filename);
+
+        char *ext = dir_get_extension(result);
+        if (ext == NULL) {
+            char *newMem = realloc(result, sizeof(char) * (strlen(result) + 5));
+            if (newMem == NULL) {
+                log_error("Couldn't reallocate memory!");
+                return result;
+            }
+            result = newMem;
+            strcat(result, ".sch");
+        } else if (!strcmp_nocase(ext, ".sch")) {
+            char *newMem = realloc(result, sizeof(char) * (strlen(result) + 5 - strlen(ext)));
+            if (newMem == NULL) {
+                log_error("Couldn't reallocate memory!");
+                return result;
+            }
+            result = newMem;
+            strcpy(dir_get_extension(result), ".sch");
+        }
     }
     gtk_widget_destroy(dialog);
     while (gtk_events_pending())
